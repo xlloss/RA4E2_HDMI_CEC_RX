@@ -25,7 +25,7 @@
 #include "hal_data.h"
 #include "hdmi_cec_utils.h"
 
-#define DEVICE_KIT_NAME "RA6M5 MCU, EK-RA6M5 "
+#define DEVICE_KIT_NAME "RA4E2 MCU, EK-RA4E2 "
 #define POWER_STATUS_LED_PIN   BSP_IO_PORT_02_PIN_07 /* LED1 (Blue) */
 #define VOLUME_STATUS_LED_PIN  BSP_IO_PORT_01_PIN_04 /* LED2 (Green) */
 #define ERROR_INDICATE_LED_PIN BSP_IO_PORT_01_PIN_12 /* LED3 (Red) */
