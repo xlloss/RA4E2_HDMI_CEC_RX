@@ -157,28 +157,26 @@ void hal_entry(void)
 
     /* Initialize CEC logical address */
     fsp_err = cec_logical_address_allocate();
-    if(FSP_SUCCESS == fsp_err)
-    {
-        APP_PRINT("CEC logical address allocation completed.\r\n");
-
-        /* Now we recognize my logical address, update internal cec bus device status buffer with my device info */
-        cec_bus_device_list[my_logical_address].is_power_status_store = true;
-        cec_bus_device_list[my_logical_address].power_status = 0x1;
-
-        cec_bus_device_list[my_logical_address].is_version_store = true;
-        cec_bus_device_list[my_logical_address].cec_version = CEC_VERSION_1_4;
-
-        cec_bus_device_list[my_logical_address].is_physical_address_store = true;
-        memcpy(&cec_bus_device_list[my_logical_address].physical_address[0], &my_physical_address[0], 4);
-
-        cec_bus_device_list[my_logical_address].is_vendor_id_store = true;
-        memcpy(&cec_bus_device_list[my_logical_address].vendor_id[0], &my_vendor_id[0], 3);
-    }
-    else
+    if(FSP_SUCCESS != fsp_err)
     {
         APP_PRINT("CEC logical address allocation failed.\r\n");
         ERROR_INDICATE_LED_ON; __BKPT(0);
     }
+
+    APP_PRINT("CEC logical address allocation completed.\r\n");
+
+    /* Now we recognize my logical address, update internal cec bus device status buffer with my device info */
+    cec_bus_device_list[my_logical_address].is_power_status_store = true;
+    cec_bus_device_list[my_logical_address].power_status = 0x1;
+
+    cec_bus_device_list[my_logical_address].is_version_store = true;
+    cec_bus_device_list[my_logical_address].cec_version = CEC_VERSION_1_4;
+
+    cec_bus_device_list[my_logical_address].is_physical_address_store = true;
+    memcpy(&cec_bus_device_list[my_logical_address].physical_address[0], &my_physical_address[0], 4);
+
+    cec_bus_device_list[my_logical_address].is_vendor_id_store = true;
+    memcpy(&cec_bus_device_list[my_logical_address].vendor_id[0], &my_vendor_id[0], 3);
 
     /* Clear all internal flags */
     user_action_detect_flag = false;
@@ -191,122 +189,125 @@ void hal_entry(void)
     while(1)
     {
         user_action_check();
-        if(user_action_detect_flag)
-        {
-            user_action_detect_flag = false;
+        if(!user_action_detect_flag)
+            goto no_user_action;
 
-            /* Basically, operating the remote controller turns on the device, so turn POWER_STATUS_LED_ON on. */
-            if(cec_bus_device_list[my_logical_address].power_status == 0x0)
-            {
-                APP_PRINT("[System] Power On.\r\n");
+        user_action_detect_flag = false;
+        user_action_process(cec_data);
+        #if 0
+        /* Basically, operating the remote controller turns on the device, so turn POWER_STATUS_LED_ON on. */
+        if(cec_bus_device_list[my_logical_address].power_status == 0x0)
+        {
+            APP_PRINT("[System] Power On.\r\n");
+            demo_system_power_on();
+            cec_bus_device_list[my_logical_address].power_status = 0x1;
+        }
+
+        switch(user_action_type)
+        {
+            case USER_ACTION_BUS_SCAN: /* Scan CEC bus */
+                cec_bus_scan();
+                break;
+            case USER_ACTION_DISPLAY_CEC_BUS_STATUS_BUFF: /* Display CEC bus buffer data */
+                cec_bus_status_buffer_display();
+                break;
+            case USER_ACTION_REQUEST_POWER_ON: /* Power On (Image View On 0x04) */
+                cec_message_send(user_action_cec_target, CEC_OPCODE_IMAGE_VIEW_ON, NULL, 0);
+                break;
+            case USER_ACTION_REQUEST_POWER_OFF: /* Power Off (Standby 0x36) */
+                cec_message_send(user_action_cec_target, CEC_OPCODE_STANDBY, NULL, 0);
+                break;
+            case USER_ACTION_ENABLING_SYSTEM_AUDIO_MODE_SUPPORT:
+                cec_system_audio_mode_support_enabling();
+                break;
+            case USER_ACTION_SYSTEM_AUDIO_MODE_REQUEST:
+                cec_system_audio_mode_request();
+                break;
+            case USER_ACTION_REQUEST_VOLUME_UP: /* Volume Up. User Control Pressed 0x44 => User Control Released 0x45 */
+                cec_data[0] = USER_CONTROL_VOLUME_UP;
+                cec_message_send(user_action_cec_target, CEC_OPCODE_USER_CONTROL_PRESSED, &cec_data[0], 1); /* User Control Pressed */
+                R_BSP_SoftwareDelay(100, BSP_DELAY_UNITS_MILLISECONDS);
+                cec_message_send(user_action_cec_target, CEC_OPCODE_USER_CONTROL_RELEASED, NULL, 0); /* User Control Released */
+                break;
+            case USER_ACTION_REQUEST_VOLUME_DONW: /* Volume Down. User Control Pressed 0x44 => User Control Released 0x45 */
+                cec_data[0] = USER_CONTROL_VOLUME_DOWN;
+                cec_message_send(user_action_cec_target, CEC_OPCODE_USER_CONTROL_PRESSED, &cec_data[0], 1); /* User Control Pressed */
+                R_BSP_SoftwareDelay(100, BSP_DELAY_UNITS_MILLISECONDS);
+                cec_message_send(user_action_cec_target, CEC_OPCODE_USER_CONTROL_RELEASED, NULL, 0); /* User Control Released */
+                break;
+            case USER_ACTION_REQUEST_VOLUME_MUTE: /* Mute. User Control Pressed 0x44 => User Control Released 0x45 */
+                cec_data[0] = USER_CONTROL_MUTE;
+                cec_message_send(user_action_cec_target, CEC_OPCODE_USER_CONTROL_PRESSED, &cec_data[0], 1); /* User Control Pressed */
+                R_BSP_SoftwareDelay(100, BSP_DELAY_UNITS_MILLISECONDS);
+                cec_message_send(user_action_cec_target, CEC_OPCODE_USER_CONTROL_RELEASED, NULL, 0); /* User Control Released */
+                break;
+//            case <type defined> ToDo
+//            {
+//                /* Add your additional operation */
+//                break;
+//            }
+            default:
+                break;
+
+        user_action_type = 0x0;
+        APP_PRINT(APP_COMMAND_OPTION,
+                  system_audio_mode_support_function ? SYS_AUDIO_FUNC_E : SYS_AUDIO_FUNC_D,
+                  system_audio_mode_status ? SYS_AUDIO_ON : SYS_AUDIO_OFF);
+        }
+        #endif
+no_user_action:
+        cec_rx_data_check();
+        if(!cec_action_request_detect_flag)
+            goto no_cec_action_request;
+
+        cec_action_request_detect_flag = false;
+        bool mute; uint8_t volume;
+
+        switch(cec_action_type)
+        {
+            case CEC_ACTION_POWER_ON:
                 demo_system_power_on();
                 cec_bus_device_list[my_logical_address].power_status = 0x1;
-            }
-
-            switch(user_action_type)
-            {
-                case USER_ACTION_BUS_SCAN: /* Scan CEC bus */
-                    cec_bus_scan();
-                    break;
-                case USER_ACTION_DISPLAY_CEC_BUS_STATUS_BUFF: /* Display CEC bus buffer data */
-                    cec_bus_status_buffer_display();
-                    break;
-                case USER_ACTION_REQUEST_POWER_ON: /* Power On (Image View On 0x04) */
-                    cec_message_send(user_action_cec_target, CEC_OPCODE_IMAGE_VIEW_ON, NULL, 0);
-                    break;
-                case USER_ACTION_REQUEST_POWER_OFF: /* Power Off (Standby 0x36) */
-                    cec_message_send(user_action_cec_target, CEC_OPCODE_STANDBY, NULL, 0);
-                    break;
-                case USER_ACTION_ENABLING_SYSTEM_AUDIO_MODE_SUPPORT:
-                    cec_system_audio_mode_support_enabling();
-                    break;
-                case USER_ACTION_SYSTEM_AUDIO_MODE_REQUEST:
-                    cec_system_audio_mode_request();
-                    break;
-                case USER_ACTION_REQUEST_VOLUME_UP: /* Volume Up. User Control Pressed 0x44 => User Control Released 0x45 */
-                    cec_data[0] = USER_CONTROL_VOLUME_UP;
-                    cec_message_send(user_action_cec_target, CEC_OPCODE_USER_CONTROL_PRESSED, &cec_data[0], 1); /* User Control Pressed */
-                    R_BSP_SoftwareDelay(100, BSP_DELAY_UNITS_MILLISECONDS);
-                    cec_message_send(user_action_cec_target, CEC_OPCODE_USER_CONTROL_RELEASED, NULL, 0); /* User Control Released */
-                    break;
-                case USER_ACTION_REQUEST_VOLUME_DONW: /* Volume Down. User Control Pressed 0x44 => User Control Released 0x45 */
-                    cec_data[0] = USER_CONTROL_VOLUME_DOWN;
-                    cec_message_send(user_action_cec_target, CEC_OPCODE_USER_CONTROL_PRESSED, &cec_data[0], 1); /* User Control Pressed */
-                    R_BSP_SoftwareDelay(100, BSP_DELAY_UNITS_MILLISECONDS);
-                    cec_message_send(user_action_cec_target, CEC_OPCODE_USER_CONTROL_RELEASED, NULL, 0); /* User Control Released */
-                    break;
-                case USER_ACTION_REQUEST_VOLUME_MUTE: /* Mute. User Control Pressed 0x44 => User Control Released 0x45 */
-                    cec_data[0] = USER_CONTROL_MUTE;
-                    cec_message_send(user_action_cec_target, CEC_OPCODE_USER_CONTROL_PRESSED, &cec_data[0], 1); /* User Control Pressed */
-                    R_BSP_SoftwareDelay(100, BSP_DELAY_UNITS_MILLISECONDS);
-                    cec_message_send(user_action_cec_target, CEC_OPCODE_USER_CONTROL_RELEASED, NULL, 0); /* User Control Released */
-                    break;
-//                case <type defined> ToDo
-//                {
-//                    /* Add your additional operation */
-//                    break;
-//                }
-                default:
-                    break;
-            }
-
-            user_action_type = 0x0;
-            APP_PRINT(APP_COMMAND_OPTION,
-                      system_audio_mode_support_function ? SYS_AUDIO_FUNC_E : SYS_AUDIO_FUNC_D,
-                      system_audio_mode_status ? SYS_AUDIO_ON : SYS_AUDIO_OFF);
+                APP_PRINT("[System] Power On.\r\n");
+                break;
+            case CEC_ACTION_POWER_OFF:
+                demo_system_power_off();
+                cec_bus_device_list[my_logical_address].power_status = 0x0;
+                APP_PRINT("[System] Power Off.\r\n");
+                break;
+            case CEC_ACTION_VOLUME_UP:
+                demo_system_volume_change(false, true);
+                demo_system_volume_status_get(&mute, &volume);
+                APP_PRINT("[System] Sound volume up. Volume: %d%%.\r\n", volume);
+                break;
+            case CEC_ACTION_VOLUME_DOWN:
+                demo_system_volume_change(false, false);
+                demo_system_volume_status_get(&mute, &volume);
+                APP_PRINT("[System] Sound volume down. Volume: %d%%.\r\n", volume);
+                break;
+            case CEC_ACTION_VOLUME_MUTE:
+                demo_system_volume_change(true, false);
+                demo_system_volume_status_get(&mute, &volume);
+                if(mute)
+                {
+                    APP_PRINT("[System] Sound volume mute.\r\n");
+                }
+                else
+                {
+                    APP_PRINT("[System] Sound volume unmute. Volume: %d%%.\r\n", volume);
+                }
+                break;
+//            case <type defined> ToDo
+//            {
+//                /* Add your additional operation */
+//                break;
+//            }
+            default:
+                /* Do nothing */
+                break;
         }
 
-        cec_rx_data_check();
-        if(cec_action_request_detect_flag)
-        {
-            cec_action_request_detect_flag = false;
-            bool mute; uint8_t volume;
-
-            switch(cec_action_type)
-            {
-                case CEC_ACTION_POWER_ON:
-                    demo_system_power_on();
-                    cec_bus_device_list[my_logical_address].power_status = 0x1;
-                    APP_PRINT("[System] Power On.\r\n");
-                    break;
-                case CEC_ACTION_POWER_OFF:
-                    demo_system_power_off();
-                    cec_bus_device_list[my_logical_address].power_status = 0x0;
-                    APP_PRINT("[System] Power Off.\r\n");
-                    break;
-                case CEC_ACTION_VOLUME_UP:
-                    demo_system_volume_change(false, true);
-                    demo_system_volume_status_get(&mute, &volume);
-                    APP_PRINT("[System] Sound volume up. Volume: %d%%.\r\n", volume);
-                    break;
-                case CEC_ACTION_VOLUME_DOWN:
-                    demo_system_volume_change(false, false);
-                    demo_system_volume_status_get(&mute, &volume);
-                    APP_PRINT("[System] Sound volume down. Volume: %d%%.\r\n", volume);
-                    break;
-                case CEC_ACTION_VOLUME_MUTE:
-                    demo_system_volume_change(true, false);
-                    demo_system_volume_status_get(&mute, &volume);
-                    if(mute)
-                    {
-                        APP_PRINT("[System] Sound volume mute.\r\n");
-                    }
-                    else
-                    {
-                        APP_PRINT("[System] Sound volume unmute. Volume: %d%%.\r\n", volume);
-                    }
-                    break;
-//                case <type defined> ToDo
-//                {
-//                    /* Add your additional operation */
-//                    break;
-//                }
-                default:
-                    /* Do nothing */
-                    break;
-            }
-        }
-
+no_cec_action_request:
         R_BSP_SoftwareDelay(1, BSP_DELAY_UNITS_MILLISECONDS);
     }
 }

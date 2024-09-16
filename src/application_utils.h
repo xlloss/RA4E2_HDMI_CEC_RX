@@ -151,6 +151,16 @@ void user_action_check(void);
 
 void cec_device_status_display(cec_addr_t cec_addr, cec_device_status_t * p_buff);
 
+fsp_err_t cec_message_send(cec_addr_t destination,
+    uint8_t opcode, uint8_t const * data_buff, uint8_t data_buff_length);
+void cec_system_audio_mode_support_enabling(void);
 void vendor_id_install(uint8_t * my_vendor_id_buff);
+void irq_sw1_callback(external_irq_callback_args_t * p_args);
+void cec_system_audio_mode_request(void);
+void cec_bus_scan(void);
+void cec_bus_status_buffer_display(void);
+void user_action_process(uint8_t *cec_data);
+extern cec_device_status_t cec_bus_device_list[16];
+extern cec_addr_t my_logical_address;
 
 #endif /* End of __APPLICATION_UTILS_H__ */
