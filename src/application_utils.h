@@ -160,6 +160,7 @@ void cec_system_audio_mode_request(void);
 void cec_bus_scan(void);
 void cec_bus_status_buffer_display(void);
 void user_action_process(uint8_t *cec_data);
+void cec_rx_data_process(uint8_t action_type);
 extern cec_device_status_t cec_bus_device_list[16];
 extern cec_addr_t my_logical_address;
 
