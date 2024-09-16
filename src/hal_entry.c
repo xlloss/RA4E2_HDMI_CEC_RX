@@ -28,8 +28,8 @@
 
 ///####################### Application Option Setting #######################
 
-#define APP_HDMI_DDC_PHYSICAL_ADDR_GET   (1) // 0: Use fixed value, 1: Get from sink device edid
-#define APP_VENDOR_ID_INSTALL            (1) // 0: Use fixed value, 1: Install using SEGGER RTT Viewer
+#define APP_HDMI_DDC_PHYSICAL_ADDR_GET   (0) // 0: Use fixed value, 1: Get from sink device edid
+#define APP_VENDOR_ID_INSTALL            (0) // 0: Use fixed value, 1: Install using SEGGER RTT Viewer
 
 #define DEBUG_CEC_INTERRUPT_EVENT_OUTPUT (0) // 0: Disabled, 1: Enabled
 
@@ -40,7 +40,7 @@
 /* My physical address. */
 /* Specify your physical address. You can guess from the HDMI connector name you connected this device to.  */
 /* If APP_HDMI_DDC_PHYSICAL_ADDR_GET is enabled (1), the value will be updated by information of EDID that acquired via HDMI-DDC (I2C). */
-uint8_t my_physical_address[4] =                {0x0, 0x0, 0x1, 0x3}; // 3.1.0.0
+uint8_t my_physical_address[4] =                {0x0, 0x0, 0x0, 0x0}; // 0.0.0.0 for tv
 
 /* My OSD name. */
 /* The text will be displayed on TV menu. Maximum length is 14 bytes. */
@@ -50,7 +50,7 @@ const uint8_t my_osd_name[MY_OSD_NAME_LENGTH] = "RA CEC DEMO";
 /* My Vendor ID. */
 /* Specify vendor ID of your connected TV. For example, LG TV: {0x00, 0xE0, 0x91}. Toshiba TV: {0x00, 0x00, 0x39} */
 /* If APP_VENDOR_ID_INSTALL is enabled (1), the value will be updated by SEGGER RTT Viewer installation. */
-uint8_t my_vendor_id[3] =                       {0x00, 0x00, 0x00};
+uint8_t my_vendor_id[3] =                       {0x00, 0x00, 0x39};
 
 ///####################### End of User Device Setting #######################
 
