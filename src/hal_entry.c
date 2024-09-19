@@ -112,7 +112,8 @@ void hal_entry(void)
     /* Print project banner */
     fsp_pack_version_t fsp_version = {RESET_VALUE};
     R_FSP_VersionGet(&fsp_version);
-    APP_PRINT(BANNER_INFO, fsp_version.version_id_b.major, fsp_version.version_id_b.minor, fsp_version.version_id_b.patch);
+    APP_PRINT(BANNER_INFO, fsp_version.version_id_b.major,
+                fsp_version.version_id_b.minor, fsp_version.version_id_b.patch);
     APP_PRINT(APP_DESCRIPTION);
     APP_PRINT(APP_LED_DESCRIPTION);
 
@@ -137,7 +138,10 @@ void hal_entry(void)
         ERROR_INDICATE_LED_ON; __BKPT(0);
     }
 #endif
-    APP_PRINT("My physical address is %x.%x.%x.%x.\r\n\r\n", my_physical_address[3], my_physical_address[2], my_physical_address[1], my_physical_address[0]);
+    APP_PRINT("My physical address is %x.%x.%x.%x.\r\n\r\n",
+                my_physical_address[3],
+                my_physical_address[2],
+                my_physical_address[1], my_physical_address[0]);
 
     /* Set my vendor ID */
 #if (APP_VENDOR_ID_INSTALL == 0)
@@ -146,13 +150,17 @@ void hal_entry(void)
     APP_PRINT("Setting up my vendor ID ...\r\n");
     vendor_id_install(&my_vendor_id[0]);
 #endif
-    APP_PRINT("My vendor ID is 0x%02x, 0x%02x, 0x%02x.\r\n\r\n", my_vendor_id[0], my_vendor_id[1], my_vendor_id[2]);
+    APP_PRINT("My vendor ID is 0x%02x, 0x%02x, 0x%02x.\r\n\r\n",
+            my_vendor_id[0], my_vendor_id[1], my_vendor_id[2]);
 
     /* Open CEC module */
     fsp_err = R_CEC_Open(&g_cec0_ctrl, &g_cec0_cfg);
     if(FSP_SUCCESS != fsp_err){ ERROR_INDICATE_LED_ON; __BKPT(0); }
 
-    /* Make 50 milliseconds delay. R_CEC_MediaInit may return FSP_ERR_IN_USE for up to 45 milliseconds after calling R_CEC_Open */
+    /* Make 50 milliseconds delay. R_CEC_MediaInit may return
+     * FSP_ERR_IN_USE for up to 45 milliseconds after
+     * calling R_CEC_Open
+     */
     R_BSP_SoftwareDelay(50, BSP_DELAY_UNITS_MILLISECONDS);
 
     /* Initialize CEC logical address */
@@ -165,7 +173,9 @@ void hal_entry(void)
 
     APP_PRINT("CEC logical address allocation completed.\r\n");
 
-    /* Now we recognize my logical address, update internal cec bus device status buffer with my device info */
+    /* Now we recognize my logical address,
+     * update internal cec bus device status buffer with my device info
+     */
     cec_bus_device_list[my_logical_address].is_power_status_store = true;
     cec_bus_device_list[my_logical_address].power_status = 0x1;
 
@@ -302,9 +312,11 @@ fsp_err_t cec_message_send(cec_addr_t destination, uint8_t opcode, uint8_t const
     uint8_t       cec_tx_message_length; /* Total message size, including header, opcode, and data */
     uint8_t       err_detect = false;
     uint32_t      timeout_ms = (uint32_t)(5 + 40 * (2 + data_buff_length));
+    uint32_t      opcode_list_point;
+    APP_PRINT("[> CEC Out] Dest: %d (%s),\r\n", destination,
+        &cec_logical_device_list[destination][0]);
 
-    APP_PRINT("[> CEC Out] Dest: %d (%s),\r\n", destination, &cec_logical_device_list[destination][0]);
-    uint32_t opcode_list_point = opcode_description_find(opcode);
+    opcode_list_point = opcode_description_find(opcode);
     APP_PRINT("            Opcode: 0x%x (%s)", opcode, &cec_opcode_list[opcode_list_point].opcode_desc_str[0]);
     if(data_buff_length > 0)
     {
@@ -345,7 +357,9 @@ fsp_err_t cec_message_send(cec_addr_t destination, uint8_t opcode, uint8_t const
         {
             cec_err_flag = false;
 
-            if(cec_err_type & (CEC_ERROR_UERR | CEC_ERROR_ACKERR | CEC_ERROR_TXERR | CEC_ERROR_AERR | CEC_ERROR_BLERR))
+            if(cec_err_type & (CEC_ERROR_UERR | CEC_ERROR_ACKERR |
+                                CEC_ERROR_TXERR | CEC_ERROR_AERR |
+                                CEC_ERROR_BLERR))
             {
                 err_detect = true;
                 break;
@@ -663,101 +677,110 @@ void cec_rx_data_check(void)
 {
     static uint8_t buff_read_point = 0;
     cec_rx_message_buff_t* p_buff;
+    uint32_t opcode_list_point;
 
     for(uint32_t i=0; i<CEC_RX_DATA_BUFF_DATA_NUMBER; i++)
     {
         p_buff = &cec_rx_data_buff[buff_read_point];
 
-        if(p_buff->is_new_data)
-        {
-            if(p_buff->is_error == false)
+        if(!p_buff->is_new_data)
+            goto no_new_data;
+
+       if(p_buff->is_error)
+            goto clear_data;
+
+       APP_PRINT("[< CEC In]  Src: %d (%s), Dest: %d (%s),\r\n",
+                 p_buff->source, &cec_logical_device_list[p_buff->source][0],
+                 p_buff->destination, &cec_logical_device_list[p_buff->destination][0]);
+
+       if(p_buff->byte_counter < 2)
+            goto clear_data;
+
+       opcode_list_point = opcode_description_find(p_buff->opcode);
+       APP_PRINT("Opcode: 0x%x (%s)", p_buff->opcode,
+               &cec_opcode_list[opcode_list_point].opcode_desc_str[0]);
+
+       if(p_buff->byte_counter >= 3)
+       {
+           APP_PRINT(", Data: ");
+           for(int j=0; j<(p_buff->byte_counter-2); j++)
+           {
+               APP_PRINT("0x%x,", p_buff->data_buff[j]);
+           }
+       }
+
+       APP_PRINT("\r\n");
+
+       if(p_buff->source == my_logical_address)
+           goto clear_data;
+
+       switch(p_buff->opcode)
+       {
+            case CEC_OPCODE_IMAGE_VIEW_ON:
             {
-                APP_PRINT("[< CEC In]  Src: %d (%s), Dest: %d (%s),\r\n", p_buff->source, &cec_logical_device_list[p_buff->source][0],
-                          p_buff->destination, &cec_logical_device_list[p_buff->destination][0]);
-                if(p_buff->byte_counter >= 2)
-                {
-                    uint32_t opcode_list_point = opcode_description_find(p_buff->opcode);
-                    APP_PRINT("            Opcode: 0x%x (%s)", p_buff->opcode, &cec_opcode_list[opcode_list_point].opcode_desc_str[0]);
-
-                    if(p_buff->byte_counter >= 3)
-                    {
-                        APP_PRINT(", Data: ");
-                        for(int j=0; j<(p_buff->byte_counter-2); j++)
-                        {
-                            APP_PRINT("0x%x,", p_buff->data_buff[j]);
-                        }
-                    }
-
-                    APP_PRINT("\r\n");
-
-                    if(p_buff->source != my_logical_address)
-                    {
-                        switch(p_buff->opcode)
-                        {
-                            case CEC_OPCODE_IMAGE_VIEW_ON:
-                            {
-                                cec_action_request_detect_flag = true;
-                                cec_action_type = CEC_ACTION_POWER_ON;
-                                break;
-                            }
-                            case CEC_OPCODE_STANDBY:
-                            {
-                                cec_action_request_detect_flag = true;
-                                cec_action_type = CEC_ACTION_POWER_OFF;
-                                break;
-                            }
-                            case CEC_OPCODE_USER_CONTROL_PRESSED:
-                            {
-                                switch(p_buff->data_buff[0])
-                                {
-                                    case USER_CONTROL_VOLUME_UP:
-                                        cec_action_request_detect_flag = true;
-                                        cec_action_type = CEC_ACTION_VOLUME_UP;
-                                        break;
-                                    case USER_CONTROL_VOLUME_DOWN:
-                                        cec_action_request_detect_flag = true;
-                                        cec_action_type = CEC_ACTION_VOLUME_DOWN;
-                                        break;
-                                    case USER_CONTROL_MUTE:
-                                        cec_action_request_detect_flag = true;
-                                        cec_action_type = CEC_ACTION_VOLUME_MUTE;
-                                        break;
-                                    default:
-                                        /* Do nothing */
-                                        break;
-                                }
-                                break;
-                            }
-//                            case <opcode> ToDo
-//                            {
-//                                /* Add your additional operation */
-//                                break;
-//                            }
-                            default:
-                            {
-                                /* Auto response to supporting (sysytem-level) commands */
-                                cec_system_auto_response(p_buff);
-                                break;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        APP_PRINT("Logical address of received message is same as my logical address. Ignore this message.\r\n");
-                    }
-                }
+                cec_action_request_detect_flag = true;
+                cec_action_type = CEC_ACTION_POWER_ON;
+                break;
             }
-
-            /* Clear the data */
-            memset(p_buff, 0x0, sizeof(cec_rx_message_buff_t));
-
-            buff_read_point++;
-            if(buff_read_point == CEC_RX_DATA_BUFF_DATA_NUMBER)
+            case CEC_OPCODE_STANDBY:
             {
-                buff_read_point = 0;
+                cec_action_request_detect_flag = true;
+                cec_action_type = CEC_ACTION_POWER_OFF;
+                break;
+            }
+            case CEC_OPCODE_USER_CONTROL_PRESSED:
+            {
+                switch(p_buff->data_buff[0])
+                {
+                    case USER_CONTROL_VOLUME_UP:
+                        cec_action_request_detect_flag = true;
+                        cec_action_type = CEC_ACTION_VOLUME_UP;
+                        break;
+                    case USER_CONTROL_VOLUME_DOWN:
+                        cec_action_request_detect_flag = true;
+                        cec_action_type = CEC_ACTION_VOLUME_DOWN;
+                        break;
+                    case USER_CONTROL_MUTE:
+                        cec_action_request_detect_flag = true;
+                        cec_action_type = CEC_ACTION_VOLUME_MUTE;
+                        break;
+                    default:
+                        /* Do nothing */
+                        break;
+                }
+                break;
+            }
+//            case <opcode> ToDo
+//            {
+//                /* Add your additional operation */
+//                break;
+//            }
+            default:
+            {
+                /* Auto response to supporting (sysytem-level) commands */
+                cec_system_auto_response(p_buff);
+                break;
             }
         }
 
+       /*
+       else
+       {
+           APP_PRINT("Logical address of received message is same as my logical address."
+                     "Ignore this message.\r\n");
+       }
+       */
+clear_data:
+       /* Clear the data */
+       memset(p_buff, 0x0, sizeof(cec_rx_message_buff_t));
+
+       buff_read_point++;
+       if(buff_read_point == CEC_RX_DATA_BUFF_DATA_NUMBER)
+       {
+           buff_read_point = 0;
+       }
+
+no_new_data:
         if(cec_action_request_detect_flag == true)
         {
             break;
@@ -827,13 +850,17 @@ void cec_system_auto_response(cec_rx_message_buff_t const * p_rx_data)
         { /* Give Physical Address (0x83) => Report Physical Address */
             if(cec_bus_device_list[my_logical_address].is_physical_address_store)
             {
-                cec_data[0] = (uint8_t)((cec_bus_device_list[my_logical_address].physical_address[3] << 4) | cec_bus_device_list[my_logical_address].physical_address[2]);
-                cec_data[1] = (uint8_t)((cec_bus_device_list[my_logical_address].physical_address[1] << 4) | cec_bus_device_list[my_logical_address].physical_address[0]);
+                cec_data[0] = (uint8_t)((cec_bus_device_list[my_logical_address].physical_address[3] << 4) |
+                                cec_bus_device_list[my_logical_address].physical_address[2]);
+                cec_data[1] = (uint8_t)((cec_bus_device_list[my_logical_address].physical_address[1] << 4) |
+                                cec_bus_device_list[my_logical_address].physical_address[0]);
             }
             else
             {
-                cec_data[0] = (uint8_t)((my_physical_address[3] << 4) | my_physical_address[2]);
-                cec_data[1] = (uint8_t)((my_physical_address[1] << 4) | my_physical_address[0]);
+                cec_data[0] = (uint8_t)((my_physical_address[3] << 4) |
+                                my_physical_address[2]);
+                cec_data[1] = (uint8_t)((my_physical_address[1] << 4) |
+                                my_physical_address[0]);
             }
 
             cec_device_type_t device_type = convert_logical_address_to_device_type(my_logical_address);
@@ -850,17 +877,20 @@ void cec_system_auto_response(cec_rx_message_buff_t const * p_rx_data)
         { /* Give Device Vendor ID (0x8C) => Device Vendor ID */
             if(cec_bus_device_list[my_logical_address].is_vendor_id_store)
             {
-                cec_message_send(CEC_ADDR_BROADCAST, CEC_OPCODE_DEVICE_VENDOR_ID, &cec_bus_device_list[my_logical_address].vendor_id[0], 3);
+                cec_message_send(CEC_ADDR_BROADCAST, CEC_OPCODE_DEVICE_VENDOR_ID,
+                                    &cec_bus_device_list[my_logical_address].vendor_id[0], 3);
             }
             else
             {
-                cec_message_send(CEC_ADDR_BROADCAST, CEC_OPCODE_DEVICE_VENDOR_ID, &my_vendor_id[0], 3);
+                cec_message_send(CEC_ADDR_BROADCAST, CEC_OPCODE_DEVICE_VENDOR_ID,
+                                    &my_vendor_id[0], 3);
             }
             break;
         }
         case CEC_OPCODE_GIVE_OSD_NAME:
         { /* Give OSD Name (0x46) => Set OSD Name */
-            cec_message_send(p_rx_data->source, CEC_OPCODE_SET_OSD_NAME, &my_osd_name[0], MY_OSD_NAME_LENGTH);
+            cec_message_send(p_rx_data->source, CEC_OPCODE_SET_OSD_NAME,
+                                &my_osd_name[0], MY_OSD_NAME_LENGTH);
             break;
         }
         case CEC_OPCODE_GIVE_POWER_STATUS:
@@ -873,7 +903,8 @@ void cec_system_auto_response(cec_rx_message_buff_t const * p_rx_data)
             {
                 cec_data[0] = CEC_POWER_STATUS_STANDBY;
             }
-            cec_message_send(p_rx_data->source, CEC_OPCODE_REPORT_POWER_STATUS, &cec_data[0], 1);
+            cec_message_send(p_rx_data->source, CEC_OPCODE_REPORT_POWER_STATUS,
+                                &cec_data[0], 1);
             break;
         }
         case CEC_OPCODE_GIVE_AUDIO_STATUS:
@@ -888,10 +919,17 @@ void cec_system_auto_response(cec_rx_message_buff_t const * p_rx_data)
             break;
         }
         case CEC_OPCODE_SYSTEM_AUDIO_MODE_REQUEST:
-        { /* System Audio Mode Request (0x70) => If message has active source address, accept system audio mode enabling. */
+        { /* 
+           * System Audio Mode Request (0x70) =>
+           * If message has active source address,
+           * accept system audio mode enabling.
+           */
             if(system_audio_mode_support_function)
             {
-                /* If data field is filled, this means System Audio Mode is requested to be turned On. Otherwise, requested to be off */
+                /* 
+                * If data field is filled, this means System Audio Mode is
+                 * requested to be turned On. Otherwise, requested to be off
+                 */
                 if(p_rx_data->byte_counter >= 3)
                 {
                     cec_data[0] = CEC_SYSTEM_AUDIO_STATUS_ON;
@@ -918,7 +956,8 @@ void cec_system_auto_response(cec_rx_message_buff_t const * p_rx_data)
             }
             else
             {
-                APP_PRINT("Received System Audio mode request. But function is not enabled, so reject it.\r\n");
+                APP_PRINT("Received System Audio mode request."
+                        "But function is not enabled, so reject it.\r\n");
                 system_audio_mode_status = false;
 
                 cec_data[0] = CEC_SYSTEM_AUDIO_STATUS_OFF;
@@ -927,7 +966,10 @@ void cec_system_auto_response(cec_rx_message_buff_t const * p_rx_data)
             break;
         }
         case CEC_OPCODE_GIVE_SYSTEM_AUDIO_MODE_STATUS:
-        { /* Give System Audio Mode Status (0x7D) => System Audio Mode Status (0x7E) */
+        { /* 
+           * Give System Audio Mode Status (0x7D) =>
+           * System Audio Mode Status (0x7E)
+           */
             if(system_audio_mode_status)
             {
                 cec_data[0] = 0x1;
@@ -995,11 +1037,13 @@ void cec_system_auto_response(cec_rx_message_buff_t const * p_rx_data)
 
                 /* Store to internal buffer */
                 cec_bus_device_list[p_rx_data->source].is_power_status_store = true;
-                if((p_rx_data->data_buff[0] == CEC_POWER_STATUS_ON) || (p_rx_data->data_buff[0] == CEC_POWER_STATUS_IN_TRANSITION_TO_ON))
+                if((p_rx_data->data_buff[0] == CEC_POWER_STATUS_ON) ||
+                   (p_rx_data->data_buff[0] == CEC_POWER_STATUS_IN_TRANSITION_TO_ON))
                 {
                     cec_bus_device_list[p_rx_data->source].power_status = 0x1;
                 }
-                else if((p_rx_data->data_buff[0] == CEC_POWER_STATUS_STANDBY) || (p_rx_data->data_buff[0] == CEC_POWER_STATUS_IN_TRANSITION_TO_STANDBY))
+                else if((p_rx_data->data_buff[0] == CEC_POWER_STATUS_STANDBY) ||
+                        (p_rx_data->data_buff[0] == CEC_POWER_STATUS_IN_TRANSITION_TO_STANDBY))
                 {
                     cec_bus_device_list[p_rx_data->source].power_status = 0x0;
                 }
