@@ -1033,7 +1033,7 @@ void cec_system_auto_response(cec_rx_message_buff_t const * p_rx_data)
             }
             break;
         }
-        case CEC_OPCODE_CEC_VERSION:
+        case CEC_OPCODE_GET_CEC_VERSION:
         { /* CEC Version (0x9E) => (Internal buffer update) */
             if(p_rx_data->source != CEC_ADDR_UNREGISTERED)
             {
@@ -1044,6 +1044,10 @@ void cec_system_auto_response(cec_rx_message_buff_t const * p_rx_data)
                 cec_bus_device_list[p_rx_data->source].is_version_store = true;
                 cec_bus_device_list[p_rx_data->source].cec_version = p_rx_data->data_buff[0];
             }
+
+            cec_message_send(p_rx_data->source, CEC_OPCODE_CEC_VERSION,
+                                &cec_bus_device_list[my_logical_address].cec_version,
+                                1);
             break;
         }
         case CEC_OPCODE_REPORT_POWER_STATUS:
