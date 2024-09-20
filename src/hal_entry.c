@@ -750,11 +750,11 @@ void cec_rx_data_check(void)
                 }
                 break;
             }
-//            case <opcode> ToDo
-//            {
-//                /* Add your additional operation */
-//                break;
-//            }
+            //case <opcode> ToDo
+            //{
+            //    /* Add your additional operation */
+            //    break;
+            //}
             default:
             {
                 /* Auto response to supporting (sysytem-level) commands */
@@ -781,10 +781,10 @@ clear_data:
        }
 
 no_new_data:
-        if(cec_action_request_detect_flag == true)
-        {
-            break;
-        }
+       //if(cec_action_request_detect_flag == true)
+       //{
+       //    break;
+       //}
     }
 }
 
@@ -919,14 +919,14 @@ void cec_system_auto_response(cec_rx_message_buff_t const * p_rx_data)
             break;
         }
         case CEC_OPCODE_SYSTEM_AUDIO_MODE_REQUEST:
-        { /* 
+        { /*
            * System Audio Mode Request (0x70) =>
            * If message has active source address,
            * accept system audio mode enabling.
            */
             if(system_audio_mode_support_function)
             {
-                /* 
+                /*
                 * If data field is filled, this means System Audio Mode is
                  * requested to be turned On. Otherwise, requested to be off
                  */
@@ -966,7 +966,7 @@ void cec_system_auto_response(cec_rx_message_buff_t const * p_rx_data)
             break;
         }
         case CEC_OPCODE_GIVE_SYSTEM_AUDIO_MODE_STATUS:
-        { /* 
+        { /*
            * Give System Audio Mode Status (0x7D) =>
            * System Audio Mode Status (0x7E)
            */
