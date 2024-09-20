@@ -85,6 +85,8 @@ volatile cec_error_t cec_err_type;
 
 /* for i2c read */
 uint32_t             cec_opecode_reg;
+uint32_t             cec_opecode_param1_reg;
+uint32_t             cec_opecode_param2_reg;
 /* RX buffer for CEC reception data */
 #define CEC_RX_DATA_BUFF_DATA_NUMBER (16 * 5)
 cec_rx_message_buff_t cec_rx_data_buff[CEC_RX_DATA_BUFF_DATA_NUMBER];
@@ -721,6 +723,16 @@ void cec_rx_data_check(void)
 
         switch(p_buff->opcode)
         {
+            case CEC_OPCODE_ACTIVE_SOURCE:
+            {
+                cec_action_request_detect_flag = false;
+                cec_action_type = CEC_ACTION_POWER_ON;
+                cec_opecode_param1_reg = p_buff->data_buff[0] |
+                            p_buff->data_buff[1] |
+                            p_buff->data_buff[2] |
+                            p_buff->data_buff[3];
+                break;
+            }
             case CEC_OPCODE_IMAGE_VIEW_ON:
             {
                 cec_action_request_detect_flag = true;
