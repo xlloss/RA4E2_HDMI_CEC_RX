@@ -686,36 +686,36 @@ void cec_rx_data_check(void)
         if(!p_buff->is_new_data)
             goto no_new_data;
 
-       if(p_buff->is_error)
+        if(p_buff->is_error)
             goto clear_data;
 
-       APP_PRINT("[< CEC In]  Src: %d (%s), Dest: %d (%s),\r\n",
+        APP_PRINT("[< CEC In]  Src: %d (%s), Dest: %d (%s),\r\n",
                  p_buff->source, &cec_logical_device_list[p_buff->source][0],
                  p_buff->destination, &cec_logical_device_list[p_buff->destination][0]);
 
-       if(p_buff->byte_counter < 2)
+        if(p_buff->byte_counter < 2)
             goto clear_data;
 
-       opcode_list_point = opcode_description_find(p_buff->opcode);
-       APP_PRINT("Opcode: 0x%x (%s)", p_buff->opcode,
+        opcode_list_point = opcode_description_find(p_buff->opcode);
+        APP_PRINT("Opcode: 0x%x (%s)", p_buff->opcode,
                &cec_opcode_list[opcode_list_point].opcode_desc_str[0]);
 
-       if(p_buff->byte_counter >= 3)
-       {
+        if(p_buff->byte_counter >= 3)
+        {
            APP_PRINT(", Data: ");
            for(int j=0; j<(p_buff->byte_counter-2); j++)
            {
                APP_PRINT("0x%x,", p_buff->data_buff[j]);
            }
-       }
+        }
 
-       APP_PRINT("\r\n");
+        APP_PRINT("\r\n");
 
-       if(p_buff->source == my_logical_address)
-           goto clear_data;
+        if(p_buff->source == my_logical_address)
+            goto clear_data;
 
-       switch(p_buff->opcode)
-       {
+        switch(p_buff->opcode)
+        {
             case CEC_OPCODE_IMAGE_VIEW_ON:
             {
                 cec_action_request_detect_flag = true;
@@ -763,28 +763,28 @@ void cec_rx_data_check(void)
             }
         }
 
-       /*
-       else
-       {
-           APP_PRINT("Logical address of received message is same as my logical address."
+        /*
+        else
+        {
+            APP_PRINT("Logical address of received message is same as my logical address."
                      "Ignore this message.\r\n");
-       }
-       */
+        }
+        */
 clear_data:
-       /* Clear the data */
-       memset(p_buff, 0x0, sizeof(cec_rx_message_buff_t));
+        /* Clear the data */
+        memset(p_buff, 0x0, sizeof(cec_rx_message_buff_t));
 
-       buff_read_point++;
-       if(buff_read_point == CEC_RX_DATA_BUFF_DATA_NUMBER)
-       {
-           buff_read_point = 0;
-       }
+        buff_read_point++;
+        if(buff_read_point == CEC_RX_DATA_BUFF_DATA_NUMBER)
+        {
+            buff_read_point = 0;
+        }
 
 no_new_data:
-       //if(cec_action_request_detect_flag == true)
-       //{
-       //    break;
-       //}
+        //if(cec_action_request_detect_flag == true)
+        //{
+        //    break;
+        //}
     }
 }
 
