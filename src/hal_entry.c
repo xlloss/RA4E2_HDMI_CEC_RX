@@ -687,7 +687,7 @@ void cec_rx_data_check(void)
         p_buff = &cec_rx_data_buff[buff_read_point];
 
         if(!p_buff->is_new_data)
-            goto no_new_data;
+            continue;
 
         if(p_buff->is_error)
             goto clear_data;
