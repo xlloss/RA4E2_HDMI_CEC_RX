@@ -83,6 +83,8 @@ volatile bool        cec_tx_complete_flag = false;
 volatile bool        cec_err_flag = false;
 volatile cec_error_t cec_err_type;
 
+/* for i2c read */
+uint32_t             cec_opecode_reg;
 /* RX buffer for CEC reception data */
 #define CEC_RX_DATA_BUFF_DATA_NUMBER (16 * 5)
 cec_rx_message_buff_t cec_rx_data_buff[CEC_RX_DATA_BUFF_DATA_NUMBER];
@@ -126,6 +128,7 @@ void hal_entry(void)
     /* Initialize LEDs. A pin for LED2 now starts PWM output. */
     demo_system_initialize();
 
+    cec_opecode_reg = 0;
     /* Get physical address */
 #if (APP_HDMI_DDC_PHYSICAL_ADDR_GET == 0)
     APP_PRINT("Fixed physical address will be used\r\n");
@@ -713,6 +716,8 @@ void cec_rx_data_check(void)
 
         if(p_buff->source == my_logical_address)
             goto clear_data;
+
+        cec_opecode_reg = p_buff->opcode;
 
         switch(p_buff->opcode)
         {
