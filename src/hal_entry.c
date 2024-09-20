@@ -1044,10 +1044,8 @@ void cec_system_auto_response(cec_rx_message_buff_t const * p_rx_data)
                 cec_bus_device_list[p_rx_data->source].is_version_store = true;
                 cec_bus_device_list[p_rx_data->source].cec_version = p_rx_data->data_buff[0];
             }
-
-            cec_message_send(p_rx_data->source, CEC_OPCODE_CEC_VERSION,
-                                &cec_bus_device_list[my_logical_address].cec_version,
-                                1);
+            cec_data[0] = cec_bus_device_list[my_logical_address].cec_version;
+            cec_message_send(p_rx_data->source, CEC_OPCODE_CEC_VERSION, &cec_data[0], 1);
             break;
         }
         case CEC_OPCODE_REPORT_POWER_STATUS:
