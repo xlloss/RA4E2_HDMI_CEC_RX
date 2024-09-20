@@ -733,6 +733,7 @@ void cec_rx_data_check(void)
                             p_buff->data_buff[3];
                 break;
             }
+            case CEC_OPCODE_TEXT_VIEW_ON:
             case CEC_OPCODE_IMAGE_VIEW_ON:
             {
                 cec_action_request_detect_flag = true;
