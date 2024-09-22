@@ -684,6 +684,7 @@ void cec_rx_data_check(void)
     cec_rx_message_buff_t* p_buff;
     uint32_t opcode_list_point;
     uint8_t osd_string_data[15];
+    uint8_t inactive_source_data;
 
     for(uint32_t i=0; i<CEC_RX_DATA_BUFF_DATA_NUMBER; i++)
     {
@@ -727,6 +728,11 @@ void cec_rx_data_check(void)
             case CEC_OPCODE_SET_OSD_STRING:
             {
                 memcpy(&osd_string_data[0], &p_buff->data_buff[1], 15);
+                break;
+            }
+            case CEC_OPCODE_INACTIVE_SOURCE:
+            {
+                inactive_source_data, p_buff->source;
                 break;
             }
             case CEC_OPCODE_ACTIVE_SOURCE:
