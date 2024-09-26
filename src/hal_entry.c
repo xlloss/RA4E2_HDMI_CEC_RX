@@ -882,6 +882,14 @@ void cec_system_auto_response(cec_rx_message_buff_t const * p_rx_data)
 
     switch(p_rx_data->opcode)
     {
+        /* One Touch Record feature */
+        case CEC_OPCODE_RECORD_TV_SCREEN:
+        {
+            cec_message_send(p_rx_data->source,
+                CEC_OPCODE_RECORD_ON, [Record Source], [Record Source] LEN);
+
+            break;
+        }
         /* Informed Menu Status */
         case CEC_OPCODE_GET_MENU_LANGUAGE:
         {
