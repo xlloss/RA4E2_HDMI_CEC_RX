@@ -726,6 +726,11 @@ void cec_rx_data_check(void)
 
         switch(p_buff->opcode)
         {
+            /* Timer Programming Feature */
+            case CEC_OPCODE_SET_TIMER_PROGRAM_TITLE:
+            {
+                break;
+            }
             /* One Touch Record Feature */
             case CEC_OPCODE_RECORD_OFF:
             {
