@@ -876,6 +876,7 @@ void cec_system_auto_response(cec_rx_message_buff_t const * p_rx_data)
 
     switch(p_rx_data->opcode)
     {
+        /* Informed Menu Status */
         case CEC_OPCODE_GET_MENU_LANGUAGE:
         {
             cec_message_send(CEC_ADDR_BROADCAST,
