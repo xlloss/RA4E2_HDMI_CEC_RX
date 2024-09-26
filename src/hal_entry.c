@@ -892,6 +892,13 @@ void cec_system_auto_response(cec_rx_message_buff_t const * p_rx_data)
 
     switch(p_rx_data->opcode)
     {
+        /* Device Menu Control Feature */
+        case CEC_OPCODE_MENU_REQUEST:
+        {
+            cec_message_send(p_rx_data->source,
+                CEC_OPCODE_MENU_STATUS, [Menu State], [Menu State] LEN);
+            break;
+        }
         /* Timer Programming Feature */
         case CEC_OPCODE_CLEAR_DIGITAL_TIMER:
         {
