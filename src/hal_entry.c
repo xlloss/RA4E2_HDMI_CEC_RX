@@ -726,6 +726,12 @@ void cec_rx_data_check(void)
 
         switch(p_buff->opcode)
         {
+            /* CEC_OPCODE_DECK_CONTROL */
+            case CEC_OPCODE_DECK_CONTROL:
+            {
+                break;
+            }
+
             /* Timer Programming Feature */
             case CEC_OPCODE_SET_TIMER_PROGRAM_TITLE:
             {
@@ -892,6 +898,13 @@ void cec_system_auto_response(cec_rx_message_buff_t const * p_rx_data)
 
     switch(p_rx_data->opcode)
     {
+        /* CEC_OPCODE_DECK_CONTROL */
+        case CEC_OPCODE_DECK_CONTROL:
+        {
+            cec_message_send(p_rx_data->source,
+                CEC_OPCODE_DECK_STATUS, [Deck Info], [Deck Info] LEN);
+            break;
+        }
         /* Device Menu Control Feature */
         case CEC_OPCODE_MENU_REQUEST:
         {
