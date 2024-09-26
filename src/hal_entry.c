@@ -727,6 +727,11 @@ void cec_rx_data_check(void)
         switch(p_buff->opcode)
         {
             /* Tuner Control Feature   */
+            case CEC_OPCODE_TUNER_STEP_DECREMENT:
+            case CEC_OPCODE_TUNER_STEP_INCREMENT:
+            {
+                break;
+            }
             case CEC_OPCODE_SELECT_DIGITAL_SERVICE:
             case CEC_OPCODE_SELECT_ANALOG_SERVICE:
             {
