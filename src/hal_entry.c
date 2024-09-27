@@ -726,6 +726,11 @@ void cec_rx_data_check(void)
 
         switch(p_buff->opcode)
         {
+            /* Vendor Specific Commands Feature */
+            case CEC_OPCODE_VENDOR_REMOTE_BUTTON_DOWN:
+            {
+                break;
+            }
             /* Audio Rate Control Feature */
             case CEC_OPCODE_SET_AUDIO_RATE:
             {
