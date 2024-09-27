@@ -726,6 +726,11 @@ void cec_rx_data_check(void)
 
         switch(p_buff->opcode)
         {
+            /* System Audio Control Feature */
+            case CEC_OPCODE_SYSTEM_AUDIO_MODE_REQUEST:
+            {
+                break;
+            }
             /* Tuner Control Feature   */
             case CEC_OPCODE_TUNER_STEP_DECREMENT:
             case CEC_OPCODE_TUNER_STEP_INCREMENT:
