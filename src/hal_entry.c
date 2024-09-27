@@ -88,6 +88,8 @@ uint32_t             cec_opecode_reg;
 uint32_t             cec_opecode_param1_reg;
 uint32_t             cec_opecode_param2_reg;
 /* RX buffer for CEC reception data */
+struct cec_event cec_ev_package[30] = {0};
+
 #define CEC_RX_DATA_BUFF_DATA_NUMBER (16 * 5)
 cec_rx_message_buff_t cec_rx_data_buff[CEC_RX_DATA_BUFF_DATA_NUMBER];
 volatile uint8_t      cec_rx_data_buff_next_store_point = 0;
