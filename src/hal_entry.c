@@ -726,6 +726,11 @@ void cec_rx_data_check(void)
 
         switch(p_buff->opcode)
         {
+            /* Audio Rate Control Feature */
+            case CEC_OPCODE_SET_AUDIO_RATE:
+            {
+                break;
+            }
             /* System Audio Control Feature */
             case CEC_OPCODE_SYSTEM_AUDIO_MODE_REQUEST:
             {
