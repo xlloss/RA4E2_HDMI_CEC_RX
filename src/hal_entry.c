@@ -927,36 +927,45 @@ void cec_system_auto_response(cec_rx_message_buff_t const * p_rx_data)
         /* CEC_OPCODE_DECK_CONTROL */
         case CEC_OPCODE_DECK_CONTROL:
         {
+            /*
             cec_message_send(p_rx_data->source,
                 CEC_OPCODE_DECK_STATUS, [Deck Info], [Deck Info] LEN);
+            */
             break;
         }
         /* Device Menu Control Feature */
         case CEC_OPCODE_MENU_REQUEST:
         {
+            /*
             cec_message_send(p_rx_data->source,
                 CEC_OPCODE_MENU_STATUS, [Menu State], [Menu State] LEN);
+            */
             break;
         }
         /* Timer Programming Feature */
         case CEC_OPCODE_CLEAR_DIGITAL_TIMER:
         {
+            /*
             cec_message_send(p_rx_data->source,
                 CEC_OPCODE_TIMER_STATUS, [Timer Status Data], [Timer Status Data] LEN);
+            */
             break;
         }
         case CEC_OPCODE_SET_DIGITAL_TIMER:
         {
+            /*
             cec_message_send(p_rx_data->source,
                 CEC_OPCODE_TIMER_STATUS, [Timer Status Data], [Timer Status Data] LEN);
+            */
             break;
         }
         /* One Touch Record feature */
         case CEC_OPCODE_RECORD_TV_SCREEN:
         {
+            /*
             cec_message_send(p_rx_data->source,
                 CEC_OPCODE_RECORD_ON, [Record Source], [Record Source] LEN);
-
+            */
             break;
         }
         /* Informed Menu Status */

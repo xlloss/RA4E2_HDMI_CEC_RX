@@ -31,6 +31,7 @@
             <slot name="P113" secure="true"/>
         </peripheral>
         <peripheral name="PORT2" group="PORT">
+            <slot name="P206" secure="true"/>
             <slot name="P207" secure="true"/>
         </peripheral>
         <peripheral name="PORT3" group="PORT">
