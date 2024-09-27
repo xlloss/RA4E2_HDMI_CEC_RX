@@ -292,4 +292,10 @@ extern uint32_t            cec_opcode_list_number;
 uint32_t opcode_description_find(uint8_t opcode);
 cec_device_type_t convert_logical_address_to_device_type(cec_addr_t addr);
 
+struct cec_event {
+    uint8_t ev_id;
+    uint8_t iladd;
+    uint8_t param_sz;
+    uint8_t param[15];
+};
 #endif /* End of __CEC_HDMI_UTILS_H__ */
