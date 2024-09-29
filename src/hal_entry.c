@@ -687,7 +687,7 @@ void cec_rx_data_check(void)
     uint32_t opcode_list_point;
     uint8_t osd_string_data[15];
     uint8_t audio_mode_data;
-    uint8_t inactive_source_data;
+    uint8_t inactive_source_data, i;
 
     for(uint32_t i=0; i<CEC_RX_DATA_BUFF_DATA_NUMBER; i++)
     {
@@ -729,6 +729,19 @@ void cec_rx_data_check(void)
         switch(p_buff->opcode)
         {
             /* Vendor Specific Commands Feature */
+            case CEC_OPCODE_VENDOR_COMMAND:
+            {
+                cec_action_request_detect_flag = false;
+                cec_action_type = CEC_ACTION_VENDOR_COMMAND;
+                cec_ev_package[EV_VENDOR_COMMAND].ev_id = EV_VENDOR_COMMAND;
+                cec_ev_package[EV_VENDOR_COMMAND].iladd = p_buff->source;
+                for (i = 0; i < 14; i++)
+                    cec_ev_package[EV_SET_MENU_LANGUAGE].param[i] =
+                        p_buff->data_buff[i];
+
+                cec_ev_package[EV_SET_MENU_LANGUAGE].param_sz = 14;
+                break;
+            }
             case CEC_OPCODE_VENDOR_REMOTE_BUTTON_DOWN:
             {
                 break;
