@@ -783,7 +783,9 @@ void cec_rx_data_check(void)
             /* One Touch Play Feature */
             case CEC_OPCODE_INACTIVE_SOURCE:
             {
-                inactive_source_data, p_buff->source;
+                cec_ev_package[EV_IACT_SRCE].ev_id = EV_IACT_SRCE;
+                cec_ev_package[EV_IACT_SRCE].iladd = p_buff->source;
+                cec_ev_package[EV_IACT_SRCE].param[0] = p_buff->data_buff[0];
                 break;
             }
             case CEC_OPCODE_ACTIVE_SOURCE:
