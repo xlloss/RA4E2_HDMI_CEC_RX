@@ -803,7 +803,7 @@ void cec_rx_data_check(void)
                 cec_action_request_detect_flag = true;
                 cec_action_type = CEC_ACTION_POWER_ON;
                 if (p_buff->opcode == CEC_OPCODE_IMAGE_VIEW_ON)
-                    cec_ev_package[EV_IMG_TEX_VIEW].ev_id = EV_IMG_VIEW_ON;
+                    cec_ev_package[EV_IMG_VIEW_ON].ev_id = EV_IMG_VIEW_ON;
                 else
                     cec_ev_package[EV_IMG_TEX_VIEW].ev_id = EV_TEX_VIEW_ON;
 
