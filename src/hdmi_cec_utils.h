@@ -298,6 +298,7 @@ enum {
     EV_TEX_VIEW_ON,
     EV_ACT_SRCE,
     EV_IACT_SRCE,
+    EV_STANDBY,
 };
 
 struct cec_event {
