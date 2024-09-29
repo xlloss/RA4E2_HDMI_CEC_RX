@@ -786,6 +786,7 @@ void cec_rx_data_check(void)
                 cec_ev_package[EV_IACT_SRCE].ev_id = EV_IACT_SRCE;
                 cec_ev_package[EV_IACT_SRCE].iladd = p_buff->source;
                 cec_ev_package[EV_IACT_SRCE].param[0] = p_buff->data_buff[0];
+                cec_ev_package[EV_IACT_SRCE].param_sz = 1;
                 break;
             }
             case CEC_OPCODE_ACTIVE_SOURCE:
