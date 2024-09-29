@@ -813,10 +813,14 @@ void cec_rx_data_check(void)
                 cec_ev_package[EV_IMG_TEX_VIEW].param_sz = 0;
                 break;
             }
+            /* Standby Feature */
             case CEC_OPCODE_STANDBY:
             {
                 cec_action_request_detect_flag = true;
                 cec_action_type = CEC_ACTION_POWER_OFF;
+                cec_ev_package[EV_STANDBY].ev_id = EV_STANDBY
+                cec_ev_package[EV_STANDBY].iladd = p_buff->source;
+                cec_ev_package[EV_STANDBY].param_sz = 0;
                 break;
             }
             case CEC_OPCODE_USER_CONTROL_PRESSED:
