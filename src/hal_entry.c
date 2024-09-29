@@ -792,10 +792,9 @@ void cec_rx_data_check(void)
             {
                 cec_action_request_detect_flag = false;
                 cec_action_type = CEC_ACTION_POWER_ON;
-                cec_opecode_param1_reg = p_buff->data_buff[0] |
-                            p_buff->data_buff[1] |
-                            p_buff->data_buff[2] |
-                            p_buff->data_buff[3];
+                cec_ev_package[EV_IACT_SRCE].ev_id = EV_ACT_SRCE;
+                cec_ev_package[EV_IACT_SRCE].iladd = p_buff->source;
+                cec_ev_package[EV_IACT_SRCE].param[0] = p_buff->data_buff[0];
                 break;
             }
             case CEC_OPCODE_TEXT_VIEW_ON:
