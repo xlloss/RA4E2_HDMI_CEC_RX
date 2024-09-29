@@ -780,6 +780,7 @@ void cec_rx_data_check(void)
                 memcpy(&osd_string_data[0], &p_buff->data_buff[1], 15);
                 break;
             }
+            /* One Touch Play Feature */
             case CEC_OPCODE_INACTIVE_SOURCE:
             {
                 inactive_source_data, p_buff->source;
