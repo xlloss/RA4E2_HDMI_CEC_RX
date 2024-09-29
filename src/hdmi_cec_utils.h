@@ -296,6 +296,8 @@ enum {
     /* CEC_OPCODE_TEXT_VIEW_ON, CEC_OPCODE_IMAGE_VIEW_ON */
     EV_IMG_VIEW_ON = 0,
     EV_TEX_VIEW_ON,
+    EV_ACT_SRCE,
+    EV_IACT_SRCE,
 };
 
 struct cec_event {
