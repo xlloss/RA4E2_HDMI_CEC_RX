@@ -299,6 +299,7 @@ enum {
     EV_ACT_SRCE,
     EV_IACT_SRCE,
     EV_STANDBY,
+    EV_SET_MENU_LANGUAGE,
 };
 
 struct cec_event {

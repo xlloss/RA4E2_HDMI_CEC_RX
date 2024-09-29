@@ -105,6 +105,7 @@
 #define CEC_ACTION_VOLUME_UP   (3U)
 #define CEC_ACTION_VOLUME_DOWN (4U)
 #define CEC_ACTION_VOLUME_MUTE (5U)
+#define CEC_ACTION_SET_MENU_LANGUAGE (6U)
 
 typedef struct cec_device_status
 {
