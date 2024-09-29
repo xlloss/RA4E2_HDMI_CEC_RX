@@ -744,6 +744,15 @@ void cec_rx_data_check(void)
             }
             case CEC_OPCODE_VENDOR_REMOTE_BUTTON_DOWN:
             {
+                cec_action_request_detect_flag = false;
+                cec_action_type = CEC_ACTION_VENDOR_COMMAND;
+                cec_ev_package[EV_REMOTE_BUTTON_DOWN].ev_id = EV_REMOTE_BUTTON_DOWN;
+                cec_ev_package[EV_REMOTE_BUTTON_DOWN].iladd = p_buff->source;
+                for (i = 0; i < 14; i++)
+                    cec_ev_package[EV_SET_MENU_LANGUAGE].param[i] =
+                        p_buff->data_buff[i];
+
+                cec_ev_package[EV_SET_MENU_LANGUAGE].param_sz = 14;
                 break;
             }
             /* Audio Rate Control Feature */

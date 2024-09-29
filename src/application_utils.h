@@ -107,6 +107,7 @@
 #define CEC_ACTION_VOLUME_MUTE (5U)
 #define CEC_ACTION_SET_MENU_LANGUAGE (6U)
 #define CEC_ACTION_VENDOR_COMMAND (7U)
+#define CEC_ACTION_REMOTE_BUTTON_DOWN (8U)
 
 typedef struct cec_device_status
 {
