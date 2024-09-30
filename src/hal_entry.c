@@ -769,6 +769,11 @@ void cec_rx_data_check(void)
             case CEC_OPCODE_TUNER_STEP_DECREMENT:
             case CEC_OPCODE_TUNER_STEP_INCREMENT:
             {
+                cec_action_request_detect_flag = false;
+                cec_action_type = CEC_ACTION_REQ_TUNER_CTL;
+                cec_ev_package[EV_REQ_TUNER_CTL].ev_id = EV_REQ_TUNER_CTL;
+                cec_ev_package[EV_REQ_TUNER_CTL].iladd = p_buff->source;
+                cec_ev_package[EV_REQ_TUNER_CTL].param_sz = 0;
                 break;
             }
             case CEC_OPCODE_SELECT_DIGITAL_SERVICE:

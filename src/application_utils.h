@@ -113,6 +113,7 @@
 #define CEC_ACTION_RECORD_OFF (11U)
 #define CEC_ACTION_SET_TIMER_PROG_TITLE (12U)
 #define CEC_ACTION_SET_TUNER_SERVICE (13U)
+#define CEC_ACTION_REQ_TUNER_CTL (14U)
 
 typedef struct cec_device_status
 {

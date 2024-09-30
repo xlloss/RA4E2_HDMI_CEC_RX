@@ -313,6 +313,7 @@ enum {
     EV_MENU_REQUEST,
     EV_DECK_CONTROL,
     EV_SET_TUNER_SERVICE,
+    EV_REQ_TUNER_CTL,
 };
 
 struct cec_event {
