@@ -774,6 +774,15 @@ void cec_rx_data_check(void)
             case CEC_OPCODE_SELECT_DIGITAL_SERVICE:
             case CEC_OPCODE_SELECT_ANALOG_SERVICE:
             {
+                cec_action_request_detect_flag = false;
+                cec_action_type = CEC_ACTION_SET_TUNER_SERVICE;
+                cec_ev_package[EV_SET_TUNER_SERVICE].ev_id = EV_SET_TUNER_SERVICE;
+                cec_ev_package[EV_SET_TUNER_SERVICE].iladd = p_buff->source;
+                memcpy(&cec_ev_package[EV_SET_TUNER_SERVICE].param[0],
+                    &p_buff->data_buff[0], 8);
+
+                cec_ev_package[EV_SET_MENU_LANGUAGE].param_sz = 8;
+
                 break;
             }
             /* CEC_OPCODE_DECK_CONTROL */

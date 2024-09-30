@@ -312,6 +312,7 @@ enum {
     EV_CLEAR_DIGITAL_TIMER,
     EV_MENU_REQUEST,
     EV_DECK_CONTROL,
+    EV_SET_TUNER_SERVICE,
 };
 
 struct cec_event {

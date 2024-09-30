@@ -112,6 +112,7 @@
 #define CEC_ACTION_SET_AUDIO_MODE (10U)
 #define CEC_ACTION_RECORD_OFF (11U)
 #define CEC_ACTION_SET_TIMER_PROG_TITLE (12U)
+#define CEC_ACTION_SET_TUNER_SERVICE (13U)
 
 typedef struct cec_device_status
 {
