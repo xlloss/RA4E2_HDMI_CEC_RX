@@ -1023,6 +1023,9 @@ void cec_system_auto_response(cec_rx_message_buff_t const * p_rx_data)
         /* One Touch Record feature */
         case CEC_OPCODE_RECORD_TV_SCREEN:
         {
+            cec_ev_package[EV_RECORD_TV_SCREEN].ev_id = EV_RECORD_TV_SCREEN;
+            cec_ev_package[EV_RECORD_TV_SCREEN].iladd = p_buff->source;
+            cec_ev_package[EV_RECORD_TV_SCREEN].param_sz = 0;
             /*
             cec_message_send(p_rx_data->source,
                 CEC_OPCODE_RECORD_ON, [Record Source], [Record Source] LEN);

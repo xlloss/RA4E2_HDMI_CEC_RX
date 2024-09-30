@@ -305,6 +305,7 @@ enum {
     EV_OSD_STRING,
     EV_GET_MENU_LANGUAGE,
     EV_SET_AUDIO_MODE,
+    EV_RECORD_TV_SCREEN,
 };
 
 struct cec_event {
