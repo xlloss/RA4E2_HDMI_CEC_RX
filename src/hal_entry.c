@@ -790,6 +790,11 @@ void cec_rx_data_check(void)
             /* One Touch Record Feature */
             case CEC_OPCODE_RECORD_OFF:
             {
+                cec_action_request_detect_flag = false;
+                cec_action_type = CEC_ACTION_RECORD_OFF;
+                cec_ev_package[EV_RECORD_OFF].ev_id = EV_RECORD_OFF;
+                cec_ev_package[EV_RECORD_OFF].iladd = p_buff->source;
+                cec_ev_package[EV_RECORD_OFF].param_sz = 0;
                 break;
             }
             case CEC_OPCODE_SET_SYSTEM_AUDIO_MODE:
