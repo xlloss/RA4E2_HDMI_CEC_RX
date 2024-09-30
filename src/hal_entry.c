@@ -1027,6 +1027,10 @@ void cec_system_auto_response(cec_rx_message_buff_t const * p_rx_data)
         /* Informed Menu Status */
         case CEC_OPCODE_GET_MENU_LANGUAGE:
         {
+            cec_ev_package[EV_GET_MENU_LANGUAGE].ev_id = EV_GET_MENU_LANGUAGE;
+            cec_ev_package[EV_GET_MENU_LANGUAGE].iladd = p_buff->source;
+            cec_ev_package[EV_SET_MENU_LANGUAGE].param_sz = 0;
+
             cec_message_send(CEC_ADDR_BROADCAST,
                 CEC_OPCODE_SET_MENU_LANGUAGE, &cec_data[0], 3);
             break;
