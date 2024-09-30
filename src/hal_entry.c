@@ -794,7 +794,12 @@ void cec_rx_data_check(void)
             }
             case CEC_OPCODE_SET_SYSTEM_AUDIO_MODE:
             {
-                audio_mode_data = p_buff->data_buff[0];
+                cec_action_request_detect_flag = false;
+                cec_action_type = CEC_ACTION_SET_AUDIO_MODE;
+                cec_ev_package[EV_SET_AUDIO_MODE].ev_id = EV_SET_AUDIO_MODE;
+                cec_ev_package[EV_SET_AUDIO_MODE].iladd = p_buff->source;
+                cec_ev_package[EV_SET_AUDIO_MODE].param[0] = p_buff->data_buff[0];
+                cec_ev_package[EV_SET_AUDIO_MODE].param_sz = 1;
                 break;
             }
             case CEC_OPCODE_SET_OSD_STRING:

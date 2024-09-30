@@ -304,6 +304,7 @@ enum {
     EV_REMOTE_BUTTON_DOWN,
     EV_OSD_STRING,
     EV_GET_MENU_LANGUAGE,
+    EV_SET_AUDIO_MODE,
 };
 
 struct cec_event {
