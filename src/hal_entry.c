@@ -998,6 +998,11 @@ void cec_system_auto_response(cec_rx_message_buff_t const * p_rx_data)
         /* CEC_OPCODE_DECK_CONTROL */
         case CEC_OPCODE_DECK_CONTROL:
         {
+            cec_ev_package[EV_DECK_CONTROL].ev_id = EV_DECK_CONTROL;
+            cec_ev_package[EV_DECK_CONTROL].iladd = p_buff->source;
+            cec_ev_package[EV_DECK_CONTROL].param[0] = p_buff->data_buff[0]);
+            cec_ev_package[EV_DECK_CONTROL].param_sz = 1;
+
             /*
             cec_message_send(p_rx_data->source,
                 CEC_OPCODE_DECK_STATUS, [Deck Info], [Deck Info] LEN);
