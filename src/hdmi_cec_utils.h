@@ -309,6 +309,7 @@ enum {
     EV_RECORD_OFF,
     EV_SET_TIMER_PROG_TITLE,
     EV_SET_DIGITAL_TIMER,
+    EV_CLEAR_DIGITAL_TIMER,
 };
 
 struct cec_event {
