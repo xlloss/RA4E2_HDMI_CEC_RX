@@ -1008,6 +1008,16 @@ void cec_system_auto_response(cec_rx_message_buff_t const * p_rx_data)
         case CEC_OPCODE_MENU_REQUEST:
         {
             /*
+             * 1. Local device may activate or deactivate the device menu.
+             * 2. Reply the CEC COMMAND {Inform Menu Status} to TV.
+             */
+
+            cec_ev_package[EV_MENU_REQUEST].ev_id = EV_MENU_REQUEST;
+            cec_ev_package[EV_MENU_REQUEST].iladd = p_buff->source;
+            cec_ev_package[EV_MENU_REQUEST].param[0] = p_buff->data_buff[0]);
+            cec_ev_package[EV_MENU_REQUEST].param_sz = 1;
+
+            /*
             cec_message_send(p_rx_data->source,
                 CEC_OPCODE_MENU_STATUS, [Menu State], [Menu State] LEN);
             */
