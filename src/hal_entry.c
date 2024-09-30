@@ -1045,10 +1045,10 @@ void cec_system_auto_response(cec_rx_message_buff_t const * p_rx_data)
             * 2. Save the program title if receives an optional EVENT
             *    <Requested Set Timer Program Title>
             */
-            cec_ev_package[SET_DIGITAL_TIMER].ev_id = EV_SET_DIGITAL_TIMER;
-            cec_ev_package[SET_DIGITAL_TIMER].iladd = p_buff->source;
-            memcpy(&cec_ev_package[SET_DIGITAL_TIMER].param[0], &p_buff->data_buff[0], 15);
-            cec_ev_package[SET_DIGITAL_TIMER].param_sz = 15;
+            cec_ev_package[EV_SET_DIGITAL_TIMER].ev_id = EV_SET_DIGITAL_TIMER;
+            cec_ev_package[EV_SET_DIGITAL_TIMER].iladd = p_buff->source;
+            memcpy(&cec_ev_package[EV_SET_DIGITAL_TIMER].param[0], &p_buff->data_buff[0], 15);
+            cec_ev_package[EV_SET_DIGITAL_TIMER].param_sz = 15;
             /*
             cec_message_send(p_rx_data->source,
                 CEC_OPCODE_TIMER_STATUS, [Timer Status Data], [Timer Status Data] LEN);
