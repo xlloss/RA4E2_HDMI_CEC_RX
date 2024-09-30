@@ -785,6 +785,11 @@ void cec_rx_data_check(void)
             /* Timer Programming Feature */
             case CEC_OPCODE_SET_TIMER_PROGRAM_TITLE:
             {
+                cec_action_request_detect_flag = false;
+                cec_action_type = CEC_ACTION_SET_TIMER_PROG_TITLE;
+                cec_ev_package[EV_SET_TIMER_PROG_TITLE].ev_id = EV_SET_TIMER_PROG_TITLE;
+                cec_ev_package[EV_SET_TIMER_PROG_TITLE].iladd = p_buff->source;
+                cec_ev_package[EV_SET_TIMER_PROG_TITLE].param_sz = 0;
                 break;
             }
             /* One Touch Record Feature */

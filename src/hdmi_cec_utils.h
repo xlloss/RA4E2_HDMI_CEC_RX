@@ -307,6 +307,7 @@ enum {
     EV_SET_AUDIO_MODE,
     EV_RECORD_TV_SCREEN,
     EV_RECORD_OFF,
+    EV_SET_TIMER_PROG_TITLE,
 };
 
 struct cec_event {

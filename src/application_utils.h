@@ -111,6 +111,7 @@
 #define CEC_ACTION_OSD_STRING (9U)
 #define CEC_ACTION_SET_AUDIO_MODE (10U)
 #define CEC_ACTION_RECORD_OFF (11U)
+#define CEC_ACTION_SET_TIMER_PROG_TITLE (12U)
 
 typedef struct cec_device_status
 {
