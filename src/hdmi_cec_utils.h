@@ -314,6 +314,7 @@ enum {
     EV_DECK_CONTROL,
     EV_SET_TUNER_SERVICE,
     EV_REQ_TUNER_CTL,
+    EV_AUDIO_MODE_REQUEST,
 };
 
 struct cec_event {

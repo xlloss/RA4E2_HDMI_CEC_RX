@@ -763,6 +763,12 @@ void cec_rx_data_check(void)
             /* System Audio Control Feature */
             case CEC_OPCODE_SYSTEM_AUDIO_MODE_REQUEST:
             {
+                cec_action_request_detect_flag = false;
+                cec_action_type = CEC_ACTION_AUDIO_MODE_REQUEST;
+                cec_ev_package[EV_AUDIO_MODE_REQUEST].ev_id = EV_AUDIO_MODE_REQUEST;
+                cec_ev_package[EV_AUDIO_MODE_REQUEST].iladd = p_buff->source;
+                cec_ev_package[EV_AUDIO_MODE_REQUEST].param[0] = p_buff->data_buff[0];
+                cec_ev_package[EV_AUDIO_MODE_REQUEST].param_sz = 1;
                 break;
             }
             /* Tuner Control Feature   */
