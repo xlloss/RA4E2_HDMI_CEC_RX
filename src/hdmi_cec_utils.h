@@ -302,6 +302,7 @@ enum {
     EV_SET_MENU_LANGUAGE,
     EV_VENDOR_COMMAND,
     EV_REMOTE_BUTTON_DOWN,
+    EV_OSD_STRING,
 };
 
 struct cec_event {

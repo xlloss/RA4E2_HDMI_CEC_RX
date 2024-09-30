@@ -799,7 +799,16 @@ void cec_rx_data_check(void)
             }
             case CEC_OPCODE_SET_OSD_STRING:
             {
-                memcpy(&osd_string_data[0], &p_buff->data_buff[1], 15);
+                cec_action_request_detect_flag = false;
+                cec_action_type = CEC_ACTION_VENDOR_COMMAND;
+                cec_ev_package[EV_OSD_STRING].ev_id = EV_OSD_STRING;
+                cec_ev_package[EV_OSD_STRING].iladd = p_buff->source;
+                for (i = 0; i < 14; i++)
+                    cec_ev_package[EV_OSD_STRING].param[i] =
+                        p_buff->data_buff[i];
+
+                cec_ev_package[EV_OSD_STRING].param_sz = 14;
+
                 break;
             }
             /* One Touch Play Feature */
