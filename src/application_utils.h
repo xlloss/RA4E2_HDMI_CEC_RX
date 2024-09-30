@@ -115,6 +115,7 @@
 #define CEC_ACTION_SET_TUNER_SERVICE (13U)
 #define CEC_ACTION_REQ_TUNER_CTL (14U)
 #define CEC_ACTION_AUDIO_MODE_REQUEST (15U)
+#define CEC_ACTION_SET_AUDIO_RATE (16U)
 
 typedef struct cec_device_status
 {

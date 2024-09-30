@@ -315,6 +315,7 @@ enum {
     EV_SET_TUNER_SERVICE,
     EV_REQ_TUNER_CTL,
     EV_AUDIO_MODE_REQUEST,
+    EV_SET_AUDIO_RATE,
 };
 
 struct cec_event {

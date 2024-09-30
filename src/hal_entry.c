@@ -758,6 +758,12 @@ void cec_rx_data_check(void)
             /* Audio Rate Control Feature */
             case CEC_OPCODE_SET_AUDIO_RATE:
             {
+                cec_action_request_detect_flag = false;
+                cec_action_type = CEC_ACTION_SET_AUDIO_RATE;
+                cec_ev_package[EV_SET_AUDIO_RATE].ev_id = EV_SET_AUDIO_RATE;
+                cec_ev_package[EV_SET_AUDIO_RATE].iladd = p_buff->source;
+                cec_ev_package[EV_SET_AUDIO_RATE].param[0] = p_buff->data_buff[0];
+                cec_ev_package[EV_SET_AUDIO_RATE].param_sz = 1;
                 break;
             }
             /* System Audio Control Feature */
