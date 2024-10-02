@@ -222,6 +222,27 @@ void hal_entry(void)
     }
 }
 
+struct cmd_date
+{
+    uint8_t dladd;
+    uint8_t param[15];
+    uint8_t param_len;
+};
+
+uint8_t wr_cmd_opcde[20][1] =
+{
+    {CEC_OPCODE_IMAGE_VIEW_ON},//0
+    {CEC_OPCODE_TEXT_VIEW_ON}, //1
+}
+
+struct cmd_date wr_cmd_date;
+
+void cec_cmd_write(uint8_t wr_cmd_id)
+{
+    cec_message_send(wr_cmd_date.dladd,
+        wr_cmd_opcde[wr_cmd_id][0], &wr_cmd_date->param[0], wr_cmd_date->param_len);
+}
+
 void cec_interrupt_callback(cec_callback_args_t *p_args)
 {
     switch (p_args->event)
