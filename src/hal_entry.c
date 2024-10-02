@@ -233,14 +233,15 @@ uint8_t wr_cmd_opcde[20][1] =
 {
     {CEC_OPCODE_IMAGE_VIEW_ON},//0
     {CEC_OPCODE_TEXT_VIEW_ON}, //1
-}
+};
 
 struct cmd_date wr_cmd_date;
 
 void cec_cmd_write(uint8_t wr_cmd_id)
 {
-    cec_message_send(wr_cmd_date.dladd,
-        wr_cmd_opcde[wr_cmd_id][0], &wr_cmd_date->param[0], wr_cmd_date->param_len);
+//    cec_message_send(wr_cmd_date.dladd,
+//        wr_cmd_opcde[wr_cmd_id][0],
+//        &wr_cmd_date->param[0], wr_cmd_date->param_len);
 }
 
 void cec_interrupt_callback(cec_callback_args_t *p_args)
@@ -895,25 +896,25 @@ void cec_rx_data_check(void)
             case CEC_OPCODE_TEXT_VIEW_ON:
             case CEC_OPCODE_IMAGE_VIEW_ON:
             {
-                cec_action_request_detect_flag = true;
-                cec_action_type = CEC_ACTION_POWER_ON;
-                if (p_buff->opcode == CEC_OPCODE_IMAGE_VIEW_ON)
-                    cec_ev_package[EV_IMG_VIEW_ON].ev_id = EV_IMG_VIEW_ON;
-                else
-                    cec_ev_package[EV_IMG_TEX_VIEW].ev_id = EV_TEX_VIEW_ON;
-
-                cec_ev_package[EV_IMG_TEX_VIEW].opencode = p_buff->opcode;
-                cec_ev_package[EV_IMG_TEX_VIEW].param_sz = 0;
+//                cec_action_request_detect_flag = true;
+//                cec_action_type = CEC_ACTION_POWER_ON;
+//                if (p_buff->opcode == CEC_OPCODE_IMAGE_VIEW_ON)
+//                    cec_ev_package[EV_IMG_VIEW_ON].ev_id = EV_IMG_VIEW_ON;
+//                else
+//                    cec_ev_package[EV_IMG_TEX_VIEW].ev_id = EV_TEX_VIEW_ON;
+//
+//                cec_ev_package[EV_IMG_TEX_VIEW].opencode = p_buff->opcode;
+//                cec_ev_package[EV_IMG_TEX_VIEW].param_sz = 0;
                 break;
             }
             /* Standby Feature */
             case CEC_OPCODE_STANDBY:
             {
-                cec_action_request_detect_flag = true;
-                cec_action_type = CEC_ACTION_POWER_OFF;
-                cec_ev_package[EV_STANDBY].ev_id = EV_STANDBY
-                cec_ev_package[EV_STANDBY].iladd = p_buff->source;
-                cec_ev_package[EV_STANDBY].param_sz = 0;
+//                cec_action_request_detect_flag = true;
+//                cec_action_type = CEC_ACTION_POWER_OFF;
+//                cec_ev_package[EV_STANDBY].ev_id = EV_STANDBY
+//                cec_ev_package[EV_STANDBY].iladd = p_buff->source;
+//                cec_ev_package[EV_STANDBY].param_sz = 0;
                 break;
             }
             case CEC_OPCODE_USER_CONTROL_PRESSED:
@@ -1045,10 +1046,10 @@ void cec_system_auto_response(cec_rx_message_buff_t const * p_rx_data)
         /* CEC_OPCODE_DECK_CONTROL */
         case CEC_OPCODE_DECK_CONTROL:
         {
-            cec_ev_package[EV_DECK_CONTROL].ev_id = EV_DECK_CONTROL;
-            cec_ev_package[EV_DECK_CONTROL].iladd = p_buff->source;
-            cec_ev_package[EV_DECK_CONTROL].param[0] = p_buff->data_buff[0]);
-            cec_ev_package[EV_DECK_CONTROL].param_sz = 1;
+//            cec_ev_package[EV_DECK_CONTROL].ev_id = EV_DECK_CONTROL;
+//            cec_ev_package[EV_DECK_CONTROL].iladd = p_buff->source;
+//            cec_ev_package[EV_DECK_CONTROL].param[0] = p_buff->data_buff[0]);
+//            cec_ev_package[EV_DECK_CONTROL].param_sz = 1;
 
             /*
             cec_message_send(p_rx_data->source,
@@ -1064,10 +1065,10 @@ void cec_system_auto_response(cec_rx_message_buff_t const * p_rx_data)
              * 2. Reply the CEC COMMAND {Inform Menu Status} to TV.
              */
 
-            cec_ev_package[EV_MENU_REQUEST].ev_id = EV_MENU_REQUEST;
-            cec_ev_package[EV_MENU_REQUEST].iladd = p_buff->source;
-            cec_ev_package[EV_MENU_REQUEST].param[0] = p_buff->data_buff[0]);
-            cec_ev_package[EV_MENU_REQUEST].param_sz = 1;
+//            cec_ev_package[EV_MENU_REQUEST].ev_id = EV_MENU_REQUEST;
+//            cec_ev_package[EV_MENU_REQUEST].iladd = p_buff->source;
+//            cec_ev_package[EV_MENU_REQUEST].param[0] = p_buff->data_buff[0]);
+//            cec_ev_package[EV_MENU_REQUEST].param_sz = 1;
 
             /*
             cec_message_send(p_rx_data->source,
@@ -1079,10 +1080,10 @@ void cec_system_auto_response(cec_rx_message_buff_t const * p_rx_data)
         case CEC_OPCODE_CLEAR_DIGITAL_TIMER:
         {
             /* 1. Reply with the CEC COMMAND {Report Timer Cleared Status} */
-            cec_ev_package[EV_CLEAR_DIGITAL_TIMER].ev_id = EV_CLEAR_DIGITAL_TIMER;
-            cec_ev_package[EV_CLEAR_DIGITAL_TIMER].iladd = p_buff->source;
-            memcpy(&cec_ev_package[EV_CLEAR_DIGITAL_TIMER].param[0], &p_buff->data_buff[0], 15);
-            cec_ev_package[EV_CLEAR_DIGITAL_TIMER].param_sz = 15;
+//            cec_ev_package[EV_CLEAR_DIGITAL_TIMER].ev_id = EV_CLEAR_DIGITAL_TIMER;
+//            cec_ev_package[EV_CLEAR_DIGITAL_TIMER].iladd = p_buff->source;
+//            memcpy(&cec_ev_package[EV_CLEAR_DIGITAL_TIMER].param[0], &p_buff->data_buff[0], 15);
+//            cec_ev_package[EV_CLEAR_DIGITAL_TIMER].param_sz = 15;
 
             /*
             cec_message_send(p_rx_data->source,
@@ -1097,10 +1098,10 @@ void cec_system_auto_response(cec_rx_message_buff_t const * p_rx_data)
             * 2. Save the program title if receives an optional EVENT
             *    <Requested Set Timer Program Title>
             */
-            cec_ev_package[EV_SET_DIGITAL_TIMER].ev_id = EV_SET_DIGITAL_TIMER;
-            cec_ev_package[EV_SET_DIGITAL_TIMER].iladd = p_buff->source;
-            memcpy(&cec_ev_package[EV_SET_DIGITAL_TIMER].param[0], &p_buff->data_buff[0], 15);
-            cec_ev_package[EV_SET_DIGITAL_TIMER].param_sz = 15;
+//            cec_ev_package[EV_SET_DIGITAL_TIMER].ev_id = EV_SET_DIGITAL_TIMER;
+//            cec_ev_package[EV_SET_DIGITAL_TIMER].iladd = p_buff->source;
+//            memcpy(&cec_ev_package[EV_SET_DIGITAL_TIMER].param[0], &p_buff->data_buff[0], 15);
+//            cec_ev_package[EV_SET_DIGITAL_TIMER].param_sz = 15;
             /*
             cec_message_send(p_rx_data->source,
                 CEC_OPCODE_TIMER_STATUS, [Timer Status Data], [Timer Status Data] LEN);
@@ -1110,9 +1111,9 @@ void cec_system_auto_response(cec_rx_message_buff_t const * p_rx_data)
         /* One Touch Record feature */
         case CEC_OPCODE_RECORD_TV_SCREEN:
         {
-            cec_ev_package[EV_RECORD_TV_SCREEN].ev_id = EV_RECORD_TV_SCREEN;
-            cec_ev_package[EV_RECORD_TV_SCREEN].iladd = p_buff->source;
-            cec_ev_package[EV_RECORD_TV_SCREEN].param_sz = 0;
+//            cec_ev_package[EV_RECORD_TV_SCREEN].ev_id = EV_RECORD_TV_SCREEN;
+//            cec_ev_package[EV_RECORD_TV_SCREEN].iladd = p_buff->source;
+//            cec_ev_package[EV_RECORD_TV_SCREEN].param_sz = 0;
             /*
             cec_message_send(p_rx_data->source,
                 CEC_OPCODE_RECORD_ON, [Record Source], [Record Source] LEN);
@@ -1122,12 +1123,12 @@ void cec_system_auto_response(cec_rx_message_buff_t const * p_rx_data)
         /* Informed Menu Status */
         case CEC_OPCODE_GET_MENU_LANGUAGE:
         {
-            cec_ev_package[EV_GET_MENU_LANGUAGE].ev_id = EV_GET_MENU_LANGUAGE;
-            cec_ev_package[EV_GET_MENU_LANGUAGE].iladd = p_buff->source;
-            cec_ev_package[EV_SET_MENU_LANGUAGE].param_sz = 0;
-
-            cec_message_send(CEC_ADDR_BROADCAST,
-                CEC_OPCODE_SET_MENU_LANGUAGE, &cec_data[0], 3);
+//            cec_ev_package[EV_GET_MENU_LANGUAGE].ev_id = EV_GET_MENU_LANGUAGE;
+//            cec_ev_package[EV_GET_MENU_LANGUAGE].iladd = p_buff->source;
+//            cec_ev_package[EV_SET_MENU_LANGUAGE].param_sz = 0;
+//
+//            cec_message_send(CEC_ADDR_BROADCAST,
+//                CEC_OPCODE_SET_MENU_LANGUAGE, &cec_data[0], 3);
             break;
         }
         case CEC_OPCODE_GIVE_PHYSICAL_ADDRESS:
