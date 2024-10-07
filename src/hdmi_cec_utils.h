@@ -320,7 +320,7 @@ enum {
 
 struct cec_event {
     uint8_t ev_id;
-    uint8_t iladd;
+    uint8_t laddr;
     uint8_t opencode;
     uint8_t param_sz;
     uint8_t param[15];

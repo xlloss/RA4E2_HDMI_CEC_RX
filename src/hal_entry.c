@@ -755,7 +755,7 @@ void cec_rx_data_check(void)
                 cec_action_request_detect_flag = false;
                 cec_action_type = CEC_ACTION_VENDOR_COMMAND;
                 cec_ev_package[EV_VENDOR_COMMAND].ev_id = EV_VENDOR_COMMAND;
-                cec_ev_package[EV_VENDOR_COMMAND].iladd = p_buff->source;
+                cec_ev_package[EV_VENDOR_COMMAND].laddr = p_buff->source;
                 for (i = 0; i < 14; i++)
                     cec_ev_package[EV_SET_MENU_LANGUAGE].param[i] =
                         p_buff->data_buff[i];
@@ -768,7 +768,7 @@ void cec_rx_data_check(void)
                 cec_action_request_detect_flag = false;
                 cec_action_type = CEC_ACTION_VENDOR_COMMAND;
                 cec_ev_package[EV_REMOTE_BUTTON_DOWN].ev_id = EV_REMOTE_BUTTON_DOWN;
-                cec_ev_package[EV_REMOTE_BUTTON_DOWN].iladd = p_buff->source;
+                cec_ev_package[EV_REMOTE_BUTTON_DOWN].laddr = p_buff->source;
                 for (i = 0; i < 14; i++)
                     cec_ev_package[EV_SET_MENU_LANGUAGE].param[i] =
                         p_buff->data_buff[i];
@@ -782,7 +782,7 @@ void cec_rx_data_check(void)
                 cec_action_request_detect_flag = false;
                 cec_action_type = CEC_ACTION_SET_AUDIO_RATE;
                 cec_ev_package[EV_SET_AUDIO_RATE].ev_id = EV_SET_AUDIO_RATE;
-                cec_ev_package[EV_SET_AUDIO_RATE].iladd = p_buff->source;
+                cec_ev_package[EV_SET_AUDIO_RATE].laddr = p_buff->source;
                 cec_ev_package[EV_SET_AUDIO_RATE].param[0] = p_buff->data_buff[0];
                 cec_ev_package[EV_SET_AUDIO_RATE].param_sz = 1;
                 break;
@@ -793,7 +793,7 @@ void cec_rx_data_check(void)
                 cec_action_request_detect_flag = false;
                 cec_action_type = CEC_ACTION_AUDIO_MODE_REQUEST;
                 cec_ev_package[EV_AUDIO_MODE_REQUEST].ev_id = EV_AUDIO_MODE_REQUEST;
-                cec_ev_package[EV_AUDIO_MODE_REQUEST].iladd = p_buff->source;
+                cec_ev_package[EV_AUDIO_MODE_REQUEST].laddr = p_buff->source;
                 cec_ev_package[EV_AUDIO_MODE_REQUEST].param[0] = p_buff->data_buff[0];
                 cec_ev_package[EV_AUDIO_MODE_REQUEST].param_sz = 1;
                 break;
@@ -805,7 +805,7 @@ void cec_rx_data_check(void)
                 cec_action_request_detect_flag = false;
                 cec_action_type = CEC_ACTION_REQ_TUNER_CTL;
                 cec_ev_package[EV_REQ_TUNER_CTL].ev_id = EV_REQ_TUNER_CTL;
-                cec_ev_package[EV_REQ_TUNER_CTL].iladd = p_buff->source;
+                cec_ev_package[EV_REQ_TUNER_CTL].laddr = p_buff->source;
                 cec_ev_package[EV_REQ_TUNER_CTL].param_sz = 0;
                 break;
             }
@@ -815,7 +815,7 @@ void cec_rx_data_check(void)
                 cec_action_request_detect_flag = false;
                 cec_action_type = CEC_ACTION_SET_TUNER_SERVICE;
                 cec_ev_package[EV_SET_TUNER_SERVICE].ev_id = EV_SET_TUNER_SERVICE;
-                cec_ev_package[EV_SET_TUNER_SERVICE].iladd = p_buff->source;
+                cec_ev_package[EV_SET_TUNER_SERVICE].laddr = p_buff->source;
                 memcpy(&cec_ev_package[EV_SET_TUNER_SERVICE].param[0],
                     &p_buff->data_buff[0], 8);
 
@@ -835,7 +835,7 @@ void cec_rx_data_check(void)
                 cec_action_request_detect_flag = false;
                 cec_action_type = CEC_ACTION_SET_TIMER_PROG_TITLE;
                 cec_ev_package[EV_SET_TIMER_PROG_TITLE].ev_id = EV_SET_TIMER_PROG_TITLE;
-                cec_ev_package[EV_SET_TIMER_PROG_TITLE].iladd = p_buff->source;
+                cec_ev_package[EV_SET_TIMER_PROG_TITLE].laddr = p_buff->source;
                 cec_ev_package[EV_SET_TIMER_PROG_TITLE].param_sz = 0;
                 break;
             }
@@ -845,7 +845,7 @@ void cec_rx_data_check(void)
                 cec_action_request_detect_flag = false;
                 cec_action_type = CEC_ACTION_RECORD_OFF;
                 cec_ev_package[EV_RECORD_OFF].ev_id = EV_RECORD_OFF;
-                cec_ev_package[EV_RECORD_OFF].iladd = p_buff->source;
+                cec_ev_package[EV_RECORD_OFF].laddr = p_buff->source;
                 cec_ev_package[EV_RECORD_OFF].param_sz = 0;
                 break;
             }
@@ -854,7 +854,7 @@ void cec_rx_data_check(void)
                 cec_action_request_detect_flag = false;
                 cec_action_type = CEC_ACTION_SET_AUDIO_MODE;
                 cec_ev_package[EV_SET_AUDIO_MODE].ev_id = EV_SET_AUDIO_MODE;
-                cec_ev_package[EV_SET_AUDIO_MODE].iladd = p_buff->source;
+                cec_ev_package[EV_SET_AUDIO_MODE].laddr = p_buff->source;
                 cec_ev_package[EV_SET_AUDIO_MODE].param[0] = p_buff->data_buff[0];
                 cec_ev_package[EV_SET_AUDIO_MODE].param_sz = 1;
                 break;
@@ -864,7 +864,7 @@ void cec_rx_data_check(void)
                 cec_action_request_detect_flag = false;
                 cec_action_type = CEC_ACTION_VENDOR_COMMAND;
                 cec_ev_package[EV_OSD_STRING].ev_id = EV_OSD_STRING;
-                cec_ev_package[EV_OSD_STRING].iladd = p_buff->source;
+                cec_ev_package[EV_OSD_STRING].laddr = p_buff->source;
                 for (i = 0; i < 14; i++)
                     cec_ev_package[EV_OSD_STRING].param[i] =
                         p_buff->data_buff[i];
@@ -877,7 +877,7 @@ void cec_rx_data_check(void)
             case CEC_OPCODE_INACTIVE_SOURCE:
             {
                 cec_ev_package[EV_IACT_SRCE].ev_id = EV_IACT_SRCE;
-                cec_ev_package[EV_IACT_SRCE].iladd = p_buff->source;
+                cec_ev_package[EV_IACT_SRCE].laddr = p_buff->source;
                 cec_ev_package[EV_IACT_SRCE].param[0] = p_buff->data_buff[0];
                 cec_ev_package[EV_IACT_SRCE].param_sz = 1;
                 break;
@@ -894,7 +894,7 @@ void cec_rx_data_check(void)
                 cec_ev_package[EV_ACT_SRCE].ev_id = EV_ACT_SRCE;
 
                 /* Logical Address of the active device */
-                cec_ev_package[EV_ACT_SRCE].iladd = p_buff->destination;
+                cec_ev_package[EV_ACT_SRCE].laddr = p_buff->destination;
 
                 /* [Physical Address] */
                 cec_ev_package[EV_ACT_SRCE].param[0] = p_buff->data_buff[0];
@@ -922,7 +922,7 @@ void cec_rx_data_check(void)
 //                cec_action_request_detect_flag = true;
 //                cec_action_type = CEC_ACTION_POWER_OFF;
 //                cec_ev_package[EV_STANDBY].ev_id = EV_STANDBY
-//                cec_ev_package[EV_STANDBY].iladd = p_buff->source;
+//                cec_ev_package[EV_STANDBY].laddr = p_buff->source;
 //                cec_ev_package[EV_STANDBY].param_sz = 0;
                 break;
             }
@@ -954,7 +954,7 @@ void cec_rx_data_check(void)
                 cec_action_request_detect_flag = false;
                 cec_action_type = CEC_ACTION_SET_MENU_LANGUAGE;
                 cec_ev_package[EV_SET_MENU_LANGUAGE].ev_id = EV_SET_MENU_LANGUAGE;
-                cec_ev_package[EV_SET_MENU_LANGUAGE].iladd = p_buff->source;
+                cec_ev_package[EV_SET_MENU_LANGUAGE].laddr = p_buff->source;
                 cec_ev_package[EV_SET_MENU_LANGUAGE].param[0] = p_buff->data_buff[0];
                 cec_ev_package[EV_SET_MENU_LANGUAGE].param[1] = p_buff->data_buff[1];
                 cec_ev_package[EV_SET_MENU_LANGUAGE].param[2] = p_buff->data_buff[2];
@@ -1056,7 +1056,7 @@ void cec_system_auto_response(cec_rx_message_buff_t const * p_rx_data)
         case CEC_OPCODE_DECK_CONTROL:
         {
 //            cec_ev_package[EV_DECK_CONTROL].ev_id = EV_DECK_CONTROL;
-//            cec_ev_package[EV_DECK_CONTROL].iladd = p_buff->source;
+//            cec_ev_package[EV_DECK_CONTROL].laddr = p_buff->source;
 //            cec_ev_package[EV_DECK_CONTROL].param[0] = p_buff->data_buff[0]);
 //            cec_ev_package[EV_DECK_CONTROL].param_sz = 1;
 
@@ -1075,7 +1075,7 @@ void cec_system_auto_response(cec_rx_message_buff_t const * p_rx_data)
              */
 
 //            cec_ev_package[EV_MENU_REQUEST].ev_id = EV_MENU_REQUEST;
-//            cec_ev_package[EV_MENU_REQUEST].iladd = p_buff->source;
+//            cec_ev_package[EV_MENU_REQUEST].laddr = p_buff->source;
 //            cec_ev_package[EV_MENU_REQUEST].param[0] = p_buff->data_buff[0]);
 //            cec_ev_package[EV_MENU_REQUEST].param_sz = 1;
 
@@ -1090,7 +1090,7 @@ void cec_system_auto_response(cec_rx_message_buff_t const * p_rx_data)
         {
             /* 1. Reply with the CEC COMMAND {Report Timer Cleared Status} */
 //            cec_ev_package[EV_CLEAR_DIGITAL_TIMER].ev_id = EV_CLEAR_DIGITAL_TIMER;
-//            cec_ev_package[EV_CLEAR_DIGITAL_TIMER].iladd = p_buff->source;
+//            cec_ev_package[EV_CLEAR_DIGITAL_TIMER].laddr = p_buff->source;
 //            memcpy(&cec_ev_package[EV_CLEAR_DIGITAL_TIMER].param[0], &p_buff->data_buff[0], 15);
 //            cec_ev_package[EV_CLEAR_DIGITAL_TIMER].param_sz = 15;
 
@@ -1108,7 +1108,7 @@ void cec_system_auto_response(cec_rx_message_buff_t const * p_rx_data)
             *    <Requested Set Timer Program Title>
             */
 //            cec_ev_package[EV_SET_DIGITAL_TIMER].ev_id = EV_SET_DIGITAL_TIMER;
-//            cec_ev_package[EV_SET_DIGITAL_TIMER].iladd = p_buff->source;
+//            cec_ev_package[EV_SET_DIGITAL_TIMER].laddr = p_buff->source;
 //            memcpy(&cec_ev_package[EV_SET_DIGITAL_TIMER].param[0], &p_buff->data_buff[0], 15);
 //            cec_ev_package[EV_SET_DIGITAL_TIMER].param_sz = 15;
             /*
@@ -1121,7 +1121,7 @@ void cec_system_auto_response(cec_rx_message_buff_t const * p_rx_data)
         case CEC_OPCODE_RECORD_TV_SCREEN:
         {
 //            cec_ev_package[EV_RECORD_TV_SCREEN].ev_id = EV_RECORD_TV_SCREEN;
-//            cec_ev_package[EV_RECORD_TV_SCREEN].iladd = p_buff->source;
+//            cec_ev_package[EV_RECORD_TV_SCREEN].laddr = p_buff->source;
 //            cec_ev_package[EV_RECORD_TV_SCREEN].param_sz = 0;
             /*
             cec_message_send(p_rx_data->source,
@@ -1133,7 +1133,7 @@ void cec_system_auto_response(cec_rx_message_buff_t const * p_rx_data)
         case CEC_OPCODE_GET_MENU_LANGUAGE:
         {
 //            cec_ev_package[EV_GET_MENU_LANGUAGE].ev_id = EV_GET_MENU_LANGUAGE;
-//            cec_ev_package[EV_GET_MENU_LANGUAGE].iladd = p_buff->source;
+//            cec_ev_package[EV_GET_MENU_LANGUAGE].laddr = p_buff->source;
 //            cec_ev_package[EV_SET_MENU_LANGUAGE].param_sz = 0;
 //
 //            cec_message_send(CEC_ADDR_BROADCAST,
