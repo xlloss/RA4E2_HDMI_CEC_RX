@@ -884,10 +884,19 @@ void cec_rx_data_check(void)
             }
             case CEC_OPCODE_ACTIVE_SOURCE:
             {
+                /*
+                 * Action Required:
+                 * 1. Switch TV input to the physical (HDMI) port
+                 * 2. Update TV Current Source
+                 */
                 cec_action_request_detect_flag = false;
                 cec_action_type = CEC_ACTION_POWER_ON;
                 cec_ev_package[EV_ACT_SRCE].ev_id = EV_ACT_SRCE;
-                cec_ev_package[EV_ACT_SRCE].iladd = p_buff->source;
+
+                /* Logical Address of the active device */
+                cec_ev_package[EV_ACT_SRCE].iladd = p_buff->destination;
+
+                /* [Physical Address] */
                 cec_ev_package[EV_ACT_SRCE].param[0] = p_buff->data_buff[0];
                 cec_ev_package[EV_ACT_SRCE].param_sz = 1;
                 break;
