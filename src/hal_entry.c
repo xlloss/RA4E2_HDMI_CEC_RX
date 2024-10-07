@@ -239,9 +239,8 @@ struct cmd_date wr_cmd_date;
 
 void cec_cmd_write(uint8_t wr_cmd_id)
 {
-//    cec_message_send(wr_cmd_date.dladd,
-//        wr_cmd_opcde[wr_cmd_id][0],
-//        &wr_cmd_date->param[0], wr_cmd_date->param_len);
+    cec_message_send(wr_cmd_date.dladd,
+        wr_cmd_opcde[wr_cmd_id], &wr_cmd_date.param[0], wr_cmd_date.param_len);
 }
 
 void cec_interrupt_callback(cec_callback_args_t *p_args)
