@@ -94,6 +94,7 @@ struct cec_event cec_ev_package[30] = {0};
 cec_rx_message_buff_t cec_rx_data_buff[CEC_RX_DATA_BUFF_DATA_NUMBER];
 volatile uint8_t      cec_rx_data_buff_next_store_point = 0;
 
+i2c_slave_event_t g_i2c_slave_callback_event;
 fsp_err_t cec_message_send(cec_addr_t destination, uint8_t opcode, uint8_t const * data_buff, uint8_t data_buff_length);
 
 fsp_err_t cec_logical_address_allocate(void);
@@ -109,6 +110,37 @@ void cec_bus_scan(void);
 void cec_bus_status_buffer_display(void);
 
 void R_BSP_WarmStart(bsp_warm_start_event_t event);
+
+void i2c_slave_callback (i2c_slave_callback_args_t * p_args)
+{
+    fsp_err_t fsp_err = FSP_SUCCESS;
+
+    g_i2c_slave_callback_event = p_args->event;
+
+    if ((p_args->event == I2C_SLAVE_EVENT_RX_COMPLETE) || (p_args->event == I2C_SLAVE_EVENT_TX_COMPLETE))
+    {
+        /* Transaction Successful */
+    }
+    else if ((p_args->event == I2C_SLAVE_EVENT_RX_REQUEST) || (p_args->event == I2C_SLAVE_EVENT_RX_MORE_REQUEST))
+    {
+        /* Read from Master */
+        /*
+         * fsp_err = R_IIC_B_SLAVE_Read(&g_i2c_slave_ctrl, g_i2c_slave_buffer, g_slave_transfer_length);
+         * assert(FSP_SUCCESS == fsp_err);
+         */
+    }
+    else if ((p_args->event == I2C_SLAVE_EVENT_TX_REQUEST) || (p_args->event == I2C_SLAVE_EVENT_TX_MORE_REQUEST))
+    {
+        /* Write to master */
+        /* fsp_err = R_IIC_B_SLAVE_Write(&g_i2c_slave_ctrl, g_i2c_slave_buffer, g_slave_transfer_length);
+         * assert(FSP_SUCCESS == fsp_err);
+         */
+    }
+    else
+    {
+        /* Error Event - reported through g_i2c_slave_callback_event */
+    }
+}
 
 void hal_entry(void)
 {
@@ -159,6 +191,10 @@ void hal_entry(void)
 #endif
     APP_PRINT("My vendor ID is 0x%02x, 0x%02x, 0x%02x.\r\n\r\n",
             my_vendor_id[0], my_vendor_id[1], my_vendor_id[2]);
+
+    /* i2c slave init */
+    fsp_err = R_IIC_B_SLAVE_Open(&g_i2c_slave_ctrl, &g_i2c_slave_cfg);
+    if(FSP_SUCCESS != fsp_err){ ERROR_INDICATE_LED_ON; __BKPT(0); }
 
     /* Open CEC module */
     fsp_err = R_CEC_Open(&g_cec0_ctrl, &g_cec0_cfg);
