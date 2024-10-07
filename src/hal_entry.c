@@ -254,6 +254,20 @@ void hal_entry(void)
             cec_rx_data_process(cec_action_type);
         }
 
+        /* i2c-master write, i2c-slave read */
+        if ((g_i2c_slave_callback_event == I2C_SLAVE_EVENT_RX_REQUEST) ||
+            (g_i2c_slave_callback_event == I2C_SLAVE_EVENT_RX_MORE_REQUEST))
+        {
+            g_i2c_slave_callback_event = 0;
+        }
+
+        /* i2c-master read, i2c-slave write */
+        if ((g_i2c_slave_callback_event == I2C_SLAVE_EVENT_TX_REQUEST) ||
+            (g_i2c_slave_callback_event == I2C_SLAVE_EVENT_TX_MORE_REQUEST))
+        {
+            g_i2c_slave_callback_event = 0;
+        }
+
         R_BSP_SoftwareDelay(1, BSP_DELAY_UNITS_MILLISECONDS);
     }
 }
