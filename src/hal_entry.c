@@ -233,6 +233,7 @@ uint8_t wr_cmd_opcde[20] =
 {
     CEC_OPCODE_IMAGE_VIEW_ON,//0
     CEC_OPCODE_TEXT_VIEW_ON, //1
+    CEC_OPCODE_ACTIVE_SOURCE, //2
 };
 
 struct cmd_date wr_cmd_date;
