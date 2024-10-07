@@ -224,7 +224,7 @@ void hal_entry(void)
 
 struct cmd_date
 {
-    uint8_t dladd;
+    uint8_t ladd;
     uint8_t param[15];
     uint8_t param_len;
 };
@@ -240,7 +240,7 @@ struct cmd_date wr_cmd_date;
 
 void cec_cmd_write(uint8_t wr_cmd_id)
 {
-    cec_message_send(wr_cmd_date.dladd,
+    cec_message_send(wr_cmd_date.ladd,
         wr_cmd_opcde[wr_cmd_id], &wr_cmd_date.param[0], wr_cmd_date.param_len);
 }
 
