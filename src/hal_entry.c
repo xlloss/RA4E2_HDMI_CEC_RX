@@ -229,10 +229,10 @@ struct cmd_date
     uint8_t param_len;
 };
 
-uint8_t wr_cmd_opcde[20][1] =
+uint8_t wr_cmd_opcde[20] =
 {
-    {CEC_OPCODE_IMAGE_VIEW_ON},//0
-    {CEC_OPCODE_TEXT_VIEW_ON}, //1
+    CEC_OPCODE_IMAGE_VIEW_ON,//0
+    CEC_OPCODE_TEXT_VIEW_ON, //1
 };
 
 struct cmd_date wr_cmd_date;
@@ -902,8 +902,8 @@ void cec_rx_data_check(void)
                     cec_ev_package[EV_IMG_VIEW_ON].ev_id = EV_IMG_VIEW_ON;
                     cec_ev_package[EV_IMG_VIEW_ON].opencode = p_buff->opcode;
                 } else {
-                    cec_ev_package[EV_IMG_TEX_VIEW].ev_id = EV_TEX_VIEW_ON;
-                    cec_ev_package[EV_IMG_TEX_VIEW].opencode = p_buff->opcode;
+                    cec_ev_package[EV_TEX_VIEW_ON].ev_id = EV_TEX_VIEW_ON;
+                    cec_ev_package[EV_TEX_VIEW_ON].opencode = p_buff->opcode;
                 }
                 cec_ev_package[EV_IMG_VIEW_ON].param_sz = 0;
                 break;
