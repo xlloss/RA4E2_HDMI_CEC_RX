@@ -90,6 +90,12 @@ uint32_t             cec_opecode_param2_reg;
 /* RX buffer for CEC reception data */
 struct cec_event cec_ev_package[30] = {0};
 
+/* i2c slave buffer */
+
+#define I2C_SLAVE_TRANS_LEN 20
+uint8_t g_i2c_slave_buffer[I2C_SLAVE_TRANS_LEN];
+uint8_t g_slave_transfer_length = I2C_SLAVE_TRANS_LEN;
+uint8_t i2c_reg_index = 0;
 #define CEC_RX_DATA_BUFF_DATA_NUMBER (16 * 5)
 cec_rx_message_buff_t cec_rx_data_buff[CEC_RX_DATA_BUFF_DATA_NUMBER];
 volatile uint8_t      cec_rx_data_buff_next_store_point = 0;
@@ -117,24 +123,31 @@ void i2c_slave_callback (i2c_slave_callback_args_t * p_args)
 
     g_i2c_slave_callback_event = p_args->event;
 
-    if ((p_args->event == I2C_SLAVE_EVENT_RX_COMPLETE) || (p_args->event == I2C_SLAVE_EVENT_TX_COMPLETE))
+    if ((p_args->event == I2C_SLAVE_EVENT_RX_COMPLETE) ||
+        (p_args->event == I2C_SLAVE_EVENT_TX_COMPLETE))
     {
         /* Transaction Successful */
+        if (g_i2c_slave_callback_event == I2C_SLAVE_EVENT_RX_COMPLETE)
+            i2c_reg_index = g_i2c_slave_buffer[0];
     }
-    else if ((p_args->event == I2C_SLAVE_EVENT_RX_REQUEST) || (p_args->event == I2C_SLAVE_EVENT_RX_MORE_REQUEST))
+    else if ((p_args->event == I2C_SLAVE_EVENT_RX_REQUEST) ||
+             (p_args->event == I2C_SLAVE_EVENT_RX_MORE_REQUEST))
     {
         /* Read from Master */
-        /*
-         * fsp_err = R_IIC_B_SLAVE_Read(&g_i2c_slave_ctrl, g_i2c_slave_buffer, g_slave_transfer_length);
-         * assert(FSP_SUCCESS == fsp_err);
-         */
+
+        fsp_err = R_IIC_B_SLAVE_Read(&g_i2c_slave_ctrl,
+            g_i2c_slave_buffer, g_slave_transfer_length);
+
+        assert(FSP_SUCCESS == fsp_err);
     }
-    else if ((p_args->event == I2C_SLAVE_EVENT_TX_REQUEST) || (p_args->event == I2C_SLAVE_EVENT_TX_MORE_REQUEST))
+    else if ((p_args->event == I2C_SLAVE_EVENT_TX_REQUEST) ||
+            (p_args->event == I2C_SLAVE_EVENT_TX_MORE_REQUEST))
     {
         /* Write to master */
-        /* fsp_err = R_IIC_B_SLAVE_Write(&g_i2c_slave_ctrl, g_i2c_slave_buffer, g_slave_transfer_length);
-         * assert(FSP_SUCCESS == fsp_err);
-         */
+        fsp_err = R_IIC_B_SLAVE_Write(&g_i2c_slave_ctrl,
+            g_i2c_slave_buffer[i2c_reg_index], g_slave_transfer_length);
+
+        assert(FSP_SUCCESS == fsp_err);
     }
     else
     {
@@ -255,17 +268,26 @@ void hal_entry(void)
         }
 
         /* i2c-master write, i2c-slave read */
+        /* slav_addr | reg_addr(ID) | data0 ~  data14 */
         if ((g_i2c_slave_callback_event == I2C_SLAVE_EVENT_RX_REQUEST) ||
             (g_i2c_slave_callback_event == I2C_SLAVE_EVENT_RX_MORE_REQUEST))
         {
             g_i2c_slave_callback_event = 0;
+
+            R_IIC_B_SLAVE_Read(&g_i2c_slave_ctrl,
+                g_i2c_slave_buffer, g_slave_transfer_length);
+
+            cec_cmd_write(g_i2c_slave_buffer[0]);
         }
 
         /* i2c-master read, i2c-slave write */
+        /* slav_addr | reg_addr(ID) | data0 ~  data14 */
         if ((g_i2c_slave_callback_event == I2C_SLAVE_EVENT_TX_REQUEST) ||
             (g_i2c_slave_callback_event == I2C_SLAVE_EVENT_TX_MORE_REQUEST))
         {
             g_i2c_slave_callback_event = 0;
+            //cec_ev_package[EV_SET_MENU_LANGUAGE]
+            //cec_cmd_read(uint8_t wr_cmd_id, uint8_t *data_buf);
         }
 
         R_BSP_SoftwareDelay(1, BSP_DELAY_UNITS_MILLISECONDS);
@@ -287,11 +309,18 @@ uint8_t wr_cmd_opcde[20] =
 };
 
 struct cmd_date wr_cmd_date;
+struct cmd_date rd_cmd_date;
 
 void cec_cmd_write(uint8_t wr_cmd_id)
 {
     cec_message_send(wr_cmd_date.ladd,
         wr_cmd_opcde[wr_cmd_id], &wr_cmd_date.param[0], wr_cmd_date.param_len);
+}
+
+void cec_cmd_read(uint8_t wr_cmd_id, uint8_t *data_buf)
+{
+    memcpy(data_buf, &cec_ev_package[wr_cmd_id],
+        cec_ev_package[wr_cmd_id].param_sz + 1);
 }
 
 void cec_interrupt_callback(cec_callback_args_t *p_args)
