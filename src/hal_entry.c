@@ -134,7 +134,7 @@ uint8_t wr_cmd_opcde[20] =
 struct cmd_date wr_cmd_date;
 struct cmd_date rd_cmd_date;
 
-void cec_cmd_write(uint8_t wr_cmd_id, uint8_t data)
+void cec_cmd_write(uint8_t wr_cmd_id, uint8_t *data)
 {
     memcpy(&wr_cmd_date.param[0], data, wr_cmd_date.param_len);
     cec_message_send(wr_cmd_date.ladd,
