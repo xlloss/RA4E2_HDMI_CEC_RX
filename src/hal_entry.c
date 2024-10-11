@@ -969,17 +969,30 @@ void cec_rx_data_check(void)
                 break;
             }
             case CEC_OPCODE_TEXT_VIEW_ON:
-            case CEC_OPCODE_IMAGE_VIEW_ON:
             {
+                /*
+                 * CEC_OPCODE_TEXT_VIEW_ON
+                 * Turn on (if not on) TV and remove any menu from Display.
+                 */
+
                 cec_action_request_detect_flag = false;
                 cec_action_type = CEC_ACTION_POWER_ON;
-                if (p_buff->opcode == CEC_OPCODE_IMAGE_VIEW_ON) {
-                    cec_ev_package[EV_IMG_VIEW_ON].ev_id = EV_IMG_VIEW_ON;
-                    cec_ev_package[EV_IMG_VIEW_ON].opencode = p_buff->opcode;
-                } else {
-                    cec_ev_package[EV_TEX_VIEW_ON].ev_id = EV_TEX_VIEW_ON;
-                    cec_ev_package[EV_TEX_VIEW_ON].opencode = p_buff->opcode;
-                }
+                cec_ev_package[EV_TEX_VIEW_ON].ev_id = EV_TEX_VIEW_ON;
+                cec_ev_package[EV_TEX_VIEW_ON].opencode = p_buff->opcode;
+                cec_ev_package[EV_TEX_VIEW_ON].param_sz = 0;
+                break;
+            }
+            case CEC_OPCODE_IMAGE_VIEW_ON:
+            {
+                /*
+                 * CEC_OPCODE_TEXT_VIEW_ON
+                 * Turn on (if not on) TV and enter Image Display state
+                 */
+
+                cec_action_request_detect_flag = false;
+                cec_action_type = CEC_ACTION_POWER_ON;
+                cec_ev_package[EV_IMG_VIEW_ON].ev_id = EV_IMG_VIEW_ON;
+                cec_ev_package[EV_IMG_VIEW_ON].opencode = p_buff->opcode;
                 cec_ev_package[EV_IMG_VIEW_ON].param_sz = 0;
                 break;
             }
