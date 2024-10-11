@@ -134,6 +134,7 @@ uint8_t wr_cmd_opcde[20] =
 struct cmd_date wr_cmd_date;
 struct cmd_date rd_cmd_date;
 
+/* [REG_INDEX] [CEC_ADDR {PHYSICAL ADDR} {LOGICAL ADDR}] [DATA] */
 void cec_cmd_write(uint8_t wr_cmd_id, uint8_t *data)
 {
     memcpy(&wr_cmd_date.param[0], data, wr_cmd_date.param_len);
@@ -141,6 +142,7 @@ void cec_cmd_write(uint8_t wr_cmd_id, uint8_t *data)
         wr_cmd_opcde[wr_cmd_id], &wr_cmd_date.param[0], wr_cmd_date.param_len);
 }
 
+/* [REG_INDEX] [CEC_ADDR {PHYSICAL ADDR} {LOGICAL ADDR}] [DATA] */
 void cec_cmd_read(uint8_t wr_cmd_id, uint8_t *data_buf)
 {
     memcpy(data_buf, &cec_ev_package[wr_cmd_id],
