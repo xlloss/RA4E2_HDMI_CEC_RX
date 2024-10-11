@@ -182,7 +182,7 @@ void i2c_slave_callback (i2c_slave_callback_args_t * p_args)
         cec_cmd_read(i2c_reg_index, &g_i2c_slave_buffer[1]);
 
         fsp_err = R_IIC_B_SLAVE_Write(&g_i2c_slave_ctrl,
-            g_i2c_slave_buffer[i2c_reg_index], g_slave_transfer_length);
+            &g_i2c_slave_buffer[i2c_reg_index], g_slave_transfer_length);
 
         assert(FSP_SUCCESS == fsp_err);
     }
