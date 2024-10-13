@@ -207,7 +207,9 @@ void hal_entry(void)
     APP_PRINT(APP_DESCRIPTION);
     APP_PRINT(APP_LED_DESCRIPTION);
 
-    /* Make 500 ms delay for HDMI connection. In deal, the MCU should check the hot plug pin of HDMI connector. */
+    /* Make 500 ms delay for HDMI connection. In deal,
+     * the MCU should check the hot plug pin of HDMI connector.
+     */
     R_BSP_SoftwareDelay(500, BSP_DELAY_UNITS_MILLISECONDS);
 
     /* Initialize and enable external irq for user button detect */
@@ -223,8 +225,7 @@ void hal_entry(void)
 #else
     APP_PRINT("Getting physical address from EDID via HDMI-DDC channel (I2C) ...\r\n");
     fsp_err = physical_address_get(&my_physical_address[0]);
-    if(FSP_SUCCESS != fsp_err)
-    {
+    if (FSP_SUCCESS != fsp_err) {
         APP_PRINT("DDC physical address get failed.\r\n");
         ERROR_INDICATE_LED_ON; __BKPT(0);
     }
@@ -246,11 +247,11 @@ void hal_entry(void)
 
     /* i2c slave init */
     fsp_err = R_IIC_B_SLAVE_Open(&g_i2c_slave_ctrl, &g_i2c_slave_cfg);
-    if(FSP_SUCCESS != fsp_err){ ERROR_INDICATE_LED_ON; __BKPT(0); }
+    if (FSP_SUCCESS != fsp_err) { ERROR_INDICATE_LED_ON; __BKPT(0); }
 
     /* Open CEC module */
     fsp_err = R_CEC_Open(&g_cec0_ctrl, &g_cec0_cfg);
-    if(FSP_SUCCESS != fsp_err){ ERROR_INDICATE_LED_ON; __BKPT(0); }
+    if (FSP_SUCCESS != fsp_err) { ERROR_INDICATE_LED_ON; __BKPT(0); }
 
     /* Make 50 milliseconds delay. R_CEC_MediaInit may return
      * FSP_ERR_IN_USE for up to 45 milliseconds after
@@ -260,8 +261,7 @@ void hal_entry(void)
 
     /* Initialize CEC logical address */
     fsp_err = cec_logical_address_allocate();
-    if(FSP_SUCCESS != fsp_err)
-    {
+    if (FSP_SUCCESS != fsp_err) {
         APP_PRINT("CEC logical address allocation failed.\r\n");
         ERROR_INDICATE_LED_ON; __BKPT(0);
     }
@@ -291,18 +291,15 @@ void hal_entry(void)
               system_audio_mode_support_function ? SYS_AUDIO_FUNC_E : SYS_AUDIO_FUNC_D,
               system_audio_mode_status ? SYS_AUDIO_ON : SYS_AUDIO_OFF);
 
-    while(1)
-    {
+    while (1) {
         user_action_check();
-        if(user_action_detect_flag)
-        {
+        if (user_action_detect_flag) {
             user_action_detect_flag = false;
             user_action_process(cec_data);
         }
 
         cec_rx_data_check();
-        if(cec_action_request_detect_flag)
-        {
+        if (cec_action_request_detect_flag) {
             cec_rx_data_process(cec_action_type);
         }
 
