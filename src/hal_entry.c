@@ -390,24 +390,27 @@ void cec_interrupt_callback(cec_callback_args_t *p_args)
     }
 }
 
-fsp_err_t cec_message_send(cec_addr_t destination, uint8_t opcode, uint8_t const * data_buff, uint8_t data_buff_length)
+fsp_err_t cec_message_send(cec_addr_t destination,  uint8_t opcode,
+                                                    uint8_t const *data_buff,
+                                                    uint8_t data_buff_length)
 {
     fsp_err_t fsp_err = FSP_SUCCESS;
     cec_message_t cec_tx_message;
-    uint8_t       cec_tx_message_length; /* Total message size, including header, opcode, and data */
+    /* Total message size, including header, opcode, and data */
+    uint8_t       cec_tx_message_length;
     uint8_t       err_detect = false;
     uint32_t      timeout_ms = (uint32_t)(5 + 40 * (2 + data_buff_length));
     uint32_t      opcode_list_point;
+
     APP_PRINT("[> CEC Out] Dest: %d (%s),\r\n", destination,
         &cec_logical_device_list[destination][0]);
 
     opcode_list_point = opcode_description_find(opcode);
-    APP_PRINT("            Opcode: 0x%x (%s)", opcode, &cec_opcode_list[opcode_list_point].opcode_desc_str[0]);
-    if(data_buff_length > 0)
-    {
+    APP_PRINT("Opcode: 0x%x (%s)",
+        opcode, &cec_opcode_list[opcode_list_point].opcode_desc_str[0]);
+    if (data_buff_length > 0) {
         APP_PRINT(", Data: ");
-        for(int j=0; j<data_buff_length; j++)
-        {
+        for (int j = 0; j < data_buff_length; j++) {
             APP_PRINT("0x%x,", data_buff[j]);
         }
     }
@@ -426,59 +429,46 @@ fsp_err_t cec_message_send(cec_addr_t destination, uint8_t opcode, uint8_t const
     cec_err_flag = false;
     cec_err_type = 0x0;
 
-    do{
+    do {
         fsp_err = R_CEC_Write(&g_cec0_ctrl, &cec_tx_message, cec_tx_message_length);
-    }while(FSP_ERR_IN_USE == fsp_err);
-    if(FSP_SUCCESS != fsp_err)
-    {
+    } while(FSP_ERR_IN_USE == fsp_err);
+
+    if (FSP_SUCCESS != fsp_err) {
         APP_PRINT("R_CEC_Write failed.\r\n");
         ERROR_INDICATE_LED_ON; __BKPT(0);
     }
 
     /* Wait for tx completion */
-    while(!cec_tx_complete_flag)
-    {
-        if(cec_err_flag)
-        {
+    while(!cec_tx_complete_flag) {
+        if (cec_err_flag) {
             cec_err_flag = false;
 
-            if(cec_err_type & (CEC_ERROR_UERR | CEC_ERROR_ACKERR |
+            if (cec_err_type & ( CEC_ERROR_UERR | CEC_ERROR_ACKERR |
                                 CEC_ERROR_TXERR | CEC_ERROR_AERR |
-                                CEC_ERROR_BLERR))
-            {
+                                CEC_ERROR_BLERR)) {
                 err_detect = true;
                 break;
             }
         }
 
         timeout_ms--;
-        if(timeout_ms == 0)
-        {
+        if(timeout_ms == 0) {
             break;
         }
         R_BSP_SoftwareDelay(1, BSP_DELAY_UNITS_MILLISECONDS);
     }
     cec_tx_complete_flag = false;
 
-    if(0 < timeout_ms)
-    {
-        if(!err_detect)
-        {
+    if (0 < timeout_ms) {
+        if (!err_detect) {
             APP_PRINT("Success\r\n");
-
             return FSP_SUCCESS;
-        }
-        else
-        {
+        } else {
             APP_PRINT("Error (0x%x)\r\n", cec_err_type);
-
             return FSP_ERR_ASSERTION;
         }
-    }
-    else
-    {
+    } else {
         APP_PRINT("Timeout\r\n", cec_err_type);
-
         return FSP_ERR_TIMEOUT;
     }
 }
