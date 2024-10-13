@@ -309,14 +309,14 @@ void hal_entry(void)
 
 void cec_interrupt_callback(cec_callback_args_t *p_args)
 {
-    switch (p_args->event)
-    {
+    switch (p_args->event) {
         case CEC_EVENT_READY:
         {
             /* In this demo, the ready flag is received by R_CEC_StatusGet(). But application can also get with this interrupt event. */
             RTT_DEBUG("@@@ READY\r\n");
             break;
         }
+
         case CEC_EVENT_TX_COMPLETE:
         {
             /* Application processing after transmission has completed. */
@@ -324,32 +324,28 @@ void cec_interrupt_callback(cec_callback_args_t *p_args)
             cec_tx_complete_flag = true;
             break;
         }
+
         case CEC_EVENT_RX_DATA:
         {
             RTT_DEBUG("@@@ RX 0x%x\r\n", p_args->data_byte);
             /* Application to store and process received data bytes. */
             cec_rx_message_buff_t* p_buff = &cec_rx_data_buff[cec_rx_data_buff_next_store_point];
-            if(p_buff->byte_counter == 0)
-            {
+            if (p_buff->byte_counter == 0) {
                 p_buff->source = (uint8_t)(p_args->data_byte >> 4);
                 p_buff->destination = (uint8_t)(p_args->data_byte & 0xF);
-            }
-            else if(p_buff->byte_counter == 1)
-            {
+            } else if(p_buff->byte_counter == 1) {
                 p_buff->opcode = p_args->data_byte;
-            }
-            else
-            {
+            } else {
                 p_buff->data_buff[p_buff->byte_counter - 2] = p_args->data_byte;
             }
 
             p_buff->byte_counter++;
-            if(p_buff->byte_counter == CEC_DATA_BUFFER_LENGTH)
-            {
+            if(p_buff->byte_counter == CEC_DATA_BUFFER_LENGTH) {
                 p_buff->byte_counter = 0;
             }
             break;
         }
+
         case CEC_EVENT_RX_COMPLETE:
         {
             /* Application processing for message reception complete. */
@@ -358,29 +354,27 @@ void cec_interrupt_callback(cec_callback_args_t *p_args)
             cec_rx_data_buff[cec_rx_data_buff_next_store_point].is_new_data = true;
 
             cec_rx_data_buff_next_store_point++;
-            if(cec_rx_data_buff_next_store_point >= CEC_RX_DATA_BUFF_DATA_NUMBER)
-            {
+            if (cec_rx_data_buff_next_store_point >= CEC_RX_DATA_BUFF_DATA_NUMBER) {
                 cec_rx_data_buff_next_store_point = 0;
             }
             break;
         }
+
         case CEC_EVENT_ERR:
         {
             cec_err_flag = true;
             cec_err_type = p_args->errors;
 
-            if(cec_err_type & (CEC_ERROR_OERR | CEC_ERROR_TERR))
-            {
+            if (cec_err_type & (CEC_ERROR_OERR | CEC_ERROR_TERR)) {
                 cec_rx_message_buff_t* p_buff = &cec_rx_data_buff[cec_rx_data_buff_next_store_point];
-                if(p_buff->byte_counter > 0)
-                {
+                if (p_buff->byte_counter > 0) {
                     p_buff->is_error = true;
 
                     /* Cancel on-going store buffer */
                     p_buff->is_new_data = true;
                     cec_rx_data_buff_next_store_point++;
-                    if(cec_rx_data_buff_next_store_point >= CEC_RX_DATA_BUFF_DATA_NUMBER)
-                    {
+                    if (cec_rx_data_buff_next_store_point >=
+                        CEC_RX_DATA_BUFF_DATA_NUMBER) {
                         cec_rx_data_buff_next_store_point = 0;
                     }
                 }
@@ -389,8 +383,7 @@ void cec_interrupt_callback(cec_callback_args_t *p_args)
             RTT_DEBUG("@@@ ERR 0x%x\r\n", cec_err_type);
             break;
         }
-        default:
-        {
+        default: {
             /* Do nothing */
             break;
         }
