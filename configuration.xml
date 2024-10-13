@@ -259,7 +259,7 @@
       <property id="module.driver.external_irq.trigger" value="module.driver.external_irq.trigger.trig_falling"/>
       <property id="module.driver.external_irq.filter_enable" value="module.driver.external_irq.filter_enable.false"/>
       <property id="module.driver.external_irq.clock_source_div" value="module.driver.external_irq.clock_source_div.clock_source_div_by_64"/>
-      <property id="module.driver.external_irq.p_callback" value="NULL"/>
+      <property id="module.driver.external_irq.p_callback" value="irq_sw1_callback"/>
       <property id="module.driver.external_irq.ipl" value="board.icu.common.irq.priority12"/>
     </module>
     <module id="module.driver.external_irq_on_icu.1865283673">
@@ -403,6 +403,9 @@
       <configSetting altId="i3c_fslash_iic.mode.custom.free" configurationId="i3c_fslash_iic.mode"/>
       <configSetting altId="i3c_fslash_iic.scl0.p400" configurationId="i3c_fslash_iic.scl0"/>
       <configSetting altId="i3c_fslash_iic.sda0.p401" configurationId="i3c_fslash_iic.sda0"/>
+      <configSetting altId="irq.irq10_dash_ds.p005" configurationId="irq.irq10_dash_ds"/>
+      <configSetting altId="irq.irq9.p304" configurationId="irq.irq9"/>
+      <configSetting altId="irq.mode.custom.free" configurationId="irq.mode"/>
       <configSetting altId="jtag_fslash_swd.mode.swd.free" configurationId="jtag_fslash_swd.mode"/>
       <configSetting altId="jtag_fslash_swd.swclk.p300" configurationId="jtag_fslash_swd.swclk"/>
       <configSetting altId="jtag_fslash_swd.swdio.p108" configurationId="jtag_fslash_swd.swdio"/>
@@ -414,8 +417,9 @@
       <configSetting altId="p003.gpio_mode.gpio_mode_in" configurationId="p003.gpio_mode"/>
       <configSetting altId="p004.adc0.an004" configurationId="p004"/>
       <configSetting altId="p004.gpio_mode.gpio_mode_an" configurationId="p004.gpio_mode"/>
-      <configSetting altId="p005.input" configurationId="p005"/>
-      <configSetting altId="p005.gpio_mode.gpio_mode_in" configurationId="p005.gpio_mode"/>
+      <configSetting altId="p005.irq.irq10_dash_ds" configurationId="p005"/>
+      <configSetting altId="p005.gpio_irq.gpio_irq_enabled" configurationId="p005.gpio_irq"/>
+      <configSetting altId="p005.gpio_mode.gpio_mode_irq" configurationId="p005.gpio_mode"/>
       <configSetting altId="p006.input" configurationId="p006"/>
       <configSetting altId="p006.gpio_mode.gpio_mode_in" configurationId="p006.gpio_mode"/>
       <configSetting altId="p008.input" configurationId="p008"/>
@@ -468,8 +472,9 @@
       <configSetting altId="p301.gpio_mode.gpio_mode_in" configurationId="p301.gpio_mode"/>
       <configSetting altId="p302.input" configurationId="p302"/>
       <configSetting altId="p302.gpio_mode.gpio_mode_in" configurationId="p302.gpio_mode"/>
-      <configSetting altId="p304.input" configurationId="p304"/>
-      <configSetting altId="p304.gpio_mode.gpio_mode_in" configurationId="p304.gpio_mode"/>
+      <configSetting altId="p304.irq.irq9" configurationId="p304"/>
+      <configSetting altId="p304.gpio_irq.gpio_irq_enabled" configurationId="p304.gpio_irq"/>
+      <configSetting altId="p304.gpio_mode.gpio_mode_irq" configurationId="p304.gpio_mode"/>
       <configSetting altId="p400.i3c_fslash_iic.scl0" configurationId="p400"/>
       <configSetting altId="p400.gpio_mode.gpio_mode_peripheral" configurationId="p400.gpio_mode"/>
       <configSetting altId="p401.i3c_fslash_iic.sda0" configurationId="p401"/>
