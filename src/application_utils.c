@@ -179,136 +179,100 @@ void user_action_check(void)
     fsp_err_t fsp_err = FSP_ERR_INVALID_DATA;
     uint8_t rtt_read_data_c;
 
-    if(sw1_pushed_flag)
-    {
+    if (sw1_pushed_flag) {
         sw1_pushed_flag = false;
-
         user_action_detect_flag = true;
         user_action_type = USER_ACTION_REQUEST_POWER_ON;
         user_action_cec_target = CEC_ADDR_TV;
-    }
-    else if(sw2_pushed_flag)
-    {
+    } else if(sw2_pushed_flag) {
         sw2_pushed_flag = false;
-
         user_action_detect_flag = true;
         user_action_type = USER_ACTION_REQUEST_POWER_OFF;
         user_action_cec_target = CEC_ADDR_TV;
-    }
-    else
-    {
-        if(APP_CHECK_DATA)
-        {
+    } else {
+        if (APP_CHECK_DATA) {
             /* Read data from RTT buffer */
             SEGGER_RTT_Read(0, &rtt_read_data_c, 1);
 
-            if(rtt_read_data_c == '1')
-            {
+            if (rtt_read_data_c == '1') {
                 user_action_detect_flag = true;
                 user_action_type = USER_ACTION_BUS_SCAN;
-            }
-            else if(rtt_read_data_c == '2')
-            {
+            } else if(rtt_read_data_c == '2') {
                 user_action_detect_flag = true;
                 user_action_type = USER_ACTION_DISPLAY_CEC_BUS_STATUS_BUFF;
-            }
-            else if(rtt_read_data_c == '3')
-            {
+            } else if(rtt_read_data_c == '3') {
                 user_action_detect_flag = true;
                 user_action_type = USER_ACTION_ENABLING_SYSTEM_AUDIO_MODE_SUPPORT;
-            }
-            else if(rtt_read_data_c == '4')
-            {
+            } else if(rtt_read_data_c == '4') {
                 user_action_detect_flag = true;
                 user_action_type = USER_ACTION_SYSTEM_AUDIO_MODE_REQUEST;
-            }
-            else if(rtt_read_data_c == '0')
-            {
+            } else if(rtt_read_data_c == '0') {
                 /* Specify command type */
                 APP_PRINT(CEC_CONTROL_SELECT_MENU);
 
-                while(1)
-                {
-                    if(APP_CHECK_DATA)
-                    {
+                while (1) {
+                    if (APP_CHECK_DATA) {
                         SEGGER_RTT_Read(0, &rtt_read_data_c, 1);
 
-                        if(('a' <= rtt_read_data_c) && (rtt_read_data_c <= 'e'))
-                        {
+                        if (('a' <= rtt_read_data_c) &&
+                            (rtt_read_data_c <= 'e')) {
                             user_action_type = rtt_read_data_c;
-
                             fsp_err = FSP_SUCCESS;
                             break;
-                        }
-                        else if((rtt_read_data_c == '\r') || (rtt_read_data_c == '\n'))
-                        {
+                        } else if ((rtt_read_data_c == '\r') ||
+                                   (rtt_read_data_c == '\n')) {
                             /* Do nothing */
-                        }
-                        else
-                        {
+                        } else {
                             APP_PRINT("Invalid input.\r\n");
                             APP_PRINT(APP_COMMAND_OPTION,
-                                      system_audio_mode_support_function ? SYS_AUDIO_FUNC_E : SYS_AUDIO_FUNC_D,
-                                      system_audio_mode_status ? SYS_AUDIO_ON : SYS_AUDIO_OFF);
+                                system_audio_mode_support_function ? SYS_AUDIO_FUNC_E : SYS_AUDIO_FUNC_D,
+                                system_audio_mode_status ? SYS_AUDIO_ON : SYS_AUDIO_OFF);
                             break;
                         }
                     }
                 }
 
                 /* Specify CEC target device */
-                if(FSP_SUCCESS == fsp_err)
-                {
+                if (FSP_SUCCESS == fsp_err) {
                     user_action_cec_target = USER_ACTION_NONE;
                     APP_PRINT(CEC_CONTROL_DEVICE_SELECT_MENU);
 
-                    while(1)
-                    {
-                        if(APP_CHECK_DATA)
-                        {
+                    while(1) {
+                        if(APP_CHECK_DATA) {
                             SEGGER_RTT_Read(0, &rtt_read_data_c, 1);
-
-                            if(('0' <= rtt_read_data_c) && (rtt_read_data_c <= '9'))
-                            {
+                            if (('0' <= rtt_read_data_c) &&
+                               (rtt_read_data_c <= '9')) {
                                 user_action_detect_flag = true;
                                 user_action_cec_target = rtt_read_data_c - '0';
                                 break;
-                            }
-                            else if ((rtt_read_data_c == 'a') || (rtt_read_data_c == 'b') || (rtt_read_data_c == 'f'))
-                            {
+                            } else if ((rtt_read_data_c == 'a') ||
+                                        (rtt_read_data_c == 'b') ||
+                                        (rtt_read_data_c == 'f')) {
                                 user_action_detect_flag = true;
                                 user_action_cec_target = rtt_read_data_c - 'a' + 0xa;
                                 break;
                             }
-                            else if((rtt_read_data_c == '\r') || (rtt_read_data_c == '\n'))
-                            {
+                            else if((rtt_read_data_c == '\r') ||
+                                    (rtt_read_data_c == '\n')) {
                                 /* Do nothing */
-                            }
-                            else
-                            {
+                            } else {
                                 APP_PRINT("Invalid input.\r\n");
                                 APP_PRINT(APP_COMMAND_OPTION,
-                                          system_audio_mode_support_function ? SYS_AUDIO_FUNC_E : SYS_AUDIO_FUNC_D,
-                                          system_audio_mode_status ? SYS_AUDIO_ON : SYS_AUDIO_OFF);
+                                    system_audio_mode_support_function ? SYS_AUDIO_FUNC_E : SYS_AUDIO_FUNC_D,
+                                    system_audio_mode_status ? SYS_AUDIO_ON : SYS_AUDIO_OFF);
                                 break;
                             }
                         }
                     }
                 }
-            }
-//            else if (rtt_read_data_c == <character>) ToDo
-//            {
-//                /* Add your additional operation */
-//            }
-            else if((rtt_read_data_c == '\r') || (rtt_read_data_c == '\n'))
-            {
+            } else if((rtt_read_data_c == '\r') ||
+                      (rtt_read_data_c == '\n')) {
                 /* Do nothing */
-            }
-            else
-            {
+            } else {
                 APP_PRINT("Invalid input.\r\n");
                 APP_PRINT(APP_COMMAND_OPTION,
-                          system_audio_mode_support_function ? SYS_AUDIO_FUNC_E : SYS_AUDIO_FUNC_D,
-                          system_audio_mode_status ? SYS_AUDIO_ON : SYS_AUDIO_OFF);
+                    system_audio_mode_support_function ? SYS_AUDIO_FUNC_E : SYS_AUDIO_FUNC_D,
+                    system_audio_mode_status ? SYS_AUDIO_ON : SYS_AUDIO_OFF);
             }
         }
     }
