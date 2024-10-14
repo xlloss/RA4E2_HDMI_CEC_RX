@@ -267,7 +267,8 @@ void hal_entry(void)
     cec_bus_device_list[my_logical_address].cec_version = CEC_VERSION_1_4;
 
     cec_bus_device_list[my_logical_address].is_physical_address_store = true;
-    memcpy(&cec_bus_device_list[my_logical_address].physical_address[0], &my_physical_address[0], 4);
+    memcpy(&cec_bus_device_list[my_logical_address].physical_address[0],
+        &my_physical_address[0], 4);
 
     cec_bus_device_list[my_logical_address].is_vendor_id_store = true;
     memcpy(&cec_bus_device_list[my_logical_address].vendor_id[0], &my_vendor_id[0], 3);
