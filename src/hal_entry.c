@@ -108,94 +108,120 @@ struct cec_event cec_ev_package[30] = {0};
 struct cec_cmd  cec_cmd_package[30] =
 {
     {
+        .cmd_id = CMD_IMG_VIEW_ON,
         .opencode = CEC_OPCODE_IMAGE_VIEW_ON,
+        .param_len = 0,
     },
 
     {
+        .cmd_id = CMD_TEX_VIEW_ON,
         .opencode = CEC_OPCODE_TEXT_VIEW_ON,
+        .param_len = 0,
     },
 
     {
+        .cmd_id = CMD_ACT_SRCE,
         .opencode = CEC_OPCODE_ACTIVE_SOURCE,
+        .param_len = 1,
     },
 
     {
+        .cmd_id = CMD_IACT_SRCE,
         .opencode = CEC_OPCODE_INACTIVE_SOURCE,
     },
 
     {
+        .cmd_id = CMD_STANDBY,
         .opencode = CEC_OPCODE_STANDBY,
     },
 
     {
+        .cmd_id = CMD_SET_MENU_LANGUAGE,
         .opencode = CEC_OPCODE_SET_MENU_LANGUAGE,
     },
 
     {
+        .cmd_id = CMD_VENDOR_COMMAND,
         .opencode = CEC_OPCODE_VENDOR_COMMAND,
     },
 
     {
+        .cmd_id = CMD_REMOTE_BUTTON_DOWN,
         .opencode = CEC_OPCODE_VENDOR_REMOTE_BUTTON_DOWN,
     },
 
     {
+        .cmd_id = CMD_OSD_STRING,
         .opencode = CEC_OPCODE_SET_OSD_STRING,
     },
 
     {
+        .cmd_id = CMD_GET_MENU_LANGUAGE,
         .opencode = CEC_OPCODE_GET_MENU_LANGUAGE,
     },
 
     {
+        .cmd_id = CMD_SET_AUDIO_MODE,
         .opencode = CEC_OPCODE_SET_SYSTEM_AUDIO_MODE,
     },
 
     {
+        .cmd_id = CMD_RECORD_TV_SCREEN,
         .opencode = CEC_OPCODE_RECORD_TV_SCREEN,
     },
 
     {
+        .cmd_id = CMD_RECORD_OFF,
         .opencode = CEC_OPCODE_RECORD_OFF,
     },
 
     {
+        .cmd_id = CMD_SET_TIMER_PROG_TITLE,
         .opencode = CEC_OPCODE_SET_TIMER_PROGRAM_TITLE,
     },
 
     {
+        .cmd_id = CMD_SET_DIGITAL_TIMER,
         .opencode = CEC_OPCODE_SET_DIGITAL_TIMER,
     },
 
     {
+        .cmd_id = CMD_CLEAR_DIGITAL_TIMER,
         .opencode = CEC_OPCODE_CLEAR_DIGITAL_TIMER,
     },
 
     {
+        .cmd_id = CMD_MENU_REQUEST,
         .opencode = CEC_OPCODE_MENU_REQUEST,
     },
 
     {
+        .cmd_id = CMD_DECK_CONTROL,
         .opencode = CEC_OPCODE_DECK_CONTROL,
     },
 
     {
+        .cmd_id = CMD_SET_TUNER_DIGITAL_SERVICE,
         .opencode = CEC_OPCODE_SELECT_DIGITAL_SERVICE,
     },
 
     {
+        .cmd_id = CMD_SET_TUNER_ANALOGUE_SERVICE,
         .opencode = CEC_OPCODE_SELECT_ANALOG_SERVICE,
     },
 
     {
+        .cmd_id = CMD_REQ_TUNER_CTL,
         .opencode = CEC_OPCODE_TUNER_STEP_DECREMENT,
     },
 
     {
+        .cmd_id = CMD_AUDIO_MODE_REQUEST,
         .opencode = CEC_OPCODE_TUNER_STEP_INCREMENT,
     },
 
     {
+        .cmd_id = CMD_SET_AUDIO_RATE,
         .opencode = CEC_OPCODE_SYSTEM_AUDIO_MODE_REQUEST,
     },
 
@@ -945,7 +971,7 @@ void cec_rx_data_check(void)
             case CEC_OPCODE_SELECT_ANALOG_SERVICE:
             {
                 cec_action_request_detect_flag = false;
-                cec_action_type = CEC_ACTION_SET_TUNER_SERVICE;
+                cec_action_type = CEC_ACTION_SET_TUNER_ANALOGUE_SERVICE;
                 cec_ev_package[EV_SET_TUNER_ANALOGUE_SERVICE].ev_id =
                     EV_SET_TUNER_ANALOGUE_SERVICE;
                 cec_ev_package[EV_SET_TUNER_ANALOGUE_SERVICE].laddr = p_buff->source;
@@ -1135,8 +1161,7 @@ clear_data:
         memset(p_buff, 0x0, sizeof(cec_rx_message_buff_t));
 
         buff_read_point++;
-        if (buff_read_point == CEC_RX_DATA_BUFF_DATA_NUMBER)
-        {
+        if (buff_read_point == CEC_RX_DATA_BUFF_DATA_NUMBER) {
             buff_read_point = 0;
         }
 
