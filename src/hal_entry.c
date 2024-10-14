@@ -740,45 +740,41 @@ void cec_rx_data_check(void)
     uint8_t audio_mode_data;
     uint8_t inactive_source_data, i;
 
-    for(uint32_t i=0; i<CEC_RX_DATA_BUFF_DATA_NUMBER; i++)
-    {
+    for (uint32_t i = 0; i < CEC_RX_DATA_BUFF_DATA_NUMBER; i++) {
         p_buff = &cec_rx_data_buff[buff_read_point];
 
-        if(!p_buff->is_new_data)
+        if (!p_buff->is_new_data)
             continue;
 
-        if(p_buff->is_error)
+        if (p_buff->is_error)
             goto clear_data;
 
         APP_PRINT("[< CEC In]  Src: %d (%s), Dest: %d (%s),\r\n",
                  p_buff->source, &cec_logical_device_list[p_buff->source][0],
                  p_buff->destination, &cec_logical_device_list[p_buff->destination][0]);
 
-        if(p_buff->byte_counter < 2)
+        if (p_buff->byte_counter < 2)
             goto clear_data;
 
         opcode_list_point = opcode_description_find(p_buff->opcode);
         APP_PRINT("Opcode: 0x%x (%s)", p_buff->opcode,
                &cec_opcode_list[opcode_list_point].opcode_desc_str[0]);
 
-        if(p_buff->byte_counter >= 3)
-        {
+        if (p_buff->byte_counter >= 3) {
            APP_PRINT(", Data: ");
-           for(int j=0; j<(p_buff->byte_counter-2); j++)
-           {
+           for(int j=0; j<(p_buff->byte_counter-2); j++) {
                APP_PRINT("0x%x,", p_buff->data_buff[j]);
            }
         }
 
         APP_PRINT("\r\n");
 
-        if(p_buff->source == my_logical_address)
+        if (p_buff->source == my_logical_address)
             goto clear_data;
 
         cec_opecode_reg = p_buff->opcode;
 
-        switch(p_buff->opcode)
-        {
+        switch(p_buff->opcode) {
             /* Vendor Specific Commands Feature */
             case CEC_OPCODE_VENDOR_COMMAND:
             {
@@ -793,6 +789,7 @@ void cec_rx_data_check(void)
                 cec_ev_package[EV_SET_MENU_LANGUAGE].param_sz = 14;
                 break;
             }
+
             case CEC_OPCODE_VENDOR_REMOTE_BUTTON_DOWN:
             {
                 cec_action_request_detect_flag = false;
@@ -806,6 +803,7 @@ void cec_rx_data_check(void)
                 cec_ev_package[EV_SET_MENU_LANGUAGE].param_sz = 14;
                 break;
             }
+
             /* Audio Rate Control Feature */
             case CEC_OPCODE_SET_AUDIO_RATE:
             {
@@ -817,6 +815,7 @@ void cec_rx_data_check(void)
                 cec_ev_package[EV_SET_AUDIO_RATE].param_sz = 1;
                 break;
             }
+
             /* System Audio Control Feature */
             case CEC_OPCODE_SYSTEM_AUDIO_MODE_REQUEST:
             {
@@ -828,6 +827,7 @@ void cec_rx_data_check(void)
                 cec_ev_package[EV_AUDIO_MODE_REQUEST].param_sz = 1;
                 break;
             }
+
             /* Tuner Control Feature   */
             case CEC_OPCODE_TUNER_STEP_DECREMENT:
             case CEC_OPCODE_TUNER_STEP_INCREMENT:
@@ -839,6 +839,7 @@ void cec_rx_data_check(void)
                 cec_ev_package[EV_REQ_TUNER_CTL].param_sz = 0;
                 break;
             }
+
             case CEC_OPCODE_SELECT_DIGITAL_SERVICE:
             case CEC_OPCODE_SELECT_ANALOG_SERVICE:
             {
@@ -853,6 +854,7 @@ void cec_rx_data_check(void)
 
                 break;
             }
+
             /* CEC_OPCODE_DECK_CONTROL */
             case CEC_OPCODE_DECK_CONTROL:
             {
@@ -869,6 +871,7 @@ void cec_rx_data_check(void)
                 cec_ev_package[EV_SET_TIMER_PROG_TITLE].param_sz = 0;
                 break;
             }
+
             /* One Touch Record Feature */
             case CEC_OPCODE_RECORD_OFF:
             {
@@ -879,6 +882,7 @@ void cec_rx_data_check(void)
                 cec_ev_package[EV_RECORD_OFF].param_sz = 0;
                 break;
             }
+
             case CEC_OPCODE_SET_SYSTEM_AUDIO_MODE:
             {
                 cec_action_request_detect_flag = false;
@@ -889,6 +893,7 @@ void cec_rx_data_check(void)
                 cec_ev_package[EV_SET_AUDIO_MODE].param_sz = 1;
                 break;
             }
+
             case CEC_OPCODE_SET_OSD_STRING:
             {
                 cec_action_request_detect_flag = false;
@@ -903,6 +908,7 @@ void cec_rx_data_check(void)
 
                 break;
             }
+
             /* One Touch Play Feature */
             case CEC_OPCODE_INACTIVE_SOURCE:
             {
@@ -912,6 +918,7 @@ void cec_rx_data_check(void)
                 cec_ev_package[EV_IACT_SRCE].param_sz = 1;
                 break;
             }
+
             case CEC_OPCODE_ACTIVE_SOURCE:
             {
                 /*
@@ -931,6 +938,7 @@ void cec_rx_data_check(void)
                 cec_ev_package[EV_ACT_SRCE].param_sz = 1;
                 break;
             }
+
             case CEC_OPCODE_TEXT_VIEW_ON:
             {
                 /*
@@ -945,6 +953,7 @@ void cec_rx_data_check(void)
                 cec_ev_package[EV_TEX_VIEW_ON].param_sz = 0;
                 break;
             }
+
             case CEC_OPCODE_IMAGE_VIEW_ON:
             {
                 /*
@@ -960,6 +969,7 @@ void cec_rx_data_check(void)
                 break;
             }
             /* Standby Feature */
+
             case CEC_OPCODE_STANDBY:
             {
 //                cec_action_request_detect_flag = true;
@@ -969,6 +979,7 @@ void cec_rx_data_check(void)
 //                cec_ev_package[EV_STANDBY].param_sz = 0;
                 break;
             }
+
             case CEC_OPCODE_USER_CONTROL_PRESSED:
             {
                 switch(p_buff->data_buff[0])
@@ -991,6 +1002,7 @@ void cec_rx_data_check(void)
                 }
                 break;
             }
+
             /* System Information Feature */
             case CEC_OPCODE_SET_MENU_LANGUAGE:
             {
@@ -1004,6 +1016,7 @@ void cec_rx_data_check(void)
                 cec_ev_package[EV_SET_MENU_LANGUAGE].param_sz = 3;
                 break;
             }
+
             default:
             {
                 /* Auto response to supporting (sysytem-level) commands */
@@ -1012,28 +1025,17 @@ void cec_rx_data_check(void)
             }
         }
 
-        /*
-        else
-        {
-            APP_PRINT("Logical address of received message is same as my logical address."
-                     "Ignore this message.\r\n");
-        }
-        */
 clear_data:
         /* Clear the data */
         memset(p_buff, 0x0, sizeof(cec_rx_message_buff_t));
 
         buff_read_point++;
-        if(buff_read_point == CEC_RX_DATA_BUFF_DATA_NUMBER)
+        if (buff_read_point == CEC_RX_DATA_BUFF_DATA_NUMBER)
         {
             buff_read_point = 0;
         }
 
 no_new_data:
-        //if(cec_action_request_detect_flag == true)
-        //{
-        //    break;
-        //}
     }
 }
 
