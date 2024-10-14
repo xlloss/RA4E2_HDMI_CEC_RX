@@ -1049,47 +1049,42 @@ void cec_rx_data_process(uint8_t action_type)
 
     cec_action_request_detect_flag = false;
 
-    switch(action_type)
-    {
+    switch(action_type) {
         case CEC_ACTION_POWER_ON:
             demo_system_power_on();
             cec_bus_device_list[my_logical_address].power_status = 0x1;
             APP_PRINT("[System] Power On.\r\n");
             break;
+
         case CEC_ACTION_POWER_OFF:
             demo_system_power_off();
             cec_bus_device_list[my_logical_address].power_status = 0x0;
             APP_PRINT("[System] Power Off.\r\n");
             break;
+
         case CEC_ACTION_VOLUME_UP:
             demo_system_volume_change(false, true);
             demo_system_volume_status_get(&mute, &volume);
             APP_PRINT("[System] Sound volume up. Volume: %d%%.\r\n", volume);
             break;
+
         case CEC_ACTION_VOLUME_DOWN:
             demo_system_volume_change(false, false);
             demo_system_volume_status_get(&mute, &volume);
             APP_PRINT("[System] Sound volume down. Volume: %d%%.\r\n", volume);
             break;
+
         case CEC_ACTION_VOLUME_MUTE:
             demo_system_volume_change(true, false);
             demo_system_volume_status_get(&mute, &volume);
-            if(mute)
-            {
+            if (mute) {
                 APP_PRINT("[System] Sound volume mute.\r\n");
-            }
-            else
-            {
+            } else {
                 APP_PRINT("[System] Sound volume unmute. Volume: %d%%.\r\n", volume);
             }
             break;
-//        case <type defined> ToDo
-//        {
-//            /* Add your additional operation */
-//            break;
-//        }
+
         default:
-            /* Do nothing */
             break;
     }
 }
