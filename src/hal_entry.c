@@ -1180,7 +1180,9 @@ void cec_rx_data_check(void)
 
                 /* [Physical Address] */
                 cec_ev_package[EV_ACT_SRCE].param[0] = p_buff->data_buff[0];
-                cec_ev_package[EV_ACT_SRCE].param_len = 1;
+                cec_ev_package[EV_ACT_SRCE].param[1] = p_buff->data_buff[1];
+                cec_ev_package[EV_ACT_SRCE].param[2] = p_buff->data_buff[2];
+                cec_ev_package[EV_ACT_SRCE].param[3] = p_buff->data_buff[3];
                 break;
             }
 
