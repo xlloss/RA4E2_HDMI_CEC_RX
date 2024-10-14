@@ -156,17 +156,13 @@ void i2c_slave_callback (i2c_slave_callback_args_t * p_args)
     g_i2c_slave_callback_event = p_args->event;
 
     /* slav_addr | reg_addr(ID) | data0 ~  data14 */
-
     if ((p_args->event == I2C_SLAVE_EVENT_RX_COMPLETE) ||
-        (p_args->event == I2C_SLAVE_EVENT_TX_COMPLETE))
-    {
+        (p_args->event == I2C_SLAVE_EVENT_TX_COMPLETE)) {
         /* Transaction Successful */
         if (g_i2c_slave_callback_event == I2C_SLAVE_EVENT_RX_COMPLETE)
             i2c_reg_index = g_i2c_slave_buffer[0];
-    }
-    else if ((p_args->event == I2C_SLAVE_EVENT_RX_REQUEST) ||
-             (p_args->event == I2C_SLAVE_EVENT_RX_MORE_REQUEST))
-    {
+    } else if ((p_args->event == I2C_SLAVE_EVENT_RX_REQUEST) ||
+               (p_args->event == I2C_SLAVE_EVENT_RX_MORE_REQUEST)) {
         /* Read from Master */
         fsp_err = R_IIC_B_SLAVE_Read(&g_i2c_slave_ctrl,
             g_i2c_slave_buffer, g_slave_transfer_length);
@@ -175,22 +171,15 @@ void i2c_slave_callback (i2c_slave_callback_args_t * p_args)
 
         i2c_reg_index = g_i2c_slave_buffer[0];
         cec_cmd_write(i2c_reg_index, &g_i2c_slave_buffer[1]);
-    }
-    else if ((p_args->event == I2C_SLAVE_EVENT_TX_REQUEST) ||
-            (p_args->event == I2C_SLAVE_EVENT_TX_MORE_REQUEST))
-    {
+    } else if ((p_args->event == I2C_SLAVE_EVENT_TX_REQUEST) ||
+               (p_args->event == I2C_SLAVE_EVENT_TX_MORE_REQUEST)) {
         /* Write to master */
-
         cec_cmd_read(i2c_reg_index, &g_i2c_slave_buffer[1]);
 
         fsp_err = R_IIC_B_SLAVE_Write(&g_i2c_slave_ctrl,
             &g_i2c_slave_buffer[i2c_reg_index], g_slave_transfer_length);
 
         assert(FSP_SUCCESS == fsp_err);
-    }
-    else
-    {
-        /* Error Event - reported through g_i2c_slave_callback_event */
     }
 }
 
