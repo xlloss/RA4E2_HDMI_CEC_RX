@@ -1494,10 +1494,8 @@ void cec_bus_scan(void)
 
 void cec_bus_status_buffer_display(void)
 {
-    for(int i=0; i<15; i++)
-    {
-        if(cec_bus_device_list[i].is_device_active)
-        {
+    for (int i = 0; i < 15; i++) {
+        if (cec_bus_device_list[i].is_device_active) {
             cec_device_status_display(i, &cec_bus_device_list[i]);
         }
     }
@@ -1505,8 +1503,7 @@ void cec_bus_status_buffer_display(void)
 
 void R_BSP_WarmStart(bsp_warm_start_event_t event)
 {
-    if (BSP_WARM_START_POST_C == event)
-    {
+    if (BSP_WARM_START_POST_C == event) {
         /* Configure pins. */
         R_IOPORT_Open (&g_ioport_ctrl, &IOPORT_CFG_NAME);
     }
