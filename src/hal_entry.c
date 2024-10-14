@@ -258,13 +258,6 @@ void cec_bus_status_buffer_display(void);
 
 void R_BSP_WarmStart(bsp_warm_start_event_t event);
 
-uint8_t wr_cmd_opcde[20] =
-{
-    CEC_OPCODE_IMAGE_VIEW_ON,//0
-    CEC_OPCODE_TEXT_VIEW_ON, //1
-    CEC_OPCODE_ACTIVE_SOURCE, //2
-};
-
 /* [REG_INDEX] [CEC_ADDR {PHYSICAL ADDR} {LOGICAL ADDR}] [DATA] */
 void cec_cmd_write(uint8_t wr_cmd_id, uint8_t *data)
 {
