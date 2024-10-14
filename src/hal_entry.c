@@ -86,7 +86,10 @@ cec_device_status_t cec_bus_device_list[16];
 /* User action request, type and target cec device */
 volatile bool user_action_detect_flag = false;
 uint8_t       user_action_type        = 0x0;
-cec_addr_t    user_action_cec_target;
+
+#define DEST_ADDR_REG 0x20
+cec_addr_t user_action_cec_target;
+
 
 /* CEC action request and type */
 volatile bool cec_action_request_detect_flag = false;
@@ -388,6 +391,7 @@ void cec_cmd_write(uint8_t wr_cmd_id, uint8_t *data)
     memcpy(&cec_cmd_package[wr_cmd_id].param[0], data,
                 cec_cmd_package[wr_cmd_id].param_len);
 
+    cec_cmd_package[wr_cmd_id].ladd = user_action_cec_target;
     cec_message_send(cec_cmd_package[wr_cmd_id].ladd,
         cec_cmd_package[wr_cmd_id].opencode,
         &cec_cmd_package[wr_cmd_id].param[0],
@@ -397,8 +401,8 @@ void cec_cmd_write(uint8_t wr_cmd_id, uint8_t *data)
 /* [REG_INDEX] [CEC_ADDR {PHYSICAL ADDR} {LOGICAL ADDR}] [DATA] */
 void cec_cmd_read(uint8_t rd_ev_id, uint8_t *data_buf)
 {
-    memcpy(data_buf, &cec_ev_package[rd_ev_id],
-        cec_ev_package[rd_ev_id].param_len + 1);
+    memcpy(data_buf, &cec_ev_package[rd_ev_id].param[0],
+        cec_ev_package[rd_ev_id].param_len);
 }
 
 void i2c_slave_callback (i2c_slave_callback_args_t * p_args)
@@ -422,14 +426,17 @@ void i2c_slave_callback (i2c_slave_callback_args_t * p_args)
         assert(FSP_SUCCESS == fsp_err);
 
         i2c_reg_index = g_i2c_slave_buffer[0];
-        cec_cmd_write(i2c_reg_index, &g_i2c_slave_buffer[1]);
+        if (i2c_reg_index == DEST_ADDR_REG)
+            user_action_cec_target = g_i2c_slave_buffer[1];
+        else
+            cec_cmd_write(i2c_reg_index, &g_i2c_slave_buffer[1]);
     } else if ((p_args->event == I2C_SLAVE_EVENT_TX_REQUEST) ||
                (p_args->event == I2C_SLAVE_EVENT_TX_MORE_REQUEST)) {
         /* Write to master */
-        cec_cmd_read(i2c_reg_index, &g_i2c_slave_buffer[1]);
+        cec_cmd_read(i2c_reg_index, &g_i2c_slave_buffer[0]);
 
         fsp_err = R_IIC_B_SLAVE_Write(&g_i2c_slave_ctrl,
-            &g_i2c_slave_buffer[i2c_reg_index], g_slave_transfer_length);
+            &g_i2c_slave_buffer[0], g_slave_transfer_length);
 
         assert(FSP_SUCCESS == fsp_err);
     }
