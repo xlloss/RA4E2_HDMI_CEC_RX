@@ -664,14 +664,10 @@ void cec_system_audio_mode_support_enabling(void)
 {
     system_audio_mode_support_function = !system_audio_mode_support_function;
 
-    if(system_audio_mode_support_function)
-    {
+    if (system_audio_mode_support_function) {
         APP_PRINT("System Audio mode function support enabled.\r\n");
-    }
-    else
-    {
-        if(system_audio_mode_status)
-        {
+    } else {
+        if (system_audio_mode_status) {
             uint8_t    cec_data[CEC_DATA_BUFFER_LENGTH];
 
             cec_data[0] = CEC_SYSTEM_AUDIO_STATUS_OFF;
