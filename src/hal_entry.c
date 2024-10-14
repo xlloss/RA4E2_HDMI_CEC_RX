@@ -689,21 +689,17 @@ void cec_system_audio_mode_request(void)
     /* Enable System Audio mode support */
     system_audio_mode_support_function = true;
 
-    if(system_audio_mode_status == false)
-    {
+    if (system_audio_mode_status == false) {
         /* The Active source must be checked to request System Audio mode */
-        for(int i=0; i<12; i++)
-        {
-            if(cec_bus_device_list[i].is_active_source)
-            {
+        for (int i=0; i<12; i++) {
+            if (cec_bus_device_list[i].is_active_source) {
                 APP_PRINT("Current active source is %s.\r\n", &cec_logical_device_list[i]);
                 active_source_find = true;
                 break;
             }
         }
 
-        if(active_source_find)
-        {
+        if (active_source_find) {
             /* Disable System Audio mode once */
             cec_data[0] = CEC_SYSTEM_AUDIO_STATUS_OFF;
             cec_message_send(CEC_ADDR_TV, CEC_OPCODE_SET_SYSTEM_AUDIO_MODE, &cec_data[0], 1);
@@ -714,24 +710,17 @@ void cec_system_audio_mode_request(void)
 
             cec_data[0] = CEC_SYSTEM_AUDIO_STATUS_ON;
             fsp_err = cec_message_send(CEC_ADDR_TV, CEC_OPCODE_SET_SYSTEM_AUDIO_MODE, &cec_data[0], 1);
-            if(FSP_SUCCESS == fsp_err)
-            {
+            if (FSP_SUCCESS == fsp_err) {
                 APP_PRINT("System Audio mode is disabled.\r\n");
                 system_audio_mode_status = true;
-            }
-            else
-            {
+            } else {
                 APP_PRINT("System Audio mode request failed.\r\n");
                 system_audio_mode_status = false;
             }
-        }
-        else
-        {
+        } else {
             APP_PRINT("Active source is not found. Try bus scan to get.\r\n");
         }
-    }
-    else
-    {
+    } else {
         cec_data[0] = CEC_SYSTEM_AUDIO_STATUS_OFF;
         cec_message_send(CEC_ADDR_TV, CEC_OPCODE_SET_SYSTEM_AUDIO_MODE, &cec_data[0], 1);
 
