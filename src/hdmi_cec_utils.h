@@ -357,8 +357,8 @@ struct cec_cmd
 {
     uint8_t cmd_id;
     uint8_t ladd;
-    uint8_t param[16];
     uint8_t opencode;
+    uint8_t param[16];
     uint8_t param_len;
 };
 
