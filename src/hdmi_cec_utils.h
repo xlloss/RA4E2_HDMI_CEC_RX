@@ -312,7 +312,8 @@ enum {
     EV_CLEAR_DIGITAL_TIMER,
     EV_MENU_REQUEST,
     EV_DECK_CONTROL,
-    EV_SET_TUNER_SERVICE,
+    EV_SET_TUNER_DIGITAL_SERVICE,
+    EV_SET_TUNER_ANALOGUE_SERVICE,
     EV_REQ_TUNER_CTL,
     EV_AUDIO_MODE_REQUEST,
     EV_SET_AUDIO_RATE,
@@ -337,7 +338,8 @@ enum {
     CMD_CLEAR_DIGITAL_TIMER,
     CMD_MENU_REQUEST,
     CMD_DECK_CONTROL,
-    CMD_SET_TUNER_SERVICE,
+    CMD_SET_TUNER_DIGITAL_SERVICE,
+    CMD_SET_TUNER_ANALOGUE_SERVICE,
     CMD_REQ_TUNER_CTL,
     CMD_AUDIO_MODE_REQUEST,
     CMD_SET_AUDIO_RATE,
@@ -347,7 +349,17 @@ struct cec_event {
     uint8_t ev_id;
     uint8_t laddr;
     uint8_t opencode;
-    uint8_t param_sz;
-    uint8_t param[15];
+    uint8_t param[16];
+    uint8_t param_len;
 };
+
+struct cec_cmd
+{
+    uint8_t cmd_id;
+    uint8_t ladd;
+    uint8_t param[16];
+    uint8_t opencode;
+    uint8_t param_len;
+};
+
 #endif /* End of __CEC_HDMI_UTILS_H__ */
