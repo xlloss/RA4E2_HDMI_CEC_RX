@@ -101,7 +101,8 @@ cec_rx_message_buff_t cec_rx_data_buff[CEC_RX_DATA_BUFF_DATA_NUMBER];
 volatile uint8_t      cec_rx_data_buff_next_store_point = 0;
 
 i2c_slave_event_t g_i2c_slave_callback_event;
-fsp_err_t cec_message_send(cec_addr_t destination, uint8_t opcode, uint8_t const * data_buff, uint8_t data_buff_length);
+fsp_err_t cec_message_send(cec_addr_t destination, uint8_t opcode,
+    uint8_t const * data_buff, uint8_t data_buff_length);
 
 fsp_err_t cec_logical_address_allocate(void);
 fsp_err_t cec_logical_address_allocate_attempt(cec_addr_t local_addr);
