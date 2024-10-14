@@ -110,12 +110,15 @@ struct cec_cmd  cec_cmd_package[30] =
     {
         .opencode = CEC_OPCODE_IMAGE_VIEW_ON,
     },
+
     {
         .opencode = CEC_OPCODE_TEXT_VIEW_ON,
     },
+
     {
         .opencode = CEC_OPCODE_ACTIVE_SOURCE,
     },
+
     {
         .opencode = CEC_OPCODE_INACTIVE_SOURCE,
     },
@@ -131,7 +134,6 @@ struct cec_cmd  cec_cmd_package[30] =
     {
         .opencode = CEC_OPCODE_VENDOR_COMMAND,
     },
-
 
     {
         .opencode = CEC_OPCODE_VENDOR_REMOTE_BUTTON_DOWN,
