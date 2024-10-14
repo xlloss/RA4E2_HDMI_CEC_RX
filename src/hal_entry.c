@@ -1453,48 +1453,36 @@ void cec_bus_scan(void)
 {
     /* Request physical address to all devices sequentially */
     APP_PRINT("Requesting physical address ...\r\n");
-    for(int i=0; i<12; i++)
-    {
-        if(i != my_logical_address)
-        {
+    for( int i = 0; i < 12; i++) {
+        if (i != my_logical_address) {
             cec_message_send(i, CEC_OPCODE_GIVE_PHYSICAL_ADDRESS, NULL, 0);
-
             R_BSP_SoftwareDelay(400, BSP_DELAY_UNITS_MILLISECONDS);
         }
     }
 
     /* Request vendor id to all devices sequentially */
     APP_PRINT("Requesting vendor id ...\r\n");
-    for(int i=0; i<12; i++)
-    {
-        if(i != my_logical_address)
-        {
+    for (int i = 0; i < 12; i++) {
+        if (i != my_logical_address) {
             cec_message_send(i, CEC_OPCODE_GIVE_DEVICE_VENDOR_ID, NULL, 0);
-
             R_BSP_SoftwareDelay(400, BSP_DELAY_UNITS_MILLISECONDS);
         }
     }
 
     /* Request CEC version to all devices sequentially */
     APP_PRINT("Requesting CEC version ...\r\n");
-    for(int i=0; i<12; i++)
-    {
-        if(i != my_logical_address)
-        {
+    for (int i = 0; i < 12; i++) {
+        if (i != my_logical_address) {
             cec_message_send(i, CEC_OPCODE_GET_CEC_VERSION, NULL, 0);
-
             R_BSP_SoftwareDelay(400, BSP_DELAY_UNITS_MILLISECONDS);
         }
     }
 
     /* Request Power status to all devices sequentially */
     APP_PRINT("Requesting power status ...\r\n");
-    for(int i=0; i<12; i++)
-    {
-        if(i != my_logical_address)
-        {
+    for (int i = 0; i < 12; i++) {
+        if (i != my_logical_address) {
             cec_message_send(i, CEC_OPCODE_GIVE_POWER_STATUS, NULL, 0);
-
             R_BSP_SoftwareDelay(400, BSP_DELAY_UNITS_MILLISECONDS);
         }
     }
