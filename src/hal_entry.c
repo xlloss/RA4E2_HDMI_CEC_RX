@@ -757,12 +757,13 @@ void cec_rx_data_check(void)
             goto clear_data;
 
         opcode_list_point = opcode_description_find(p_buff->opcode);
+
         APP_PRINT("Opcode: 0x%x (%s)", p_buff->opcode,
                &cec_opcode_list[opcode_list_point].opcode_desc_str[0]);
 
         if (p_buff->byte_counter >= 3) {
            APP_PRINT(", Data: ");
-           for(int j=0; j<(p_buff->byte_counter-2); j++) {
+           for(int j = 0; j < (p_buff->byte_counter - 2); j++) {
                APP_PRINT("0x%x,", p_buff->data_buff[j]);
            }
         }
@@ -988,14 +989,17 @@ void cec_rx_data_check(void)
                         cec_action_request_detect_flag = true;
                         cec_action_type = CEC_ACTION_VOLUME_UP;
                         break;
+
                     case USER_CONTROL_VOLUME_DOWN:
                         cec_action_request_detect_flag = true;
                         cec_action_type = CEC_ACTION_VOLUME_DOWN;
                         break;
+
                     case USER_CONTROL_MUTE:
                         cec_action_request_detect_flag = true;
                         cec_action_type = CEC_ACTION_VOLUME_MUTE;
                         break;
+
                     default:
                         /* Do nothing */
                         break;
