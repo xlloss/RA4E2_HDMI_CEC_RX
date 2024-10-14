@@ -482,150 +482,131 @@ fsp_err_t cec_logical_address_allocate(void)
     /* APP_PRINT(CEC_LOGICAL_DEVICE_SELECT_MENU); */
     APP_PRINT("CEC Role : TV\r\n");
 
-    if(('1' < rtt_read_data_c) || (rtt_read_data_c > '5'))
-    {
+    if (('1' < rtt_read_data_c) || (rtt_read_data_c > '5')) {
         goto RESULT_LOGICAL_ADDRESS;
     }
 
-    switch(rtt_read_data_c)
-    {
+    switch(rtt_read_data_c) {
         case '1':
         {
             fsp_err = cec_logical_address_allocate_attempt(CEC_ADDR_TV);
-            if(fsp_err == FSP_SUCCESS)
-            {
+            if (fsp_err == FSP_SUCCESS) {
                 logical_address_allocate = true;
                 my_logical_address = CEC_ADDR_TV;
             }
             break;
         }
+
         case '2':
         {
             fsp_err = cec_logical_address_allocate_attempt(CEC_ADDR_RECORDING_DEVICE_1);
-            if(fsp_err == FSP_SUCCESS)
-            {
+
+            if(fsp_err == FSP_SUCCESS) {
                 logical_address_allocate = true;
                 my_logical_address = CEC_ADDR_RECORDING_DEVICE_1;
             }
 
-            if(logical_address_allocate == false)
-            {
+            if (logical_address_allocate == false) {
                 fsp_err = cec_logical_address_allocate_attempt(CEC_ADDR_RECORDING_DEVICE_2);
-                if(fsp_err == FSP_SUCCESS)
-                {
+                if (fsp_err == FSP_SUCCESS) {
                     logical_address_allocate = true;
                     my_logical_address = CEC_ADDR_RECORDING_DEVICE_2;
                 }
             }
 
-            if(logical_address_allocate == false)
-            {
+            if (logical_address_allocate == false) {
                 fsp_err = cec_logical_address_allocate_attempt(CEC_ADDR_RECORDING_DEVICE_3);
-                if(fsp_err == FSP_SUCCESS)
-                {
+                if (fsp_err == FSP_SUCCESS) {
                     logical_address_allocate = true;
                     my_logical_address = CEC_ADDR_RECORDING_DEVICE_3;
                 }
             }
             break;
         }
+
         case '3':
         {
             fsp_err = cec_logical_address_allocate_attempt(CEC_ADDR_TUNER_1);
-            if(fsp_err == FSP_SUCCESS)
-            {
+            if (fsp_err == FSP_SUCCESS) {
                 logical_address_allocate = true;
                 my_logical_address = CEC_ADDR_TUNER_1;
             }
 
-            if(logical_address_allocate == false)
-            {
+            if (logical_address_allocate == false) {
                 fsp_err = cec_logical_address_allocate_attempt(CEC_ADDR_TUNER_2);
-                if(fsp_err == FSP_SUCCESS)
-                {
+                if (fsp_err == FSP_SUCCESS) {
                     logical_address_allocate = true;
                     my_logical_address = CEC_ADDR_TUNER_2;
                 }
             }
 
-            if(logical_address_allocate == false)
-            {
+            if (logical_address_allocate == false) {
                 fsp_err = cec_logical_address_allocate_attempt(CEC_ADDR_TUNER_3);
-                if(fsp_err == FSP_SUCCESS)
-                {
+                if (fsp_err == FSP_SUCCESS) {
                     logical_address_allocate = true;
                     my_logical_address = CEC_ADDR_TUNER_3;
                 }
             }
 
-            if(logical_address_allocate == false)
-            {
+            if (logical_address_allocate == false) {
                 fsp_err = cec_logical_address_allocate_attempt(CEC_ADDR_TUNER_4);
-                if(fsp_err == FSP_SUCCESS)
-                {
+                if (fsp_err == FSP_SUCCESS) {
                     logical_address_allocate = true;
                     my_logical_address = CEC_ADDR_TUNER_4;
                 }
             }
             break;
         }
+
         case '4':
         {
             fsp_err = cec_logical_address_allocate_attempt(CEC_ADDR_PLAYBACK_DEVICE_1);
-            if(fsp_err == FSP_SUCCESS)
-            {
+            if (fsp_err == FSP_SUCCESS) {
                 logical_address_allocate = true;
                 my_logical_address = CEC_ADDR_PLAYBACK_DEVICE_1;
             }
 
-            if(logical_address_allocate == false)
-            {
+            if (logical_address_allocate == false) {
                 fsp_err = cec_logical_address_allocate_attempt(CEC_ADDR_PLAYBACK_DEVICE_2);
-                if(fsp_err == FSP_SUCCESS)
-                {
+                if (fsp_err == FSP_SUCCESS) {
                     logical_address_allocate = true;
                     my_logical_address = CEC_ADDR_PLAYBACK_DEVICE_2;
                 }
             }
 
-            if(logical_address_allocate == false)
-            {
+            if (logical_address_allocate == false) {
                 fsp_err = cec_logical_address_allocate_attempt(CEC_ADDR_PLAYBACK_DEVICE_3);
-                if(fsp_err == FSP_SUCCESS)
-                {
+                if (fsp_err == FSP_SUCCESS) {
                     logical_address_allocate = true;
                     my_logical_address = CEC_ADDR_PLAYBACK_DEVICE_3;
                 }
             }
             break;
         }
+
         case '5':
         {
             fsp_err = cec_logical_address_allocate_attempt(CEC_ADDR_AUDIO_SYSTEM);
-            if(fsp_err == FSP_SUCCESS)
-            {
+            if (fsp_err == FSP_SUCCESS) {
                 logical_address_allocate = true;
                 my_logical_address = CEC_ADDR_AUDIO_SYSTEM;
             }
             break;
         }
+
         default:
         {
-            /* Do nothing */
             break;
         }
     }
 
 RESULT_LOGICAL_ADDRESS:
-    if(logical_address_allocate)
-    {
+    if (logical_address_allocate) {
         cec_bus_device_list[my_logical_address].is_device_active = true;
         cec_bus_device_list[my_logical_address].is_my_device = true;
         APP_PRINT("Logical address %s has been allocated.\r\n", cec_logical_device_list[my_logical_address]);
         return FSP_SUCCESS;
-    }
-    else
-    {
+    } else {
         APP_PRINT("The Selected logical address type is in use by"
             "another device. Enter another one.\r\n");
         return FSP_ERR_IN_USE;
