@@ -876,21 +876,21 @@ fsp_err_t cec_logical_address_allocate_attempt(cec_addr_t logical_addr)
     do {
         fsp_err = R_CEC_MediaInit(&g_cec0_ctrl, logical_addr);
     } while(FSP_ERR_IN_USE == fsp_err);
+
     if (FSP_SUCCESS != fsp_err) {ERROR_INDICATE_LED_ON; __BKPT(0);}
 
     /* Wait for local address allocation and CEC bus to be free */
     do {
         fsp_err = R_CEC_StatusGet(&g_cec0_ctrl, &cec_status);
         timeout_ms--;
-        if (!timeout_ms) {
+        if (!timeout_ms)
             break;
-        }
-        R_BSP_SoftwareDelay(1, BSP_DELAY_UNITS_MILLISECONDS);
-    } while((FSP_SUCCESS == fsp_err) && (CEC_STATE_READY != cec_status.state));
 
-    if (CEC_STATE_READY != cec_status.state) {
+        R_BSP_SoftwareDelay(1, BSP_DELAY_UNITS_MILLISECONDS);
+    } while ((FSP_SUCCESS == fsp_err) && (CEC_STATE_READY != cec_status.state));
+
+    if (CEC_STATE_READY != cec_status.state)
         return FSP_ERR_IN_USE;
-    }
 
     return FSP_SUCCESS;
 }
