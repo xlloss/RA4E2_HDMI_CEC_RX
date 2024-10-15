@@ -360,7 +360,7 @@ struct cec_cmd  cec_cmd_package[30] =
 /* i2c slave buffer */
 
 #define I2C_SLAVE_TRANS_LEN 20
-uint8_t g_i2c_slave_buffer[I2C_SLAVE_TRANS_LEN];
+uint8_t g_i2c_slave_buffer[I2C_SLAVE_TRANS_LEN] = {0xFF};
 uint8_t g_slave_transfer_length = I2C_SLAVE_TRANS_LEN;
 uint8_t i2c_reg_index = 0;
 #define CEC_RX_DATA_BUFF_DATA_NUMBER (16 * 5)
@@ -415,8 +415,17 @@ void i2c_slave_callback (i2c_slave_callback_args_t * p_args)
     if ((p_args->event == I2C_SLAVE_EVENT_RX_COMPLETE) ||
         (p_args->event == I2C_SLAVE_EVENT_TX_COMPLETE)) {
         /* Transaction Successful */
-        if (g_i2c_slave_callback_event == I2C_SLAVE_EVENT_RX_COMPLETE)
+        if (g_i2c_slave_callback_event == I2C_SLAVE_EVENT_RX_COMPLETE) {
             i2c_reg_index = g_i2c_slave_buffer[0];
+            APP_PRINT("RX_COMPLETE\r\n");
+            if (i2c_reg_index == DEST_ADDR_REG)
+                user_action_cec_target = g_i2c_slave_buffer[1];
+            else
+                cec_cmd_write(i2c_reg_index, &g_i2c_slave_buffer[1]);
+        } else if (g_i2c_slave_callback_event == I2C_SLAVE_EVENT_TX_COMPLETE) {
+            APP_PRINT("TX_COMPLETE\r\n");
+        }
+
     } else if ((p_args->event == I2C_SLAVE_EVENT_RX_REQUEST) ||
                (p_args->event == I2C_SLAVE_EVENT_RX_MORE_REQUEST)) {
         /* Read from Master */
@@ -424,12 +433,6 @@ void i2c_slave_callback (i2c_slave_callback_args_t * p_args)
             g_i2c_slave_buffer, g_slave_transfer_length);
 
         assert(FSP_SUCCESS == fsp_err);
-
-        i2c_reg_index = g_i2c_slave_buffer[0];
-        if (i2c_reg_index == DEST_ADDR_REG)
-            user_action_cec_target = g_i2c_slave_buffer[1];
-        else
-            cec_cmd_write(i2c_reg_index, &g_i2c_slave_buffer[1]);
     } else if ((p_args->event == I2C_SLAVE_EVENT_TX_REQUEST) ||
                (p_args->event == I2C_SLAVE_EVENT_TX_MORE_REQUEST)) {
         /* Write to master */
