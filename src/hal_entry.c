@@ -747,17 +747,14 @@ fsp_err_t cec_logical_address_allocate(void)
 
     switch (rtt_read_data_c) {
         case '1':
-        {
             fsp_err = cec_logical_address_allocate_attempt(CEC_ADDR_TV);
             if (fsp_err == FSP_SUCCESS) {
                 logical_address_allocate = true;
                 my_logical_address = CEC_ADDR_TV;
             }
             break;
-        }
 
         case '2':
-        {
             fsp_err = cec_logical_address_allocate_attempt(CEC_ADDR_RECORDING_DEVICE_1);
 
             if (fsp_err == FSP_SUCCESS) {
@@ -781,10 +778,8 @@ fsp_err_t cec_logical_address_allocate(void)
                 }
             }
             break;
-        }
 
         case '3':
-        {
             fsp_err = cec_logical_address_allocate_attempt(CEC_ADDR_TUNER_1);
             if (fsp_err == FSP_SUCCESS) {
                 logical_address_allocate = true;
@@ -815,10 +810,8 @@ fsp_err_t cec_logical_address_allocate(void)
                 }
             }
             break;
-        }
 
         case '4':
-        {
             fsp_err = cec_logical_address_allocate_attempt(CEC_ADDR_PLAYBACK_DEVICE_1);
             if (fsp_err == FSP_SUCCESS) {
                 logical_address_allocate = true;
@@ -841,17 +834,14 @@ fsp_err_t cec_logical_address_allocate(void)
                 }
             }
             break;
-        }
 
         case '5':
-        {
             fsp_err = cec_logical_address_allocate_attempt(CEC_ADDR_AUDIO_SYSTEM);
             if (fsp_err == FSP_SUCCESS) {
                 logical_address_allocate = true;
                 my_logical_address = CEC_ADDR_AUDIO_SYSTEM;
             }
             break;
-        }
 
         default:
             break;
