@@ -36,11 +36,6 @@
 
 /* ########################### User Device Setting ########################## */
 
-/* My OSD name. */
-/* The text will be displayed on TV menu. Maximum length is 14 bytes. */
-#define MY_OSD_NAME_LENGTH                      (12)
-const uint8_t my_osd_name[MY_OSD_NAME_LENGTH] = "RA CEC DEMO";
-
 /*
  * My Vendor ID. */
 /* Specify vendor ID of your connected TV.
@@ -98,6 +93,11 @@ cec_addr_t user_action_cec_target;
 /* 0.0.0.0 for tv */
 uint8_t my_physical_address[4] = {0x0, 0x0, 0x0, 0x0};
 
+/* My OSD name. */
+/* The text will be displayed on TV menu. Maximum length is 14 bytes. */
+#define MY_OSD_REG 0x22
+#define MY_OSD_NAME_LENGTH                      (12)
+uint8_t my_osd_name[MY_OSD_NAME_LENGTH] = "RA CEC DEMO";
 /* --- control register address --- */
 
 #define CEC_RX_DATA_BUFF_DATA_NUMBER (16 * 5)
