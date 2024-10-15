@@ -45,13 +45,16 @@
 #define RTT_DEBUG(...)
 #endif
 
+#define LOGICAL_DEVICE_NUM 12
+#define CEC_BUS_DEVICE_NUM 16
+
 cec_addr_t my_logical_address = CEC_ADDR_UNREGISTERED;
 
 volatile bool system_audio_mode_support_function = false;
 volatile bool system_audio_mode_status = false;
 
 /* List of CEC bus device status */
-cec_device_status_t cec_bus_device_list[16];
+cec_device_status_t cec_bus_device_list[CEC_BUS_DEVICE_NUM];
 
 /* User action request, type and target cec device */
 volatile bool user_action_detect_flag = false;
@@ -991,10 +994,7 @@ void cec_rx_data_check(void)
         APP_PRINT("Opcode: 0x%x (%s)", p_buff->opcode,
                &cec_opcode_list[opcode_list_point].opcode_desc_str[0]);
 
-        /*
-         *                 1          2          3          4       ...
-         * StartBit | Head Block | OpenCode | Operand1 | Operand2 | ...
-         */
+        /* StartBit | Head Block | OpenCode | Operand1 | Operand2 | ... */
         if (p_buff->byte_counter >= 3) {
            APP_PRINT(", Data: ");
            for (j = 0; j < (p_buff->byte_counter - 2); j++)
@@ -1702,7 +1702,7 @@ void cec_bus_scan(void)
 
     /* Request physical address to all devices sequentially */
     APP_PRINT("Requesting physical address ...\r\n");
-    for(i = 0; i < 12; i++) {
+    for(i = 0; i < LOGICAL_DEVICE_NUM; i++) {
         if (i != my_logical_address) {
             cec_message_send(i, CEC_OPCODE_GIVE_PHYSICAL_ADDRESS, NULL, 0);
             R_BSP_SoftwareDelay(400, BSP_DELAY_UNITS_MILLISECONDS);
@@ -1711,7 +1711,7 @@ void cec_bus_scan(void)
 
     /* Request vendor id to all devices sequentially */
     APP_PRINT("Requesting vendor id ...\r\n");
-    for (i = 0; i < 12; i++) {
+    for (i = 0; i < LOGICAL_DEVICE_NUM; i++) {
         if (i != my_logical_address) {
             cec_message_send(i, CEC_OPCODE_GIVE_DEVICE_VENDOR_ID, NULL, 0);
             R_BSP_SoftwareDelay(400, BSP_DELAY_UNITS_MILLISECONDS);
@@ -1720,7 +1720,7 @@ void cec_bus_scan(void)
 
     /* Request CEC version to all devices sequentially */
     APP_PRINT("Requesting CEC version ...\r\n");
-    for (i = 0; i < 12; i++) {
+    for (i = 0; i < LOGICAL_DEVICE_NUM; i++) {
         if (i != my_logical_address) {
             cec_message_send(i, CEC_OPCODE_GET_CEC_VERSION, NULL, 0);
             R_BSP_SoftwareDelay(400, BSP_DELAY_UNITS_MILLISECONDS);
@@ -1729,7 +1729,7 @@ void cec_bus_scan(void)
 
     /* Request Power status to all devices sequentially */
     APP_PRINT("Requesting power status ...\r\n");
-    for (i = 0; i < 12; i++) {
+    for (i = 0; i < LOGICAL_DEVICE_NUM; i++) {
         if (i != my_logical_address) {
             cec_message_send(i, CEC_OPCODE_GIVE_POWER_STATUS, NULL, 0);
             R_BSP_SoftwareDelay(400, BSP_DELAY_UNITS_MILLISECONDS);
@@ -1743,15 +1743,14 @@ void cec_bus_scan(void)
 
 void cec_bus_status_buffer_display(void)
 {
-    for (int i = 0; i < 15; i++)
+    for (int i = 0; i < (CEC_BUS_DEVICE_NUM - 1); i++)
         if (cec_bus_device_list[i].is_device_active)
             cec_device_status_display(i, &cec_bus_device_list[i]);
 }
 
 void R_BSP_WarmStart(bsp_warm_start_event_t event)
 {
-    if (BSP_WARM_START_POST_C == event) {
+    if (BSP_WARM_START_POST_C == event)
         /* Configure pins. */
         R_IOPORT_Open (&g_ioport_ctrl, &IOPORT_CFG_NAME);
-    }
 }
