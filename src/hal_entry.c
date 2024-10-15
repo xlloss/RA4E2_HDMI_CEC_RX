@@ -698,12 +698,12 @@ fsp_err_t cec_message_send(cec_addr_t destination,  uint8_t opcode,
     }
 
     /* Wait for tx completion */
-    while(!cec_tx_complete_flag) {
+    while (!cec_tx_complete_flag) {
         if (cec_err_flag) {
             cec_err_flag = false;
 
             if (cec_err_type & ( CEC_ERROR_UERR | CEC_ERROR_ACKERR |
-                                CEC_ERROR_TXERR | CEC_ERROR_AERR |
+                                CEC_ERROR_TXERR | CEC_ERROR_AERR   |
                                 CEC_ERROR_BLERR)) {
                 err_detect = true;
                 break;
@@ -719,17 +719,17 @@ fsp_err_t cec_message_send(cec_addr_t destination,  uint8_t opcode,
 
     cec_tx_complete_flag = false;
 
-    if (0 < timeout_ms) {
-        if (!err_detect) {
-            APP_PRINT("Success\r\n");
-            return FSP_SUCCESS;
-        } else {
-            APP_PRINT("Error (0x%x)\r\n", cec_err_type);
-            return FSP_ERR_ASSERTION;
-        }
-    } else {
+    if (!timeout_ms) {
         APP_PRINT("Timeout\r\n", cec_err_type);
         return FSP_ERR_TIMEOUT;
+    }
+
+    if (!err_detect) {
+        APP_PRINT("Success\r\n");
+        return FSP_SUCCESS;
+    } else {
+        APP_PRINT("Error (0x%x)\r\n", cec_err_type);
+        return FSP_ERR_ASSERTION;
     }
 }
 
