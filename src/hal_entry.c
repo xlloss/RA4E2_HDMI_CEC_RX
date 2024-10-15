@@ -36,18 +36,6 @@
 
 /* ########################### User Device Setting ########################## */
 
-/* My physical address. */
-/* Specify your physical address.
- * You can guess from the HDMI connectornameyou connected this device to.
- */
-
-/* If APP_HDMI_DDC_PHYSICAL_ADDR_GET is enabled (1), the value will
- * be updated by information of EDID that acquired via HDMI-DDC (I2C)
- */
-
-/* 0.0.0.0 for tv */
-uint8_t my_physical_address[4] = {0x0, 0x0, 0x0, 0x0};
-
 /* My OSD name. */
 /* The text will be displayed on TV menu. Maximum length is 14 bytes. */
 #define MY_OSD_NAME_LENGTH                      (12)
@@ -100,6 +88,15 @@ volatile cec_error_t cec_err_type;
 /* destination device setting */
 #define DEST_ADDR_REG 0x20
 cec_addr_t user_action_cec_target;
+
+/*
+ * APP_HDMI_DDC_PHYSICAL_ADDR_GET (1): BY EDID
+ * APP_HDMI_DDC_PHYSICAL_ADDR_GET (0): FIX
+ */
+
+#define MY_PHYSICAL_ADDR_REG 0x21
+/* 0.0.0.0 for tv */
+uint8_t my_physical_address[4] = {0x0, 0x0, 0x0, 0x0};
 
 /* --- control register address --- */
 
