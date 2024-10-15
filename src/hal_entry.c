@@ -30,12 +30,11 @@
 
 #define APP_HDMI_DDC_PHYSICAL_ADDR_GET   (0) // 0: Use fixed value, 1: Get from sink device edid
 #define APP_VENDOR_ID_INSTALL            (0) // 0: Use fixed value, 1: Install using SEGGER RTT Viewer
-
 #define DEBUG_CEC_INTERRUPT_EVENT_OUTPUT (0) // 0: Disabled, 1: Enabled
 
 ///#################### End of Application Option Setting ###################
 
-///########################### User Device Setting ##########################
+/* ########################### User Device Setting ########################## */
 
 /* My physical address. */
 /* Specify your physical address.
@@ -65,9 +64,9 @@ const uint8_t my_osd_name[MY_OSD_NAME_LENGTH] = "RA CEC DEMO";
  * If APP_VENDOR_ID_INSTALL is enabled (1),
  * the value will be updated by SEGGER RTT Viewer installation.
  */
-uint8_t my_vendor_id[3] =                       {0x00, 0x00, 0x39};
+uint8_t my_vendor_id[3] = {0x00, 0x00, 0x39};
 
-///####################### End of User Device Setting #######################
+/* ####################### End of User Device Setting ####################### */
 
 #if (DEBUG_CEC_INTERRUPT_EVENT_OUTPUT == 1)
 #define RTT_DEBUG(fn_, ...)   APP_PRINT((fn_), ##__VA_ARGS__)
@@ -87,9 +86,7 @@ cec_device_status_t cec_bus_device_list[16];
 volatile bool user_action_detect_flag = false;
 uint8_t       user_action_type        = 0x0;
 
-#define DEST_ADDR_REG 0x20
 cec_addr_t user_action_cec_target;
-
 
 /* CEC action request and type */
 volatile bool cec_action_request_detect_flag = false;
@@ -101,10 +98,25 @@ volatile bool        cec_tx_complete_flag = false;
 volatile bool        cec_err_flag = false;
 volatile cec_error_t cec_err_type;
 
-/* for i2c read */
-uint32_t             cec_opecode_reg;
-uint32_t             cec_opecode_param1_reg;
-uint32_t             cec_opecode_param2_reg;
+/* control register address   */
+/* destination device setting */
+#define DEST_ADDR_REG 0x20
+
+#define CEC_RX_DATA_BUFF_DATA_NUMBER (16 * 5)
+#define I2C_SLAVE_TRANS_LEN 20
+#define I2C_INDX_PTR 0
+#define I2C_DATA_PTR 1
+
+/* i2c slave buffer */
+uint8_t g_i2c_slave_buffer[I2C_SLAVE_TRANS_LEN] = {0x00};
+uint8_t g_slave_transfer_length = I2C_SLAVE_TRANS_LEN;
+uint8_t i2c_reg_index = 0;
+i2c_slave_event_t g_i2c_slave_callback_event;
+
+
+cec_rx_message_buff_t cec_rx_data_buff[CEC_RX_DATA_BUFF_DATA_NUMBER];
+volatile uint8_t      cec_rx_data_buff_next_store_point = 0;
+
 /* RX buffer for CEC reception data */
 struct cec_event  cec_ev_package[30] =
 {
@@ -231,7 +243,6 @@ struct cec_event  cec_ev_package[30] =
     },
 };
 
-
 struct cec_cmd  cec_cmd_package[30] =
 {
     {
@@ -357,17 +368,6 @@ struct cec_cmd  cec_cmd_package[30] =
     },
 };
 
-/* i2c slave buffer */
-
-#define I2C_SLAVE_TRANS_LEN 20
-uint8_t g_i2c_slave_buffer[I2C_SLAVE_TRANS_LEN] = {0xFF};
-uint8_t g_slave_transfer_length = I2C_SLAVE_TRANS_LEN;
-uint8_t i2c_reg_index = 0;
-#define CEC_RX_DATA_BUFF_DATA_NUMBER (16 * 5)
-cec_rx_message_buff_t cec_rx_data_buff[CEC_RX_DATA_BUFF_DATA_NUMBER];
-volatile uint8_t      cec_rx_data_buff_next_store_point = 0;
-
-i2c_slave_event_t g_i2c_slave_callback_event;
 fsp_err_t cec_message_send(cec_addr_t destination, uint8_t opcode,
     uint8_t const * data_buff, uint8_t data_buff_length);
 
@@ -379,11 +379,12 @@ void cec_system_audio_mode_request(void);
 
 void cec_rx_data_check(void);
 void cec_system_auto_response(cec_rx_message_buff_t const * buff);
-
 void cec_bus_scan(void);
 void cec_bus_status_buffer_display(void);
-
+void cec_cmd_read(uint8_t rd_ev_id, uint8_t *data_buf);
+void cec_cmd_write(uint8_t wr_cmd_id, uint8_t *data);
 void R_BSP_WarmStart(bsp_warm_start_event_t event);
+
 
 /* [REG_INDEX] [CEC_ADDR {PHYSICAL ADDR} {LOGICAL ADDR}] [DATA] */
 void cec_cmd_write(uint8_t wr_cmd_id, uint8_t *data)
@@ -416,16 +417,15 @@ void i2c_slave_callback (i2c_slave_callback_args_t * p_args)
         (p_args->event == I2C_SLAVE_EVENT_TX_COMPLETE)) {
         /* Transaction Successful */
         if (g_i2c_slave_callback_event == I2C_SLAVE_EVENT_RX_COMPLETE) {
-            i2c_reg_index = g_i2c_slave_buffer[0];
+            i2c_reg_index = g_i2c_slave_buffer[I2C_INDX_PTR];
             APP_PRINT("RX_COMPLETE\r\n");
             if (i2c_reg_index == DEST_ADDR_REG)
-                user_action_cec_target = g_i2c_slave_buffer[1];
+                user_action_cec_target = g_i2c_slave_buffer[I2C_DATA_PTR];
             else
-                cec_cmd_write(i2c_reg_index, &g_i2c_slave_buffer[1]);
+                cec_cmd_write(i2c_reg_index, &g_i2c_slave_buffer[I2C_DATA_PTR]);
         } else if (g_i2c_slave_callback_event == I2C_SLAVE_EVENT_TX_COMPLETE) {
             APP_PRINT("TX_COMPLETE\r\n");
         }
-
     } else if ((p_args->event == I2C_SLAVE_EVENT_RX_REQUEST) ||
                (p_args->event == I2C_SLAVE_EVENT_RX_MORE_REQUEST)) {
         /* Read from Master */
@@ -436,10 +436,10 @@ void i2c_slave_callback (i2c_slave_callback_args_t * p_args)
     } else if ((p_args->event == I2C_SLAVE_EVENT_TX_REQUEST) ||
                (p_args->event == I2C_SLAVE_EVENT_TX_MORE_REQUEST)) {
         /* Write to master */
-        cec_cmd_read(i2c_reg_index, &g_i2c_slave_buffer[0]);
+        cec_cmd_read(i2c_reg_index, &g_i2c_slave_buffer[I2C_INDX_PTR]);
 
         fsp_err = R_IIC_B_SLAVE_Write(&g_i2c_slave_ctrl,
-            &g_i2c_slave_buffer[0], g_slave_transfer_length);
+            &g_i2c_slave_buffer[I2C_INDX_PTR], g_slave_transfer_length);
 
         assert(FSP_SUCCESS == fsp_err);
     }
@@ -455,6 +455,7 @@ void hal_entry(void)
     R_FSP_VersionGet(&fsp_version);
     APP_PRINT(BANNER_INFO, fsp_version.version_id_b.major,
                 fsp_version.version_id_b.minor, fsp_version.version_id_b.patch);
+
     APP_PRINT(APP_DESCRIPTION);
     APP_PRINT(APP_LED_DESCRIPTION);
 
@@ -469,7 +470,7 @@ void hal_entry(void)
     /* Initialize LEDs. A pin for LED2 now starts PWM output. */
     demo_system_initialize();
 
-    cec_opecode_reg = 0;
+
     /* Get physical address */
 #if (APP_HDMI_DDC_PHYSICAL_ADDR_GET == 0)
     APP_PRINT("Fixed physical address will be used\r\n");
@@ -976,9 +977,6 @@ void cec_rx_data_check(void)
     static uint8_t buff_read_point = 0;
     cec_rx_message_buff_t* p_buff;
     uint32_t opcode_list_point;
-    uint8_t osd_string_data[15];
-    uint8_t audio_mode_data;
-    uint8_t inactive_source_data, i;
 
     for (uint32_t i = 0; i < CEC_RX_DATA_BUFF_DATA_NUMBER; i++) {
         p_buff = &cec_rx_data_buff[buff_read_point];
@@ -1012,8 +1010,6 @@ void cec_rx_data_check(void)
 
         if (p_buff->source == my_logical_address)
             goto clear_data;
-
-        cec_opecode_reg = p_buff->opcode;
 
         switch(p_buff->opcode) {
             /* Vendor Specific Commands Feature */
@@ -1297,8 +1293,6 @@ clear_data:
         if (buff_read_point == CEC_RX_DATA_BUFF_DATA_NUMBER) {
             buff_read_point = 0;
         }
-
-no_new_data:
     }
 }
 
