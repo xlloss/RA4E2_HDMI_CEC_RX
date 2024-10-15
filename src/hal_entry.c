@@ -547,9 +547,8 @@ void hal_entry(void)
         }
 
         cec_rx_data_check();
-        if (cec_action_request_detect_flag) {
+        if (cec_action_request_detect_flag)
             cec_rx_data_process(cec_action_type);
-        }
 
         R_BSP_SoftwareDelay(1, BSP_DELAY_UNITS_MILLISECONDS);
     }
