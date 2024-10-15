@@ -655,6 +655,7 @@ fsp_err_t cec_message_send(cec_addr_t destination,  uint8_t opcode,
     uint8_t       err_detect = false;
     uint32_t      timeout_ms = (uint32_t)(5 + 40 * (2 + data_buff_length));
     uint32_t      opcode_list_point;
+    int j;
 
     APP_PRINT("[> CEC Out] Dest: %d (%s),\r\n", destination,
         &cec_logical_device_list[destination][0]);
@@ -665,9 +666,8 @@ fsp_err_t cec_message_send(cec_addr_t destination,  uint8_t opcode,
 
     if (data_buff_length > 0) {
         APP_PRINT(", Data: ");
-        for (int j = 0; j < data_buff_length; j++) {
+        for (j = 0; j < data_buff_length; j++)
             APP_PRINT("0x%x,", data_buff[j]);
-        }
     }
 
     APP_PRINT(" sending ... ");
@@ -708,11 +708,12 @@ fsp_err_t cec_message_send(cec_addr_t destination,  uint8_t opcode,
         }
 
         timeout_ms--;
-        if(timeout_ms == 0) {
+        if (!timeout_ms)
             break;
-        }
+
         R_BSP_SoftwareDelay(1, BSP_DELAY_UNITS_MILLISECONDS);
     }
+
     cec_tx_complete_flag = false;
 
     if (0 < timeout_ms) {
