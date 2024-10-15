@@ -929,7 +929,7 @@ void cec_system_audio_mode_request(void)
 
     if (system_audio_mode_status == false) {
         /* The Active source must be checked to request System Audio mode */
-        for (i = 0; i < 12; i++) {
+        for (i = 0; i < LOGICAL_DEVICE_NUM; i++) {
             if (cec_bus_device_list[i].is_active_source) {
                 APP_PRINT("Current active source is %s.\r\n", &cec_logical_device_list[i]);
                 active_source_find = true;
