@@ -36,18 +36,6 @@
 
 /* ########################### User Device Setting ########################## */
 
-/*
- * My Vendor ID. */
-/* Specify vendor ID of your connected TV.
- * For example, LG TV: {0x00, 0xE0, 0x91}.
- * Toshiba TV: {0x00, 0x00, 0x39}
- */
-
-/*
- * If APP_VENDOR_ID_INSTALL is enabled (1),
- * the value will be updated by SEGGER RTT Viewer installation.
- */
-uint8_t my_vendor_id[3] = {0x00, 0x00, 0x39};
 
 /* ####################### End of User Device Setting ####################### */
 
@@ -98,6 +86,15 @@ uint8_t my_physical_address[4] = {0x0, 0x0, 0x0, 0x0};
 #define MY_OSD_REG 0x22
 #define MY_OSD_NAME_LENGTH                      (12)
 uint8_t my_osd_name[MY_OSD_NAME_LENGTH] = "RA CEC DEMO";
+
+/*
+ * My Vendor ID. */
+/* Specify vendor ID of your connected TV.
+ * For example, LG TV: {0x00, 0xE0, 0x91}.
+ * Toshiba TV: {0x00, 0x00, 0x39}
+ */
+#define MY_VENDOR_ID_REG 0x23
+uint8_t my_vendor_id[3] = {0x00, 0x00, 0x39};
 /* --- control register address --- */
 
 #define CEC_RX_DATA_BUFF_DATA_NUMBER (16 * 5)
