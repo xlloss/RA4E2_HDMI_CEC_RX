@@ -497,15 +497,14 @@ void hal_entry(void)
     APP_PRINT("My vendor ID is 0x%02x, 0x%02x, 0x%02x.\r\n\r\n",
             my_vendor_id[0], my_vendor_id[1], my_vendor_id[2]);
 
-    /* i2c slave init */
     fsp_err = R_IIC_B_SLAVE_Open(&g_i2c_slave_ctrl, &g_i2c_slave_cfg);
     if (FSP_SUCCESS != fsp_err) { ERROR_INDICATE_LED_ON; __BKPT(0); }
 
-    /* Open CEC module */
     fsp_err = R_CEC_Open(&g_cec0_ctrl, &g_cec0_cfg);
     if (FSP_SUCCESS != fsp_err) { ERROR_INDICATE_LED_ON; __BKPT(0); }
 
-    /* Make 50 milliseconds delay. R_CEC_MediaInit may return
+    /*
+     * Make 50 milliseconds delay. R_CEC_MediaInit may return
      * FSP_ERR_IN_USE for up to 45 milliseconds after
      * calling R_CEC_Open
      */
@@ -520,7 +519,8 @@ void hal_entry(void)
 
     APP_PRINT("CEC logical address allocation completed.\r\n");
 
-    /* Now we recognize my logical address,
+    /*
+     * Now we recognize my logical address,
      * update internal cec bus device status buffer with my device info
      */
     cec_bus_device_list[my_logical_address].is_power_status_store = true;
@@ -668,12 +668,14 @@ fsp_err_t cec_message_send(cec_addr_t destination,  uint8_t opcode,
     opcode_list_point = opcode_description_find(opcode);
     APP_PRINT("Opcode: 0x%x (%s)",
         opcode, &cec_opcode_list[opcode_list_point].opcode_desc_str[0]);
+
     if (data_buff_length > 0) {
         APP_PRINT(", Data: ");
         for (int j = 0; j < data_buff_length; j++) {
             APP_PRINT("0x%x,", data_buff[j]);
         }
     }
+
     APP_PRINT(" sending ... ");
 
     /* Clear CEC TX message buffer */
@@ -903,14 +905,14 @@ fsp_err_t cec_logical_address_allocate_attempt(cec_addr_t logical_addr)
 
 void cec_system_audio_mode_support_enabling(void)
 {
+    uint8_t cec_data[CEC_DATA_BUFFER_LENGTH];
+
     system_audio_mode_support_function = !system_audio_mode_support_function;
 
     if (system_audio_mode_support_function) {
         APP_PRINT("System Audio mode function support enabled.\r\n");
     } else {
         if (system_audio_mode_status) {
-            uint8_t    cec_data[CEC_DATA_BUFFER_LENGTH];
-
             cec_data[0] = CEC_SYSTEM_AUDIO_STATUS_OFF;
             cec_message_send(CEC_ADDR_TV, CEC_OPCODE_SET_SYSTEM_AUDIO_MODE, &cec_data[0], 1);
 
@@ -925,14 +927,14 @@ void cec_system_audio_mode_request(void)
 {
     fsp_err_t fsp_err = FSP_SUCCESS;
     bool       active_source_find = false;
-    uint8_t    cec_data[CEC_DATA_BUFFER_LENGTH];
+    uint8_t    cec_data[CEC_DATA_BUFFER_LENGTH], i;
 
     /* Enable System Audio mode support */
     system_audio_mode_support_function = true;
 
     if (system_audio_mode_status == false) {
         /* The Active source must be checked to request System Audio mode */
-        for (int i=0; i<12; i++) {
+        for (i = 0; i < 12; i++) {
             if (cec_bus_device_list[i].is_active_source) {
                 APP_PRINT("Current active source is %s.\r\n", &cec_logical_device_list[i]);
                 active_source_find = true;
@@ -969,16 +971,16 @@ void cec_system_audio_mode_request(void)
 
         system_audio_mode_status = false;
     }
-
 }
 
 void cec_rx_data_check(void)
 {
     static uint8_t buff_read_point = 0;
     cec_rx_message_buff_t* p_buff;
-    uint32_t opcode_list_point;
+    uint32_t opcode_list_point, i;
+    int j;
 
-    for (uint32_t i = 0; i < CEC_RX_DATA_BUFF_DATA_NUMBER; i++) {
+    for (i = 0; i < CEC_RX_DATA_BUFF_DATA_NUMBER; i++) {
         p_buff = &cec_rx_data_buff[buff_read_point];
 
         if (!p_buff->is_new_data)
@@ -999,11 +1001,14 @@ void cec_rx_data_check(void)
         APP_PRINT("Opcode: 0x%x (%s)", p_buff->opcode,
                &cec_opcode_list[opcode_list_point].opcode_desc_str[0]);
 
+        /*
+         *                 1          2          3          4       ...
+         * StartBit | Head Block | OpenCode | Operand1 | Operand2 | ...
+         */
         if (p_buff->byte_counter >= 3) {
            APP_PRINT(", Data: ");
-           for(int j = 0; j < (p_buff->byte_counter - 2); j++) {
+           for (j = 0; j < (p_buff->byte_counter - 2); j++)
                APP_PRINT("0x%x,", p_buff->data_buff[j]);
-           }
         }
 
         APP_PRINT("\r\n");
@@ -1290,9 +1295,8 @@ clear_data:
         memset(p_buff, 0x0, sizeof(cec_rx_message_buff_t));
 
         buff_read_point++;
-        if (buff_read_point == CEC_RX_DATA_BUFF_DATA_NUMBER) {
+        if (buff_read_point == CEC_RX_DATA_BUFF_DATA_NUMBER)
             buff_read_point = 0;
-        }
     }
 }
 
