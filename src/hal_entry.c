@@ -414,16 +414,6 @@ void i2c_slave_callback (i2c_slave_callback_args_t * p_args)
     if ((p_args->event == I2C_SLAVE_EVENT_RX_COMPLETE) ||
         (p_args->event == I2C_SLAVE_EVENT_TX_COMPLETE)) {
         /* Transaction Successful */
-        if (g_i2c_slave_callback_event == I2C_SLAVE_EVENT_RX_COMPLETE) {
-            i2c_reg_index = g_i2c_slave_buffer[I2C_INDX_PTR];
-            APP_PRINT("RX_COMPLETE\r\n");
-            if (i2c_reg_index == DEST_ADDR_REG)
-                user_action_cec_target = g_i2c_slave_buffer[I2C_DATA_PTR];
-            else
-                cec_cmd_write(i2c_reg_index, &g_i2c_slave_buffer[I2C_DATA_PTR]);
-        } else if (g_i2c_slave_callback_event == I2C_SLAVE_EVENT_TX_COMPLETE) {
-            APP_PRINT("TX_COMPLETE\r\n");
-        }
     } else if ((p_args->event == I2C_SLAVE_EVENT_RX_REQUEST) ||
                (p_args->event == I2C_SLAVE_EVENT_RX_MORE_REQUEST)) {
         /* Read from Master */
@@ -543,6 +533,22 @@ void hal_entry(void)
               system_audio_mode_status ? SYS_AUDIO_ON : SYS_AUDIO_OFF);
 
     while (1) {
+        if (g_i2c_slave_callback_event == I2C_SLAVE_EVENT_RX_COMPLETE) {
+            g_i2c_slave_callback_event = 0;
+            i2c_reg_index = g_i2c_slave_buffer[I2C_INDX_PTR];
+            APP_PRINT("RX_COMPLETE\r\n");
+
+            switch (i2c_reg_index) {
+            case DEST_ADDR_REG:
+                user_action_cec_target = g_i2c_slave_buffer[I2C_DATA_PTR];
+                break;
+
+            default:
+                cec_cmd_write(i2c_reg_index, &g_i2c_slave_buffer[I2C_DATA_PTR]);
+                break;
+            }
+        }
+
         user_action_check();
         if (user_action_detect_flag) {
             user_action_detect_flag = false;
