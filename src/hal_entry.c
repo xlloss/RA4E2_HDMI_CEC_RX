@@ -952,15 +952,13 @@ void cec_system_audio_mode_request(void)
                 APP_PRINT("System Audio mode request failed.\r\n");
                 system_audio_mode_status = false;
             }
-        } else {
+        } else
             APP_PRINT("Active source is not found. Try bus scan to get.\r\n");
-        }
+
     } else {
         cec_data[0] = CEC_SYSTEM_AUDIO_STATUS_OFF;
         cec_message_send(CEC_ADDR_TV, CEC_OPCODE_SET_SYSTEM_AUDIO_MODE, &cec_data[0], 1);
-
         APP_PRINT("System Audio mode is disabled.\r\n");
-
         system_audio_mode_status = false;
     }
 }
