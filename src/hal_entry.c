@@ -548,6 +548,11 @@ void hal_entry(void)
                     &g_i2c_slave_buffer[I2C_DATA_PTR], sizeof(uint8_t) * 4);
                 break;
 
+            case MY_OSD_REG:
+                memcpy(my_osd_name,
+                    &g_i2c_slave_buffer[I2C_DATA_PTR], sizeof(uint8_t) * MY_OSD_NAME_LENGTH);
+                break;
+
             default:
                 cec_cmd_write(i2c_reg_index, &g_i2c_slave_buffer[I2C_DATA_PTR]);
                 break;
