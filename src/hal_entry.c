@@ -225,22 +225,29 @@ struct cec_event  cec_ev_package[30] =
     },
 
     {
-        .ev_id = EV_REQ_TUNER_CTL,
+        .ev_id = CMD_REQ_TUNER_STEP_DEC_CTRL,
         .opencode = CEC_OPCODE_TUNER_STEP_DECREMENT,
     },
 
     {
-        .ev_id = EV_AUDIO_MODE_REQUEST,
+        .ev_id = CMD_REQ_TUNER_STEP_INC_CTRL,
         .opencode = CEC_OPCODE_TUNER_STEP_INCREMENT,
     },
 
     {
-        .ev_id = EV_SET_AUDIO_RATE,
+        .ev_id = EV_AUDIO_MODE_REQUEST,
         .opencode = CEC_OPCODE_SYSTEM_AUDIO_MODE_REQUEST,
     },
 
     {
+        .ev_id = EV_SET_AUDIO_RATE,
         .opencode = CEC_OPCODE_SET_AUDIO_RATE,
+    },
+
+    {
+        .ev_id = EV_GET_CEC_VERSION,
+        .opencode = CEC_OPCODE_GET_CEC_VERSION,
+        .param_len = 0,
     },
 };
 
@@ -350,22 +357,29 @@ struct cec_cmd  cec_cmd_package[30] =
     },
 
     {
-        .cmd_id = CMD_REQ_TUNER_CTL,
+        .cmd_id = CMD_REQ_TUNER_STEP_DEC_CTRL,
         .opencode = CEC_OPCODE_TUNER_STEP_DECREMENT,
     },
 
     {
-        .cmd_id = CMD_AUDIO_MODE_REQUEST,
+        .cmd_id = CMD_REQ_TUNER_STEP_INC_CTRL,
         .opencode = CEC_OPCODE_TUNER_STEP_INCREMENT,
     },
 
     {
-        .cmd_id = CMD_SET_AUDIO_RATE,
+        .cmd_id = CMD_AUDIO_MODE_REQUEST,
         .opencode = CEC_OPCODE_SYSTEM_AUDIO_MODE_REQUEST,
     },
 
     {
+        .cmd_id = CMD_SET_AUDIO_RATE,
         .opencode = CEC_OPCODE_SET_AUDIO_RATE,
+    },
+
+    {
+        .cmd_id = CMD_GET_CEC_VERSION,
+        .opencode = CEC_OPCODE_GET_CEC_VERSION,
+        .param_len = 0,
     },
 };
 
@@ -1071,13 +1085,22 @@ void cec_rx_data_check(void)
 
             /* Tuner Control Feature   */
             case CEC_OPCODE_TUNER_STEP_DECREMENT:
+            {
+                cec_action_request_detect_flag = false;
+                cec_action_type = CEC_ACTION_REQ_TUNER_CTL;
+                cec_ev_package[EV_REQ_TUNER_STEP_DEC_CTRL].ev_id = EV_REQ_TUNER_STEP_DEC_CTRL;
+                cec_ev_package[EV_REQ_TUNER_STEP_DEC_CTRL].laddr = p_buff->source;
+                cec_ev_package[EV_REQ_TUNER_STEP_DEC_CTRL].param_len = 0;
+                break;
+            }
+
             case CEC_OPCODE_TUNER_STEP_INCREMENT:
             {
                 cec_action_request_detect_flag = false;
                 cec_action_type = CEC_ACTION_REQ_TUNER_CTL;
-                cec_ev_package[EV_REQ_TUNER_CTL].ev_id = EV_REQ_TUNER_CTL;
-                cec_ev_package[EV_REQ_TUNER_CTL].laddr = p_buff->source;
-                cec_ev_package[EV_REQ_TUNER_CTL].param_len = 0;
+                cec_ev_package[EV_REQ_TUNER_STEP_INC_CTRL].ev_id = EV_REQ_TUNER_STEP_INC_CTRL;
+                cec_ev_package[EV_REQ_TUNER_STEP_INC_CTRL].laddr = p_buff->source;
+                cec_ev_package[EV_REQ_TUNER_STEP_INC_CTRL].param_len = 0;
                 break;
             }
 
