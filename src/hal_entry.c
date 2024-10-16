@@ -70,7 +70,9 @@ volatile bool        cec_tx_complete_flag = false;
 volatile bool        cec_err_flag = false;
 volatile cec_error_t cec_err_type;
 
-/* +++ control register address +++ */
+/* ==================================== */
+/* +++ control register address +++     */
+/* ==================================== */
 /* destination device setting */
 #define DEST_ADDR_REG 0x20
 cec_addr_t user_action_cec_target;
@@ -98,8 +100,9 @@ uint8_t my_osd_name[MY_OSD_NAME_LENGTH] = "RA CEC DEMO";
  */
 #define MY_VENDOR_ID_REG 0x23
 uint8_t my_vendor_id[3] = {0x00, 0x00, 0x39};
-/* --- control register address --- */
-
+/* ==================================== */
+/* --- control register address ---     */
+/* ==================================== */
 #define CEC_RX_DATA_BUFF_DATA_NUMBER (16 * 5)
 #define I2C_SLAVE_TRANS_LEN 20
 #define I2C_INDX_PTR 0
