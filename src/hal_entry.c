@@ -249,6 +249,12 @@ struct cec_event  cec_ev_package[30] =
         .opencode = CEC_OPCODE_GET_CEC_VERSION,
         .param_len = 0,
     },
+
+    {
+        .ev_id = EV_GIVE_DEVICE_VENDOR_ID,
+        .opencode = CEC_OPCODE_GIVE_DEVICE_VENDOR_ID,
+        .param_len = 0,
+    },
 };
 
 struct cec_cmd  cec_cmd_package[30] =
@@ -379,6 +385,12 @@ struct cec_cmd  cec_cmd_package[30] =
     {
         .cmd_id = CMD_GET_CEC_VERSION,
         .opencode = CEC_OPCODE_GET_CEC_VERSION,
+        .param_len = 0,
+    },
+
+    {
+        .cmd_id = CMD_GIVE_DEVICE_VENDOR_ID,
+        .opencode = CEC_OPCODE_GIVE_DEVICE_VENDOR_ID,
         .param_len = 0,
     },
 };
