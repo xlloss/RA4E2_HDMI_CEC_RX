@@ -100,6 +100,46 @@ uint8_t my_osd_name[MY_OSD_NAME_LENGTH] = "RA CEC DEMO";
  */
 #define MY_VENDOR_ID_REG 0x23
 uint8_t my_vendor_id[3] = {0x00, 0x00, 0x39};
+
+#define EVENT_STATUS_0 0x30
+#define EVENT_STATUS_1 0x31
+#define EVENT_STATUS_2 0x32
+#define EVENT_STATUS_3 0x33
+#define EVENT_STATUS_4 0x34
+uint32_t event_status_0 = {0x00};
+uint32_t event_status_1 = {0x00};
+uint32_t event_status_2 = {0x00};
+uint32_t event_status_3 = {0x00};
+uint32_t event_status_4 = {0x00};
+
+/* 00 */ #define EV_FG_IMG_VIEW_ON                    (1 << 0)
+/* 01 */ #define EV_FG_TEX_VIEW_ON                    (1 << 1)
+/* 02 */ #define EV_FG_ACT_SRCE                       (1 << 2)
+/* 03 */ #define EV_FG_IACT_SRCE                      (1 << 3)
+/* 04 */ #define EV_FG_STANDBY                        (1 << 4)
+/* 05 */ #define EV_FG_SET_MENU_LANGUAGE              (1 << 5)
+/* 06 */ #define EV_FG_VENDOR_COMMAND                 (1 << 6)
+/* 07 */ #define EV_FG_REMOTE_BUTTON_DOWN             (1 << 7)
+/* 08 */ #define EV_FG_OSD_STRING                     (1 << 8)
+/* 09 */ #define EV_FG_GET_MENU_LANGUAGE              (1 << 9)
+/* 10 */ #define EV_FG_SET_AUDIO_MODE                 (1 << 10)
+/* 11 */ #define EV_FG_RECORD_TV_SCREEN               (1 << 11)
+/* 12 */ #define EV_FG_RECORD_OFF                     (1 << 12)
+/* 13 */ #define EV_FG_SET_TIMER_PROG_TITLE           (1 << 13)
+/* 14 */ #define EV_FG_SET_DIGITAL_TIMER              (1 << 14)
+/* 15 */ #define EV_FG_CLEAR_DIGITAL_TIMER            (1 << 15)
+/* 16 */ #define EV_FG_MENU_REQUEST                   (1 << 16)
+/* 17 */ #define EV_FG_DECK_CONTROL                   (1 << 17)
+/* 18 */ #define EV_FG_SET_TUNER_DIGITAL_SERVICE      (1 << 18)
+/* 19 */ #define EV_FG_SET_TUNER_ANALOGUE_SERVICE     (1 << 19)
+/* 20 */ #define EV_FG_REQ_TUNER_STEP_DEC_CTRL        (1 << 20)
+/* 21 */ #define EV_FG_REQ_TUNER_STEP_INC_CTRL        (1 << 21)
+/* 22 */ #define EV_FG_AUDIO_MODE_REQUEST             (1 << 22)
+/* 23 */ #define EV_FG_SET_AUDIO_RATE                 (1 << 23)
+/* 24 */ #define EV_FG_GET_CEC_VERSION                (1 << 24)
+/* 25 */ #define EV_FG_GIVE_DEVICE_VENDOR_ID          (1 << 25)
+/* 26 */ #define EV_FG_REPORT_POWER_STATUS            (1 << 26)
+
 /* ==================================== */
 /* --- control register address ---     */
 /* ==================================== */
