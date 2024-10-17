@@ -1190,9 +1190,6 @@ void cec_rx_data_check(void)
                 cec_ev_package[EV_SET_TUNER_ANALOGUE_SERVICE].laddr = p_buff->source;
                 memcpy(&cec_ev_package[EV_SET_TUNER_ANALOGUE_SERVICE].param[0],
                     &p_buff->data_buff[0], cec_ev_package[EV_SET_TUNER_ANALOGUE_SERVICE].param_len);
-
-                cec_ev_package[EV_SET_MENU_LANGUAGE].param_len = 8;
-
                 break;
             }
 
