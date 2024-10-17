@@ -207,6 +207,7 @@ struct cec_event  cec_ev_package[30] =
     {
         .ev_id = EV_OSD_STRING,
         .opencode = CEC_OPCODE_SET_OSD_STRING,
+        .param_len = 14;
     },
 
     {
@@ -1239,16 +1240,25 @@ void cec_rx_data_check(void)
 
             case CEC_OPCODE_SET_OSD_STRING:
             {
+                /*
+                 *                                 Bit7 Bit6 (1 Byte, bit 5 – bit 0 = 0)
+                 * [Display Control]
+                 *  "Display for default time"      0     0
+                 *  "Display until cleared"         0     1
+                 *  "Clear previous message"        1     0
+                 *  "Reserved"                      1     1
+                 *
+                 * ["OSD String"]
+                 *                                  1 ~ 13 bytes
+                 */
+                event_status_0 |= EV_FG_OSD_STRING;
                 cec_action_request_detect_flag = false;
                 cec_action_type = CEC_ACTION_VENDOR_COMMAND;
                 cec_ev_package[EV_OSD_STRING].ev_id = EV_OSD_STRING;
                 cec_ev_package[EV_OSD_STRING].laddr = p_buff->source;
-                for (i = 0; i < 14; i++)
-                    cec_ev_package[EV_OSD_STRING].param[i] =
-                        p_buff->data_buff[i];
-
-                cec_ev_package[EV_OSD_STRING].param_len = 14;
-
+                memcpy(&cec_ev_package[EV_OSD_STRING].param[0],
+                        p_buff->data_buff[i],
+                        sizeof(uint8_t) * cec_ev_package[EV_OSD_STRING].param_len);
                 break;
             }
 
