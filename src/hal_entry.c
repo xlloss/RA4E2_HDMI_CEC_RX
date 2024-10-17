@@ -1255,6 +1255,7 @@ void cec_rx_data_check(void)
             /* One Touch Play Feature */
             case CEC_OPCODE_INACTIVE_SOURCE:
             {
+                ev_status_1 |= EV_FG_IACT_SRCE
                 cec_ev_package[EV_IACT_SRCE].ev_id = EV_IACT_SRCE;
                 cec_ev_package[EV_IACT_SRCE].laddr = p_buff->source;
 
@@ -1268,6 +1269,7 @@ void cec_rx_data_check(void)
 
             case CEC_OPCODE_ACTIVE_SOURCE:
             {
+                ev_status_1 |= EV_FG_ACT_SRCE;
                 /*
                  * Action Required:
                  * 1. Switch TV input to the physical (HDMI) port
@@ -1290,6 +1292,7 @@ void cec_rx_data_check(void)
 
             case CEC_OPCODE_TEXT_VIEW_ON:
             {
+                ev_status_1 |= EV_FG_TEX_VIEW_ON;
                 /*
                  * CEC_OPCODE_TEXT_VIEW_ON
                  * Turn on (if not on) TV and remove any menu from Display.
@@ -1305,6 +1308,7 @@ void cec_rx_data_check(void)
 
             case CEC_OPCODE_IMAGE_VIEW_ON:
             {
+                ev_status_1 |= EV_FG_IMG_VIEW_ON;
                 /*
                  * CEC_OPCODE_TEXT_VIEW_ON
                  * Turn on (if not on) TV and enter Image Display state
