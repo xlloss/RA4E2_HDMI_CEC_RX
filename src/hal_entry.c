@@ -266,13 +266,15 @@ struct cec_event  cec_ev_package[30] =
     },
 
     {
-        .ev_id = CMD_REQ_TUNER_STEP_DEC_CTRL,
+        .ev_id = EV_REQ_TUNER_STEP_DEC_CTRL,
         .opencode = CEC_OPCODE_TUNER_STEP_DECREMENT,
+        .param_len = 0,
     },
 
     {
-        .ev_id = CMD_REQ_TUNER_STEP_INC_CTRL,
+        .ev_id = EV_REQ_TUNER_STEP_INC_CTRL,
         .opencode = CEC_OPCODE_TUNER_STEP_INCREMENT,
+        .param_len = 0,
     },
 
     {
@@ -1152,21 +1154,17 @@ void cec_rx_data_check(void)
             /* Tuner Control Feature   */
             case CEC_OPCODE_TUNER_STEP_DECREMENT:
             {
-                cec_action_request_detect_flag = false;
-                cec_action_type = CEC_ACTION_REQ_TUNER_CTL;
+                event_status_0 |= EV_FG_REQ_TUNER_STEP_DEC_CTRL;
                 cec_ev_package[EV_REQ_TUNER_STEP_DEC_CTRL].ev_id = EV_REQ_TUNER_STEP_DEC_CTRL;
                 cec_ev_package[EV_REQ_TUNER_STEP_DEC_CTRL].laddr = p_buff->source;
-                cec_ev_package[EV_REQ_TUNER_STEP_DEC_CTRL].param_len = 0;
                 break;
             }
 
             case CEC_OPCODE_TUNER_STEP_INCREMENT:
             {
-                cec_action_request_detect_flag = false;
-                cec_action_type = CEC_ACTION_REQ_TUNER_CTL;
+                event_status_0 |= EV_FG_REQ_TUNER_STEP_INC_CTRL;
                 cec_ev_package[EV_REQ_TUNER_STEP_INC_CTRL].ev_id = EV_REQ_TUNER_STEP_INC_CTRL;
                 cec_ev_package[EV_REQ_TUNER_STEP_INC_CTRL].laddr = p_buff->source;
-                cec_ev_package[EV_REQ_TUNER_STEP_INC_CTRL].param_len = 0;
                 break;
             }
 
