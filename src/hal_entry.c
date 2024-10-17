@@ -258,11 +258,13 @@ struct cec_event  cec_ev_package[30] =
     {
         .ev_id = EV_SET_TUNER_DIGITAL_SERVICE,
         .opencode = CEC_OPCODE_SELECT_DIGITAL_SERVICE,
+        .param_len = 14,
     },
 
     {
         .ev_id = EV_SET_TUNER_ANALOGUE_SERVICE,
         .opencode = CEC_OPCODE_SELECT_ANALOG_SERVICE,
+        .param_len = 4,
     },
 
     {
@@ -1170,27 +1172,24 @@ void cec_rx_data_check(void)
 
             case CEC_OPCODE_SELECT_DIGITAL_SERVICE:
             {
-                cec_action_request_detect_flag = false;
-                cec_action_type = CEC_ACTION_SET_TUNER_DIGITAL_SERVICE;
+                event_status_0 |= EV_FG_SET_TUNER_DIGITAL_SERVICE;
                 cec_ev_package[EV_SET_TUNER_DIGITAL_SERVICE].ev_id =
                     EV_SET_TUNER_DIGITAL_SERVICE;
                 cec_ev_package[EV_SET_TUNER_DIGITAL_SERVICE].laddr = p_buff->source;
                 memcpy(&cec_ev_package[EV_SET_TUNER_DIGITAL_SERVICE].param[0],
-                    &p_buff->data_buff[0], 7);
-
-                cec_ev_package[EV_SET_MENU_LANGUAGE].param_len = 7;
+                    &p_buff->data_buff[0],
+                    cec_ev_package[EV_SET_TUNER_DIGITAL_SERVICE].param_len);
                 break;
             }
 
             case CEC_OPCODE_SELECT_ANALOG_SERVICE:
             {
-                cec_action_request_detect_flag = false;
-                cec_action_type = CEC_ACTION_SET_TUNER_ANALOGUE_SERVICE;
+                event_status_0 |= EV_FG_SET_TUNER_ANALOGUE_SERVICE;
                 cec_ev_package[EV_SET_TUNER_ANALOGUE_SERVICE].ev_id =
                     EV_SET_TUNER_ANALOGUE_SERVICE;
                 cec_ev_package[EV_SET_TUNER_ANALOGUE_SERVICE].laddr = p_buff->source;
                 memcpy(&cec_ev_package[EV_SET_TUNER_ANALOGUE_SERVICE].param[0],
-                    &p_buff->data_buff[0], 8);
+                    &p_buff->data_buff[0], cec_ev_package[EV_SET_TUNER_ANALOGUE_SERVICE].param_len);
 
                 cec_ev_package[EV_SET_MENU_LANGUAGE].param_len = 8;
 
