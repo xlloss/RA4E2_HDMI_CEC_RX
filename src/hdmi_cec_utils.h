@@ -319,6 +319,7 @@ enum {
 /* 23 */   EV_SET_AUDIO_RATE,
 /* 24 */   EV_GET_CEC_VERSION,
 /* 25 */   EV_GIVE_DEVICE_VENDOR_ID,
+/* 26 */   EV_REPORT_POWER_STATUS,
 };
 
 enum {
@@ -348,6 +349,7 @@ enum {
 /* 23 */    CMD_SET_AUDIO_RATE,
 /* 24 */    CMD_GET_CEC_VERSION,
 /* 25 */    CMD_GIVE_DEVICE_VENDOR_ID,
+/* 26 */    CMD_GIVE_POWER_STATUS,
 };
 
 struct cec_event {

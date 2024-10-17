@@ -255,6 +255,12 @@ struct cec_event  cec_ev_package[30] =
         .opencode = CEC_OPCODE_GIVE_DEVICE_VENDOR_ID,
         .param_len = 0,
     },
+
+    {
+        .ev_id = EV_REPORT_POWER_STATUS,
+        .opencode = CEC_OPCODE_REPORT_POWER_STATUS,
+        .param_len = 1,
+    },
 };
 
 struct cec_cmd  cec_cmd_package[30] =
@@ -393,6 +399,12 @@ struct cec_cmd  cec_cmd_package[30] =
         .opencode = CEC_OPCODE_GIVE_DEVICE_VENDOR_ID,
         .param_len = 0,
     },
+
+    {
+        .cmd_id = CMD_GIVE_POWER_STATUS,
+        .opencode = CEC_OPCODE_GIVE_POWER_STATUS,
+        .param_len = 0,
+    },
 };
 
 fsp_err_t cec_message_send(cec_addr_t destination, uint8_t opcode,
@@ -453,6 +465,7 @@ void i2c_slave_callback (i2c_slave_callback_args_t * p_args)
     } else if ((p_args->event == I2C_SLAVE_EVENT_TX_REQUEST) ||
                (p_args->event == I2C_SLAVE_EVENT_TX_MORE_REQUEST)) {
         /* Write to master */
+
         cec_cmd_read(i2c_reg_index, &g_i2c_slave_buffer[I2C_INDX_PTR]);
 
         fsp_err = R_IIC_B_SLAVE_Write(&g_i2c_slave_ctrl,
@@ -1316,6 +1329,34 @@ void cec_rx_data_check(void)
                 break;
             }
 
+
+            case CEC_OPCODE_REPORT_POWER_STATUS:
+            {
+                APP_PRINT("CEC_OPCODE_REPORT_POWER_STATUS\r\n");
+                /* Report Power Status (0x90) => (Internal buffer update) */
+                if (p_buff->source != CEC_ADDR_UNREGISTERED) {
+                    /* Raise device active flag */
+                    cec_bus_device_list[p_buff->source].is_device_active = true;
+
+                    /* Store to internal buffer */
+                    cec_bus_device_list[p_buff->source].is_power_status_store = true;
+                    if ((p_buff->data_buff[0] == CEC_POWER_STATUS_ON) ||
+                        (p_buff->data_buff[0] == CEC_POWER_STATUS_IN_TRANSITION_TO_ON)) {
+                        cec_bus_device_list[p_buff->source].power_status = 0x1;
+                    } else if ((p_buff->data_buff[0] == CEC_POWER_STATUS_STANDBY) ||
+                            (p_buff->data_buff[0] == CEC_POWER_STATUS_IN_TRANSITION_TO_STANDBY)) {
+                        cec_bus_device_list[p_buff->source].power_status = 0x0;
+                    }
+
+                    cec_action_request_detect_flag = false;
+                    cec_action_type = 0;
+                    cec_ev_package[EV_REPORT_POWER_STATUS].ev_id = EV_REPORT_POWER_STATUS;
+                    cec_ev_package[EV_REPORT_POWER_STATUS].laddr = p_buff->source;
+                    cec_ev_package[EV_REPORT_POWER_STATUS].param[0] = p_buff->data_buff[0];
+                }
+                break;
+            }
+
             default:
             {
                 /* Auto response to supporting (sysytem-level) commands */
@@ -1667,26 +1708,6 @@ void cec_system_auto_response(cec_rx_message_buff_t const * p_rx_data)
             }
             cec_data[0] = cec_bus_device_list[my_logical_address].cec_version;
             cec_message_send(p_rx_data->source, CEC_OPCODE_CEC_VERSION, &cec_data[0], 1);
-            break;
-        }
-
-        case CEC_OPCODE_REPORT_POWER_STATUS:
-        {
-            /* Report Power Status (0x90) => (Internal buffer update) */
-            if (p_rx_data->source != CEC_ADDR_UNREGISTERED) {
-                /* Raise device active flag */
-                cec_bus_device_list[p_rx_data->source].is_device_active = true;
-
-                /* Store to internal buffer */
-                cec_bus_device_list[p_rx_data->source].is_power_status_store = true;
-                if ((p_rx_data->data_buff[0] == CEC_POWER_STATUS_ON) ||
-                    (p_rx_data->data_buff[0] == CEC_POWER_STATUS_IN_TRANSITION_TO_ON)) {
-                    cec_bus_device_list[p_rx_data->source].power_status = 0x1;
-                } else if ((p_rx_data->data_buff[0] == CEC_POWER_STATUS_STANDBY) ||
-                           (p_rx_data->data_buff[0] == CEC_POWER_STATUS_IN_TRANSITION_TO_STANDBY)) {
-                    cec_bus_device_list[p_rx_data->source].power_status = 0x0;
-                }
-            }
             break;
         }
 
