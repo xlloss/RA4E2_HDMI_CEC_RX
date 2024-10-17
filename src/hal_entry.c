@@ -207,7 +207,7 @@ struct cec_event  cec_ev_package[30] =
     {
         .ev_id = EV_OSD_STRING,
         .opencode = CEC_OPCODE_SET_OSD_STRING,
-        .param_len = 14;
+        .param_len = 14,
     },
 
     {
@@ -1257,7 +1257,7 @@ void cec_rx_data_check(void)
                 cec_ev_package[EV_OSD_STRING].ev_id = EV_OSD_STRING;
                 cec_ev_package[EV_OSD_STRING].laddr = p_buff->source;
                 memcpy(&cec_ev_package[EV_OSD_STRING].param[0],
-                        p_buff->data_buff[i],
+                        &p_buff->data_buff[0],
                         sizeof(uint8_t) * cec_ev_package[EV_OSD_STRING].param_len);
                 break;
             }
