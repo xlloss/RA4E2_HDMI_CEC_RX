@@ -1332,7 +1332,6 @@ void cec_rx_data_check(void)
                 cec_action_type = CEC_ACTION_POWER_ON;
                 cec_ev_package[EV_TEX_VIEW_ON].ev_id = EV_TEX_VIEW_ON;
                 cec_ev_package[EV_TEX_VIEW_ON].opencode = p_buff->opcode;
-                cec_ev_package[EV_TEX_VIEW_ON].param_len = 0;
                 break;
             }
 
