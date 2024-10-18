@@ -233,6 +233,7 @@ struct cec_event  cec_ev_package[30] =
     {
         .ev_id = EV_SET_TIMER_PROG_TITLE,
         .opencode = CEC_OPCODE_SET_TIMER_PROGRAM_TITLE,
+        .param_len = 14;
     },
 
     {
@@ -382,6 +383,7 @@ struct cec_cmd  cec_cmd_package[30] =
     {
         .cmd_id = CMD_SET_TIMER_PROG_TITLE,
         .opencode = CEC_OPCODE_SET_TIMER_PROGRAM_TITLE,
+        .param_len = 14;
     },
 
     {
@@ -1210,11 +1212,11 @@ void cec_rx_data_check(void)
             /* Timer Programming Feature */
             case CEC_OPCODE_SET_TIMER_PROGRAM_TITLE:
             {
-                cec_action_request_detect_flag = false;
-                cec_action_type = CEC_ACTION_SET_TIMER_PROG_TITLE;
+                event_status_0 |= EV_FG_SET_TIMER_PROG_TITLE;
                 cec_ev_package[EV_SET_TIMER_PROG_TITLE].ev_id = EV_SET_TIMER_PROG_TITLE;
                 cec_ev_package[EV_SET_TIMER_PROG_TITLE].laddr = p_buff->source;
-                cec_ev_package[EV_SET_TIMER_PROG_TITLE].param_len = 0;
+                memcpy(&cec_ev_package[EV_SET_TIMER_PROG_TITLE].param[0],
+                    &p_buff->data_buff[0], cec_ev_package[EV_SET_TIMER_PROG_TITLE].param_len);
                 break;
             }
 
