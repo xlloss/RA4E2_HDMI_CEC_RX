@@ -297,6 +297,7 @@ struct cec_event  cec_ev_package[30] =
     {
         .ev_id = EV_AUDIO_MODE_REQUEST,
         .opencode = CEC_OPCODE_SYSTEM_AUDIO_MODE_REQUEST,
+        .param_len = 2,
     },
 
     {
@@ -446,6 +447,7 @@ struct cec_cmd  cec_cmd_package[30] =
     {
         .cmd_id = CMD_AUDIO_MODE_REQUEST,
         .opencode = CEC_OPCODE_SYSTEM_AUDIO_MODE_REQUEST,
+        .param_len = 1,
     },
 
     {
@@ -1164,12 +1166,11 @@ void cec_rx_data_check(void)
             /* System Audio Control Feature */
             case CEC_OPCODE_SYSTEM_AUDIO_MODE_REQUEST:
             {
-                cec_action_request_detect_flag = false;
-                cec_action_type = CEC_ACTION_AUDIO_MODE_REQUEST;
+                event_status_0 |= EV_FG_AUDIO_MODE_REQUEST;
                 cec_ev_package[EV_AUDIO_MODE_REQUEST].ev_id = EV_AUDIO_MODE_REQUEST;
                 cec_ev_package[EV_AUDIO_MODE_REQUEST].laddr = p_buff->source;
                 cec_ev_package[EV_AUDIO_MODE_REQUEST].param[0] = p_buff->data_buff[0];
-                cec_ev_package[EV_AUDIO_MODE_REQUEST].param_len = 1;
+                cec_ev_package[EV_AUDIO_MODE_REQUEST].param[1] = p_buff->data_buff[1];
                 break;
             }
 
