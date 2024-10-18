@@ -101,6 +101,17 @@ uint8_t my_osd_name[MY_OSD_NAME_LENGTH] = "RA CEC DEMO";
 #define MY_VENDOR_ID_REG 0x23
 uint8_t my_vendor_id[3] = {0x00, 0x00, 0x39};
 
+/* 1 to 8 bytes (depends on source)
+ * [Digital Service Identification]
+ * [Analogue Broadcast Type]
+ * [Analogue Frequency] [Broadcast System]}
+ * [External Plug]}
+ * [External Physical Address]
+ */
+#define RECORD_SOURCE_REG 0x24
+uint8_t record_source[8] = {0};
+
+
 #define EVENT_STATUS_0 0x30
 #define EVENT_STATUS_1 0x31
 #define EVENT_STATUS_2 0x32
@@ -223,11 +234,13 @@ struct cec_event  cec_ev_package[30] =
     {
         .ev_id = EV_RECORD_TV_SCREEN,
         .opencode = CEC_OPCODE_RECORD_TV_SCREEN,
+        .param_len = 0,
     },
 
     {
         .ev_id = EV_RECORD_OFF,
         .opencode = CEC_OPCODE_RECORD_OFF,
+        param_len = 0,
     },
 
     {
@@ -373,11 +386,13 @@ struct cec_cmd  cec_cmd_package[30] =
     {
         .cmd_id = CMD_RECORD_TV_SCREEN,
         .opencode = CEC_OPCODE_RECORD_TV_SCREEN,
+        .param_len = 0,
     },
 
     {
         .cmd_id = CMD_RECORD_OFF,
         .opencode = CEC_OPCODE_RECORD_OFF,
+        .param_len = 0;
     },
 
     {
@@ -1223,11 +1238,9 @@ void cec_rx_data_check(void)
             /* One Touch Record Feature */
             case CEC_OPCODE_RECORD_OFF:
             {
-                cec_action_request_detect_flag = false;
-                cec_action_type = CEC_ACTION_RECORD_OFF;
+                event_status_0 |= EV_FG_RECORD_OFF;
                 cec_ev_package[EV_RECORD_OFF].ev_id = EV_RECORD_OFF;
                 cec_ev_package[EV_RECORD_OFF].laddr = p_buff->source;
-                cec_ev_package[EV_RECORD_OFF].param_len = 0;
                 break;
             }
 
@@ -1553,13 +1566,15 @@ void cec_system_auto_response(cec_rx_message_buff_t const * p_rx_data)
         /* One Touch Record feature */
         case CEC_OPCODE_RECORD_TV_SCREEN:
         {
-//            cec_ev_package[EV_RECORD_TV_SCREEN].ev_id = EV_RECORD_TV_SCREEN;
-//            cec_ev_package[EV_RECORD_TV_SCREEN].laddr = p_buff->source;
-//            cec_ev_package[EV_RECORD_TV_SCREEN].param_len = 0;
-            /*
-            cec_message_send(p_rx_data->source,
-                CEC_OPCODE_RECORD_ON, [Record Source], [Record Source] LEN);
-            */
+            event_status_0 |= EV_FG_RECORD_TV_SCREEN
+            cec_ev_package[EV_RECORD_TV_SCREEN].ev_id = EV_RECORD_TV_SCREEN;
+            cec_ev_package[EV_RECORD_TV_SCREEN].laddr = p_buff->source;
+            memcpy(&cec_ev_package[EV_RECORD_TV_SCREEN].param[0],
+                    &p_buff->data_buff[0],
+                    sizeof(uint8_t) * cec_ev_package[EV_RECORD_TV_SCREEN].param_len);
+
+            cec_message_send(p_rx_data->source, CEC_OPCODE_RECORD_ON,
+                record_source, 8);
             break;
         }
 
