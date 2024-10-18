@@ -240,13 +240,13 @@ struct cec_event  cec_ev_package[30] =
     {
         .ev_id = EV_RECORD_OFF,
         .opencode = CEC_OPCODE_RECORD_OFF,
-        param_len = 0,
+        .param_len = 0,
     },
 
     {
         .ev_id = EV_SET_TIMER_PROG_TITLE,
         .opencode = CEC_OPCODE_SET_TIMER_PROGRAM_TITLE,
-        .param_len = 14;
+        .param_len = 14,
     },
 
     {
@@ -393,13 +393,13 @@ struct cec_cmd  cec_cmd_package[30] =
     {
         .cmd_id = CMD_RECORD_OFF,
         .opencode = CEC_OPCODE_RECORD_OFF,
-        .param_len = 0;
+        .param_len = 0,
     },
 
     {
         .cmd_id = CMD_SET_TIMER_PROG_TITLE,
         .opencode = CEC_OPCODE_SET_TIMER_PROGRAM_TITLE,
-        .param_len = 14;
+        .param_len = 14,
     },
 
     {
@@ -472,6 +472,7 @@ struct cec_cmd  cec_cmd_package[30] =
         .param_len = 0,
     },
 };
+
 
 fsp_err_t cec_message_send(cec_addr_t destination, uint8_t opcode,
     uint8_t const * data_buff, uint8_t data_buff_length);
@@ -1216,11 +1217,11 @@ void cec_rx_data_check(void)
             case CEC_OPCODE_DECK_CONTROL:
             {
                 event_status_0 |= EV_FG_DECK_CONTROL;
-                cec_ev_package[EV_FG_DECK_CONTROL].ev_id =
-                    EV_FG_DECK_CONTROL;
-                cec_ev_package[EV_FG_DECK_CONTROL].laddr = p_buff->source;
-                memcpy(&cec_ev_package[EV_FG_DECK_CONTROL].param[0],
-                    &p_buff->data_buff[0], cec_ev_package[EV_FG_DECK_CONTROL].param_len);
+                cec_ev_package[EV_DECK_CONTROL].ev_id =
+                    EV_DECK_CONTROL;
+                cec_ev_package[EV_DECK_CONTROL].laddr = p_buff->source;
+                memcpy(&cec_ev_package[EV_DECK_CONTROL].param[0],
+                    &p_buff->data_buff[0], cec_ev_package[EV_DECK_CONTROL].param_len);
                 break;
             }
 
@@ -1566,11 +1567,11 @@ void cec_system_auto_response(cec_rx_message_buff_t const * p_rx_data)
         /* One Touch Record feature */
         case CEC_OPCODE_RECORD_TV_SCREEN:
         {
-            event_status_0 |= EV_FG_RECORD_TV_SCREEN
+            event_status_0 |= EV_FG_RECORD_TV_SCREEN;
             cec_ev_package[EV_RECORD_TV_SCREEN].ev_id = EV_RECORD_TV_SCREEN;
-            cec_ev_package[EV_RECORD_TV_SCREEN].laddr = p_buff->source;
+            cec_ev_package[EV_RECORD_TV_SCREEN].laddr = p_rx_data->source;
             memcpy(&cec_ev_package[EV_RECORD_TV_SCREEN].param[0],
-                    &p_buff->data_buff[0],
+                    &p_rx_data->data_buff[0],
                     sizeof(uint8_t) * cec_ev_package[EV_RECORD_TV_SCREEN].param_len);
 
             cec_message_send(p_rx_data->source, CEC_OPCODE_RECORD_ON,
