@@ -150,6 +150,7 @@ uint32_t event_status_4 = {0x00};
 /* 24 */ #define EV_FG_GET_CEC_VERSION                (1 << 24)
 /* 25 */ #define EV_FG_GIVE_DEVICE_VENDOR_ID          (1 << 25)
 /* 26 */ #define EV_FG_GIVE_POWER_STATUS              (1 << 26)
+/* 27 */ #define EV_FG_REPORT_POWER_STATUS            (1 << 27)
 
 /* ==================================== */
 /* --- control register address ---     */
@@ -325,6 +326,12 @@ struct cec_event  cec_ev_package[30] =
         .opencode = CEC_OPCODE_GIVE_POWER_STATUS,
         .param_len = 0,
     },
+
+    {
+        .ev_id = EV_REPORT_POWER_STATUS,
+        .opencode = CEC_OPCODE_REPORT_POWER_STATUS,
+        .param_len = 1,
+    },
 };
 
 struct cec_cmd  cec_cmd_package[30] =
@@ -478,6 +485,13 @@ struct cec_cmd  cec_cmd_package[30] =
         .opencode = CEC_OPCODE_GIVE_POWER_STATUS,
         .param_len = 0,
     },
+
+    {
+        .ev_id = CMD_REPORT_POWER_STATUS,
+        .opencode = CEC_OPCODE_REPORT_POWER_STATUS,
+        .param_len = 1,
+    },
+
 };
 
 
@@ -1401,6 +1415,7 @@ void cec_rx_data_check(void)
             case CEC_OPCODE_REPORT_POWER_STATUS:
             {
                 APP_PRINT("CEC_OPCODE_REPORT_POWER_STATUS\r\n");
+                event_status_0 |= EV_FG_REPORT_POWER_STATUS;
                 /* Report Power Status (0x90) => (Internal buffer update) */
                 if (p_buff->source != CEC_ADDR_UNREGISTERED) {
                     /* Raise device active flag */
