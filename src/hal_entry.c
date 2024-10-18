@@ -253,6 +253,7 @@ struct cec_event  cec_ev_package[30] =
     {
         .ev_id = EV_DECK_CONTROL,
         .opencode = CEC_OPCODE_DECK_CONTROL,
+        .param_len = 1,
     },
 
     {
@@ -401,6 +402,7 @@ struct cec_cmd  cec_cmd_package[30] =
     {
         .cmd_id = CMD_DECK_CONTROL,
         .opencode = CEC_OPCODE_DECK_CONTROL,
+        .param_len = 1,
     },
 
     {
@@ -1196,6 +1198,12 @@ void cec_rx_data_check(void)
             /* CEC_OPCODE_DECK_CONTROL */
             case CEC_OPCODE_DECK_CONTROL:
             {
+                event_status_0 |= EV_FG_DECK_CONTROL;
+                cec_ev_package[EV_FG_DECK_CONTROL].ev_id =
+                    EV_FG_DECK_CONTROL;
+                cec_ev_package[EV_FG_DECK_CONTROL].laddr = p_buff->source;
+                memcpy(&cec_ev_package[EV_FG_DECK_CONTROL].param[0],
+                    &p_buff->data_buff[0], cec_ev_package[EV_FG_DECK_CONTROL].param_len);
                 break;
             }
 
