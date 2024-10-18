@@ -302,6 +302,7 @@ struct cec_event  cec_ev_package[30] =
     {
         .ev_id = EV_SET_AUDIO_RATE,
         .opencode = CEC_OPCODE_SET_AUDIO_RATE,
+        .param_len = 1,
     },
 
     {
@@ -450,6 +451,7 @@ struct cec_cmd  cec_cmd_package[30] =
     {
         .cmd_id = CMD_SET_AUDIO_RATE,
         .opencode = CEC_OPCODE_SET_AUDIO_RATE,
+        .param_len = 1,
     },
 
     {
@@ -1151,12 +1153,10 @@ void cec_rx_data_check(void)
             /* Audio Rate Control Feature */
             case CEC_OPCODE_SET_AUDIO_RATE:
             {
-                cec_action_request_detect_flag = false;
-                cec_action_type = CEC_ACTION_SET_AUDIO_RATE;
+                event_status_0 |= EV_FG_SET_AUDIO_RATE;
                 cec_ev_package[EV_SET_AUDIO_RATE].ev_id = EV_SET_AUDIO_RATE;
                 cec_ev_package[EV_SET_AUDIO_RATE].laddr = p_buff->source;
                 cec_ev_package[EV_SET_AUDIO_RATE].param[0] = p_buff->data_buff[0];
-                cec_ev_package[EV_SET_AUDIO_RATE].param_len = 1;
                 break;
             }
 
