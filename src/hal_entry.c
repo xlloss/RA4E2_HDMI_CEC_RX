@@ -203,6 +203,7 @@ struct cec_event  cec_ev_package[30] =
     {
         .ev_id = EV_SET_MENU_LANGUAGE,
         .opencode = CEC_OPCODE_SET_MENU_LANGUAGE,
+        .param_len = 3,
     },
 
     {
@@ -358,6 +359,7 @@ struct cec_cmd  cec_cmd_package[30] =
     {
         .cmd_id = CMD_SET_MENU_LANGUAGE,
         .opencode = CEC_OPCODE_SET_MENU_LANGUAGE,
+        .param_len = 3,
     },
 
     {
@@ -1386,14 +1388,12 @@ void cec_rx_data_check(void)
             /* System Information Feature */
             case CEC_OPCODE_SET_MENU_LANGUAGE:
             {
-                cec_action_request_detect_flag = false;
-                cec_action_type = CEC_ACTION_SET_MENU_LANGUAGE;
+                event_status_0 |= EV_FG_SET_MENU_LANGUAGE;
                 cec_ev_package[EV_SET_MENU_LANGUAGE].ev_id = EV_SET_MENU_LANGUAGE;
                 cec_ev_package[EV_SET_MENU_LANGUAGE].laddr = p_buff->source;
                 cec_ev_package[EV_SET_MENU_LANGUAGE].param[0] = p_buff->data_buff[0];
                 cec_ev_package[EV_SET_MENU_LANGUAGE].param[1] = p_buff->data_buff[1];
                 cec_ev_package[EV_SET_MENU_LANGUAGE].param[2] = p_buff->data_buff[2];
-                cec_ev_package[EV_SET_MENU_LANGUAGE].param_len = 3;
                 break;
             }
 
