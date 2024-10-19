@@ -1164,7 +1164,6 @@ void cec_rx_data_check(void)
             {
                 event_status_0 |= EV_FG_VENDOR_COMMAND;
                 param_len = cec_ev_package[EV_VENDOR_COMMAND].param_len;
-                cec_ev_package[EV_VENDOR_COMMAND].ev_id = EV_VENDOR_COMMAND;
                 cec_ev_package[EV_VENDOR_COMMAND].laddr = p_buff->source;
                 memcpy(&cec_ev_package[EV_VENDOR_COMMAND].param[0],
                     &p_buff->data_buff[0], param_len);
@@ -1175,7 +1174,6 @@ void cec_rx_data_check(void)
             {
                 event_status_0 |= EV_REMOTE_BUTTON_DOWN;
                 param_len = cec_ev_package[EV_REMOTE_BUTTON_DOWN].param_len;
-                cec_ev_package[EV_REMOTE_BUTTON_DOWN].ev_id = EV_REMOTE_BUTTON_DOWN;
                 cec_ev_package[EV_REMOTE_BUTTON_DOWN].laddr = p_buff->source;
                 memcpy(&cec_ev_package[EV_REMOTE_BUTTON_DOWN].param[0],
                     &p_buff->data_buff[0], param_len);
@@ -1186,7 +1184,6 @@ void cec_rx_data_check(void)
             case CEC_OPCODE_SET_AUDIO_RATE:
             {
                 event_status_0 |= EV_FG_SET_AUDIO_RATE;
-                cec_ev_package[EV_SET_AUDIO_RATE].ev_id = EV_SET_AUDIO_RATE;
                 cec_ev_package[EV_SET_AUDIO_RATE].laddr = p_buff->source;
                 cec_ev_package[EV_SET_AUDIO_RATE].param[0] = p_buff->data_buff[0];
                 break;
@@ -1196,7 +1193,6 @@ void cec_rx_data_check(void)
             case CEC_OPCODE_SYSTEM_AUDIO_MODE_REQUEST:
             {
                 event_status_0 |= EV_FG_AUDIO_MODE_REQUEST;
-                cec_ev_package[EV_AUDIO_MODE_REQUEST].ev_id = EV_AUDIO_MODE_REQUEST;
                 cec_ev_package[EV_AUDIO_MODE_REQUEST].laddr = p_buff->source;
                 cec_ev_package[EV_AUDIO_MODE_REQUEST].param[0] = p_buff->data_buff[0];
                 cec_ev_package[EV_AUDIO_MODE_REQUEST].param[1] = p_buff->data_buff[1];
@@ -1207,7 +1203,6 @@ void cec_rx_data_check(void)
             case CEC_OPCODE_TUNER_STEP_DECREMENT:
             {
                 event_status_0 |= EV_FG_REQ_TUNER_STEP_DEC_CTRL;
-                cec_ev_package[EV_REQ_TUNER_STEP_DEC_CTRL].ev_id = EV_REQ_TUNER_STEP_DEC_CTRL;
                 cec_ev_package[EV_REQ_TUNER_STEP_DEC_CTRL].laddr = p_buff->source;
                 break;
             }
@@ -1215,7 +1210,6 @@ void cec_rx_data_check(void)
             case CEC_OPCODE_TUNER_STEP_INCREMENT:
             {
                 event_status_0 |= EV_FG_REQ_TUNER_STEP_INC_CTRL;
-                cec_ev_package[EV_REQ_TUNER_STEP_INC_CTRL].ev_id = EV_REQ_TUNER_STEP_INC_CTRL;
                 cec_ev_package[EV_REQ_TUNER_STEP_INC_CTRL].laddr = p_buff->source;
                 break;
             }
@@ -1223,23 +1217,20 @@ void cec_rx_data_check(void)
             case CEC_OPCODE_SELECT_DIGITAL_SERVICE:
             {
                 event_status_0 |= EV_FG_SET_TUNER_DIGITAL_SERVICE;
-                cec_ev_package[EV_SET_TUNER_DIGITAL_SERVICE].ev_id =
-                    EV_SET_TUNER_DIGITAL_SERVICE;
                 cec_ev_package[EV_SET_TUNER_DIGITAL_SERVICE].laddr = p_buff->source;
+                param_len = cec_ev_package[EV_SET_TUNER_DIGITAL_SERVICE].param_len;
                 memcpy(&cec_ev_package[EV_SET_TUNER_DIGITAL_SERVICE].param[0],
-                    &p_buff->data_buff[0],
-                    cec_ev_package[EV_SET_TUNER_DIGITAL_SERVICE].param_len);
+                    &p_buff->data_buff[0], param_len);
                 break;
             }
 
             case CEC_OPCODE_SELECT_ANALOG_SERVICE:
             {
                 event_status_0 |= EV_FG_SET_TUNER_ANALOGUE_SERVICE;
-                cec_ev_package[EV_SET_TUNER_ANALOGUE_SERVICE].ev_id =
-                    EV_SET_TUNER_ANALOGUE_SERVICE;
                 cec_ev_package[EV_SET_TUNER_ANALOGUE_SERVICE].laddr = p_buff->source;
+                param_len = cec_ev_package[EV_SET_TUNER_ANALOGUE_SERVICE].param_len;
                 memcpy(&cec_ev_package[EV_SET_TUNER_ANALOGUE_SERVICE].param[0],
-                    &p_buff->data_buff[0], cec_ev_package[EV_SET_TUNER_ANALOGUE_SERVICE].param_len);
+                    &p_buff->data_buff[0], param_len);
                 break;
             }
 
@@ -1247,11 +1238,10 @@ void cec_rx_data_check(void)
             case CEC_OPCODE_DECK_CONTROL:
             {
                 event_status_0 |= EV_FG_DECK_CONTROL;
-                cec_ev_package[EV_DECK_CONTROL].ev_id =
-                    EV_DECK_CONTROL;
                 cec_ev_package[EV_DECK_CONTROL].laddr = p_buff->source;
+                param_len = cec_ev_package[EV_DECK_CONTROL].param_len;
                 memcpy(&cec_ev_package[EV_DECK_CONTROL].param[0],
-                    &p_buff->data_buff[0], cec_ev_package[EV_DECK_CONTROL].param_len);
+                    &p_buff->data_buff[0], param_len);
                 break;
             }
 
@@ -1259,10 +1249,10 @@ void cec_rx_data_check(void)
             case CEC_OPCODE_SET_TIMER_PROGRAM_TITLE:
             {
                 event_status_0 |= EV_FG_SET_TIMER_PROG_TITLE;
-                cec_ev_package[EV_SET_TIMER_PROG_TITLE].ev_id = EV_SET_TIMER_PROG_TITLE;
                 cec_ev_package[EV_SET_TIMER_PROG_TITLE].laddr = p_buff->source;
+                param_len = cec_ev_package[EV_SET_TIMER_PROG_TITLE].param_len;
                 memcpy(&cec_ev_package[EV_SET_TIMER_PROG_TITLE].param[0],
-                    &p_buff->data_buff[0], cec_ev_package[EV_SET_TIMER_PROG_TITLE].param_len);
+                    &p_buff->data_buff[0], param_len);
                 break;
             }
 
@@ -1270,7 +1260,6 @@ void cec_rx_data_check(void)
             case CEC_OPCODE_RECORD_OFF:
             {
                 event_status_0 |= EV_FG_RECORD_OFF;
-                cec_ev_package[EV_RECORD_OFF].ev_id = EV_RECORD_OFF;
                 cec_ev_package[EV_RECORD_OFF].laddr = p_buff->source;
                 break;
             }
@@ -1278,7 +1267,6 @@ void cec_rx_data_check(void)
             case CEC_OPCODE_SET_SYSTEM_AUDIO_MODE:
             {
                 event_status_0 |= EV_FG_SET_AUDIO_MODE;
-                cec_ev_package[EV_SET_AUDIO_MODE].ev_id = EV_SET_AUDIO_MODE;
                 cec_ev_package[EV_SET_AUDIO_MODE].laddr = p_buff->source;
                 cec_ev_package[EV_SET_AUDIO_MODE].param[0] = p_buff->data_buff[0];
                 break;
@@ -1300,11 +1288,10 @@ void cec_rx_data_check(void)
                 event_status_0 |= EV_FG_OSD_STRING;
                 cec_action_request_detect_flag = false;
                 cec_action_type = CEC_ACTION_VENDOR_COMMAND;
-                cec_ev_package[EV_OSD_STRING].ev_id = EV_OSD_STRING;
                 cec_ev_package[EV_OSD_STRING].laddr = p_buff->source;
+                param_len = cec_ev_package[EV_OSD_STRING].param_len;
                 memcpy(&cec_ev_package[EV_OSD_STRING].param[0],
-                        &p_buff->data_buff[0],
-                        sizeof(uint8_t) * cec_ev_package[EV_OSD_STRING].param_len);
+                        &p_buff->data_buff[0], sizeof(uint8_t) * param_len);
                 break;
             }
 
@@ -1312,14 +1299,12 @@ void cec_rx_data_check(void)
             case CEC_OPCODE_INACTIVE_SOURCE:
             {
                 event_status_0 |= EV_FG_IACT_SRCE;
-                cec_ev_package[EV_IACT_SRCE].ev_id = EV_IACT_SRCE;
                 cec_ev_package[EV_IACT_SRCE].laddr = p_buff->source;
 
                 /* [Physical Address] */
-                cec_ev_package[EV_IACT_SRCE].param[0] = p_buff->data_buff[0];
-                cec_ev_package[EV_IACT_SRCE].param[1] = p_buff->data_buff[1];
-                cec_ev_package[EV_IACT_SRCE].param[2] = p_buff->data_buff[2];
-                cec_ev_package[EV_IACT_SRCE].param[3] = p_buff->data_buff[3];
+                param_len = cec_ev_package[EV_IACT_SRCE].param_len;
+                memcpy(&cec_ev_package[EV_IACT_SRCE].param[0],
+                        &p_buff->data_buff[0], sizeof(uint8_t) * param_len);
                 break;
             }
 
@@ -1333,16 +1318,14 @@ void cec_rx_data_check(void)
                  */
                 cec_action_request_detect_flag = false;
                 cec_action_type = CEC_ACTION_POWER_ON;
-                cec_ev_package[EV_ACT_SRCE].ev_id = EV_ACT_SRCE;
 
                 /* Logical Address of the active device */
                 cec_ev_package[EV_ACT_SRCE].laddr = p_buff->destination;
 
                 /* [Physical Address] */
-                cec_ev_package[EV_ACT_SRCE].param[0] = p_buff->data_buff[0];
-                cec_ev_package[EV_ACT_SRCE].param[1] = p_buff->data_buff[1];
-                cec_ev_package[EV_ACT_SRCE].param[2] = p_buff->data_buff[2];
-                cec_ev_package[EV_ACT_SRCE].param[3] = p_buff->data_buff[3];
+                param_len = cec_ev_package[EV_ACT_SRCE].param_len;
+                memcpy(&cec_ev_package[EV_ACT_SRCE].param[0],
+                        &p_buff->data_buff[0], sizeof(uint8_t) * param_len);
                 break;
             }
 
@@ -1356,7 +1339,6 @@ void cec_rx_data_check(void)
 
                 cec_action_request_detect_flag = false;
                 cec_action_type = CEC_ACTION_POWER_ON;
-                cec_ev_package[EV_TEX_VIEW_ON].ev_id = EV_TEX_VIEW_ON;
                 cec_ev_package[EV_TEX_VIEW_ON].opencode = p_buff->opcode;
                 break;
             }
@@ -1371,7 +1353,6 @@ void cec_rx_data_check(void)
 
                 cec_action_request_detect_flag = false;
                 cec_action_type = CEC_ACTION_POWER_ON;
-                cec_ev_package[EV_IMG_VIEW_ON].ev_id = EV_IMG_VIEW_ON;
                 cec_ev_package[EV_IMG_VIEW_ON].opencode = p_buff->opcode;
                 break;
             }
@@ -1417,11 +1398,10 @@ void cec_rx_data_check(void)
             case CEC_OPCODE_SET_MENU_LANGUAGE:
             {
                 event_status_0 |= EV_FG_SET_MENU_LANGUAGE;
-                cec_ev_package[EV_SET_MENU_LANGUAGE].ev_id = EV_SET_MENU_LANGUAGE;
                 cec_ev_package[EV_SET_MENU_LANGUAGE].laddr = p_buff->source;
-                cec_ev_package[EV_SET_MENU_LANGUAGE].param[0] = p_buff->data_buff[0];
-                cec_ev_package[EV_SET_MENU_LANGUAGE].param[1] = p_buff->data_buff[1];
-                cec_ev_package[EV_SET_MENU_LANGUAGE].param[2] = p_buff->data_buff[2];
+                param_len = cec_ev_package[EV_SET_MENU_LANGUAGE].param_len;
+                memcpy(&cec_ev_package[EV_SET_MENU_LANGUAGE].param[0],
+                        &p_buff->data_buff[0], sizeof(uint8_t) * param_len);
                 break;
             }
 
@@ -1446,7 +1426,6 @@ void cec_rx_data_check(void)
 
                     cec_action_request_detect_flag = false;
                     cec_action_type = 0;
-                    cec_ev_package[EV_REPORT_POWER_STATUS].ev_id = EV_REPORT_POWER_STATUS;
                     cec_ev_package[EV_REPORT_POWER_STATUS].laddr = p_buff->source;
                     cec_ev_package[EV_REPORT_POWER_STATUS].param[0] = p_buff->data_buff[0];
                 }
