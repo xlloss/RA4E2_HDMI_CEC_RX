@@ -372,6 +372,7 @@ struct cec_cmd  cec_cmd_package[30] =
     {
         .cmd_id = CMD_IACT_SRCE,
         .opencode = CEC_OPCODE_INACTIVE_SOURCE,
+        .param_len = 2,
     },
 
     {
