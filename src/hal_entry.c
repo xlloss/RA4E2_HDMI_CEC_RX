@@ -210,6 +210,7 @@ struct cec_event  cec_ev_package[30] =
     {
         .ev_id = EV_VENDOR_COMMAND,
         .opencode = CEC_OPCODE_VENDOR_COMMAND,
+        .param_len = 14,
     },
 
     {
@@ -373,6 +374,7 @@ struct cec_cmd  cec_cmd_package[30] =
     {
         .cmd_id = CMD_VENDOR_COMMAND,
         .opencode = CEC_OPCODE_VENDOR_COMMAND,
+        .param_len = 14,
     },
 
     {
@@ -1106,7 +1108,7 @@ void cec_rx_data_check(void)
 {
     static uint8_t buff_read_point = 0;
     cec_rx_message_buff_t* p_buff;
-    uint32_t opcode_list_point, i;
+    uint32_t opcode_list_point, i, param_len;
     int j;
 
     for (i = 0; i < CEC_RX_DATA_BUFF_DATA_NUMBER; i++) {
@@ -1146,15 +1148,12 @@ void cec_rx_data_check(void)
             /* Vendor Specific Commands Feature */
             case CEC_OPCODE_VENDOR_COMMAND:
             {
-                cec_action_request_detect_flag = false;
-                cec_action_type = CEC_ACTION_VENDOR_COMMAND;
+                event_status_0 |= EV_FG_VENDOR_COMMAND;
+                param_len = cec_ev_package[EV_VENDOR_COMMAND].param_len;
                 cec_ev_package[EV_VENDOR_COMMAND].ev_id = EV_VENDOR_COMMAND;
                 cec_ev_package[EV_VENDOR_COMMAND].laddr = p_buff->source;
-                for (i = 0; i < 14; i++)
-                    cec_ev_package[EV_SET_MENU_LANGUAGE].param[i] =
-                        p_buff->data_buff[i];
-
-                cec_ev_package[EV_SET_MENU_LANGUAGE].param_len = 14;
+                memcpy(&cec_ev_package[EV_VENDOR_COMMAND].param[0],
+                    &p_buff->data_buff[0], param_len);
                 break;
             }
 
