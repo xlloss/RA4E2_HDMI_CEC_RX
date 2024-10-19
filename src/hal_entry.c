@@ -195,6 +195,7 @@ struct cec_event  cec_ev_package[30] =
     {
         .ev_id = EV_IACT_SRCE,
         .opencode = CEC_OPCODE_INACTIVE_SOURCE,
+        .param_len = 2,
     },
 
     {
