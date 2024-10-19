@@ -489,7 +489,7 @@ struct cec_cmd  cec_cmd_package[30] =
     },
 
     {
-        .ev_id = CMD_REPORT_POWER_STATUS,
+        .cmd_id = CMD_REPORT_POWER_STATUS,
         .opencode = CEC_OPCODE_REPORT_POWER_STATUS,
         .param_len = 1,
     },
