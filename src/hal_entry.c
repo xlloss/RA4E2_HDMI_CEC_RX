@@ -231,6 +231,7 @@ struct cec_event  cec_ev_package[30] =
     {
         .ev_id = EV_GET_MENU_LANGUAGE,
         .opencode = CEC_OPCODE_GET_MENU_LANGUAGE,
+        .param_len = 0,
     },
 
     {
