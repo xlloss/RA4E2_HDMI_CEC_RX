@@ -273,6 +273,7 @@ struct cec_event  cec_ev_package[30] =
     {
         .ev_id = EV_MENU_REQUEST,
         .opencode = CEC_OPCODE_MENU_REQUEST,
+        .param_len = 1,
     },
 
     {
