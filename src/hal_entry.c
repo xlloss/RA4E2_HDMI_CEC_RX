@@ -1425,7 +1425,6 @@ void cec_rx_data_check(void)
                 break;
             }
 
-
             case CEC_OPCODE_REPORT_POWER_STATUS:
             {
                 APP_PRINT("CEC_OPCODE_REPORT_POWER_STATUS\r\n");
