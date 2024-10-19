@@ -378,6 +378,7 @@ struct cec_cmd  cec_cmd_package[30] =
     {
         .cmd_id = CMD_STANDBY,
         .opencode = CEC_OPCODE_STANDBY,
+        .param_len = 0,
     },
 
     {
