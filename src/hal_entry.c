@@ -450,6 +450,7 @@ struct cec_cmd  cec_cmd_package[30] =
     {
         .cmd_id = CMD_MENU_REQUEST,
         .opencode = CEC_OPCODE_MENU_REQUEST,
+        .param_len = 1,
     },
 
     {
