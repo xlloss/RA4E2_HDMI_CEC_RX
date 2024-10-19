@@ -267,6 +267,7 @@ struct cec_event  cec_ev_package[30] =
     {
         .ev_id = EV_CLEAR_DIGITAL_TIMER,
         .opencode = CEC_OPCODE_CLEAR_DIGITAL_TIMER,
+        .param_len = 29,
     },
 
     {
