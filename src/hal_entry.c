@@ -402,6 +402,7 @@ struct cec_cmd  cec_cmd_package[30] =
     {
         .cmd_id = CMD_OSD_STRING,
         .opencode = CEC_OPCODE_SET_OSD_STRING,
+        .param_len = 14,
     },
 
     {
