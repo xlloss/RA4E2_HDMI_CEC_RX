@@ -480,6 +480,7 @@ struct cec_cmd  cec_cmd_package[30] =
     {
         .cmd_id = CMD_REQ_TUNER_STEP_INC_CTRL,
         .opencode = CEC_OPCODE_TUNER_STEP_INCREMENT,
+        .param_len = 0,
     },
 
     {
