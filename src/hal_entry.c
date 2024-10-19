@@ -216,6 +216,7 @@ struct cec_event  cec_ev_package[30] =
     {
         .ev_id = EV_REMOTE_BUTTON_DOWN,
         .opencode = CEC_OPCODE_VENDOR_REMOTE_BUTTON_DOWN,
+        .param_len = 14,
     },
 
     {
@@ -380,6 +381,7 @@ struct cec_cmd  cec_cmd_package[30] =
     {
         .cmd_id = CMD_REMOTE_BUTTON_DOWN,
         .opencode = CEC_OPCODE_VENDOR_REMOTE_BUTTON_DOWN,
+        .param_len = 14,
     },
 
     {
@@ -1159,15 +1161,12 @@ void cec_rx_data_check(void)
 
             case CEC_OPCODE_VENDOR_REMOTE_BUTTON_DOWN:
             {
-                cec_action_request_detect_flag = false;
-                cec_action_type = CEC_ACTION_VENDOR_COMMAND;
+                event_status_0 |= EV_REMOTE_BUTTON_DOWN;
+                param_len = cec_ev_package[EV_REMOTE_BUTTON_DOWN].param_len;
                 cec_ev_package[EV_REMOTE_BUTTON_DOWN].ev_id = EV_REMOTE_BUTTON_DOWN;
                 cec_ev_package[EV_REMOTE_BUTTON_DOWN].laddr = p_buff->source;
-                for (i = 0; i < 14; i++)
-                    cec_ev_package[EV_SET_MENU_LANGUAGE].param[i] =
-                        p_buff->data_buff[i];
-
-                cec_ev_package[EV_SET_MENU_LANGUAGE].param_len = 14;
+                memcpy(&cec_ev_package[EV_REMOTE_BUTTON_DOWN].param[0],
+                    &p_buff->data_buff[0], param_len);
                 break;
             }
 
