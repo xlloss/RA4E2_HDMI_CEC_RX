@@ -474,6 +474,7 @@ struct cec_cmd  cec_cmd_package[30] =
     {
         .cmd_id = CMD_REQ_TUNER_STEP_DEC_CTRL,
         .opencode = CEC_OPCODE_TUNER_STEP_DECREMENT,
+        .param_len = 0,
     },
 
     {
