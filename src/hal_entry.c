@@ -408,6 +408,7 @@ struct cec_cmd  cec_cmd_package[30] =
     {
         .cmd_id = CMD_GET_MENU_LANGUAGE,
         .opencode = CEC_OPCODE_GET_MENU_LANGUAGE,
+        .param_len = 0,
     },
 
     {
