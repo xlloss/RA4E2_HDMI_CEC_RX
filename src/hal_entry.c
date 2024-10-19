@@ -462,6 +462,7 @@ struct cec_cmd  cec_cmd_package[30] =
     {
         .cmd_id = CMD_SET_TUNER_DIGITAL_SERVICE,
         .opencode = CEC_OPCODE_SELECT_DIGITAL_SERVICE,
+        .param_len = 14,
     },
 
     {
