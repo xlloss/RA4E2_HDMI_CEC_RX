@@ -151,6 +151,7 @@ uint32_t event_status_4 = {0x00};
 /* 25 */ #define EV_FG_GIVE_DEVICE_VENDOR_ID          (1 << 25)
 /* 26 */ #define EV_FG_GIVE_POWER_STATUS              (1 << 26)
 /* 27 */ #define EV_FG_REPORT_POWER_STATUS            (1 << 27)
+/* 28 */ #define EV_FG_USER_CONTROL_PRESSED           (1 << 28)
 
 /* ==================================== */
 /* --- control register address ---     */
@@ -334,6 +335,12 @@ struct cec_event  cec_ev_package[30] =
         .opencode = CEC_OPCODE_REPORT_POWER_STATUS,
         .param_len = 1,
     },
+
+    {
+        .ev_id = EV_USER_CONTROL_PRESSED,
+        .opencode = CEC_OPCODE_USER_CONTROL_PRESSED,
+        .param_len = 1,
+    },
 };
 
 struct cec_cmd  cec_cmd_package[30] =
@@ -496,6 +503,11 @@ struct cec_cmd  cec_cmd_package[30] =
         .param_len = 1,
     },
 
+    {
+        .cmd_id = CMD_USER_CONTROL_PRESSED,
+        .opencode = CEC_OPCODE_USER_CONTROL_PRESSED,
+        .param_len = 1,
+    },
 };
 
 
@@ -1373,6 +1385,10 @@ void cec_rx_data_check(void)
 
             case CEC_OPCODE_USER_CONTROL_PRESSED:
             {
+                event_status_0 |= EV_FG_USER_CONTROL_PRESSED;
+                cec_ev_package[EV_USER_CONTROL_PRESSED].opencode = p_buff->opcode;
+                cec_ev_package[EV_USER_CONTROL_PRESSED].param[0] = p_buff->data_buff[0];
+
                 switch(p_buff->data_buff[0])
                 {
                     case USER_CONTROL_VOLUME_UP:
