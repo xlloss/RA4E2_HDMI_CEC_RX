@@ -201,6 +201,7 @@ struct cec_event  cec_ev_package[30] =
     {
         .ev_id = EV_STANDBY,
         .opencode = CEC_OPCODE_STANDBY,
+        .param_len = 0,
     },
 
     {
