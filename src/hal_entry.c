@@ -444,6 +444,7 @@ struct cec_cmd  cec_cmd_package[30] =
     {
         .cmd_id = CMD_CLEAR_DIGITAL_TIMER,
         .opencode = CEC_OPCODE_CLEAR_DIGITAL_TIMER,
+        .param_len = 29,
     },
 
     {
