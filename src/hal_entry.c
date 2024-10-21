@@ -261,13 +261,13 @@ struct cec_event  cec_ev_package[30] =
     {
         .ev_id = EV_SET_DIGITAL_TIMER,
         .opencode = CEC_OPCODE_SET_DIGITAL_TIMER,
-        .param_len = 29,
+        .param_len = 14,
     },
 
     {
         .ev_id = EV_CLEAR_DIGITAL_TIMER,
         .opencode = CEC_OPCODE_CLEAR_DIGITAL_TIMER,
-        .param_len = 29,
+        .param_len = 14,
     },
 
     {
@@ -438,13 +438,13 @@ struct cec_cmd  cec_cmd_package[30] =
     {
         .cmd_id = CMD_SET_DIGITAL_TIMER,
         .opencode = CEC_OPCODE_SET_DIGITAL_TIMER,
-        .param_len = 29,
+        .param_len = 14,
     },
 
     {
         .cmd_id = CMD_CLEAR_DIGITAL_TIMER,
         .opencode = CEC_OPCODE_CLEAR_DIGITAL_TIMER,
-        .param_len = 29,
+        .param_len = 14,
     },
 
     {
@@ -1518,34 +1518,35 @@ void cec_system_auto_response(cec_rx_message_buff_t const * p_rx_data)
     uint8_t cec_data[CEC_DATA_BUFFER_LENGTH] = {0x0};
 
     switch(p_rx_data->opcode) {
-        /* CEC_OPCODE_DECK_CONTROL */
-        case CEC_OPCODE_DECK_CONTROL:
-        {
-//            cec_ev_package[EV_DECK_CONTROL].ev_id = EV_DECK_CONTROL;
-//            cec_ev_package[EV_DECK_CONTROL].laddr = p_buff->source;
-//            cec_ev_package[EV_DECK_CONTROL].param[0] = p_buff->data_buff[0]);
-//            cec_ev_package[EV_DECK_CONTROL].param_len = 1;
-
-            /*
-            cec_message_send(p_rx_data->source,
-                CEC_OPCODE_DECK_STATUS, [Deck Info], [Deck Info] LEN);
-            */
-            break;
-        }
-
         /* Device Menu Control Feature */
         case CEC_OPCODE_MENU_REQUEST:
         {
+            /*
+             *  <Menu Request> 0x80
+             *
+             *  May enter or exit the ‘Device Menu Active’ state if
+             *  the parameter was “Activate” or “Deactivate”
+             *  Send <Menu Status> to indicate the current status
+             *  of the devices menu.
+             *
+             * [Menu Request Type]
+             *  “Activate”      : 0
+             *  “Deactivate”    : 1
+             *  “Query”         : 2
+             *
+             * [Menu State]
+             *  “Activated”     : 0
+             *  “Deactivated”   : 1
+             */
+
             /*
              * 1. Local device may activate or deactivate the device menu.
              * 2. Reply the CEC COMMAND {Inform Menu Status} to TV.
              */
 
-//            cec_ev_package[EV_MENU_REQUEST].ev_id = EV_MENU_REQUEST;
-//            cec_ev_package[EV_MENU_REQUEST].laddr = p_buff->source;
-//            cec_ev_package[EV_MENU_REQUEST].param[0] = p_buff->data_buff[0]);
-//            cec_ev_package[EV_MENU_REQUEST].param_len = 1;
-
+            event_status_0 |= EV_FG_MENU_REQUEST;
+            cec_ev_package[EV_MENU_REQUEST].laddr = p_buff->source;
+            cec_ev_package[EV_MENU_REQUEST].param[0] = p_buff->data_buff[0]);
             /*
             cec_message_send(p_rx_data->source,
                 CEC_OPCODE_MENU_STATUS, [Menu State], [Menu State] LEN);
@@ -1557,9 +1558,8 @@ void cec_system_auto_response(cec_rx_message_buff_t const * p_rx_data)
         case CEC_OPCODE_CLEAR_DIGITAL_TIMER:
         {
             /* 1. Reply with the CEC COMMAND {Report Timer Cleared Status} */
-//            cec_ev_package[EV_CLEAR_DIGITAL_TIMER].ev_id = EV_CLEAR_DIGITAL_TIMER;
-//            cec_ev_package[EV_CLEAR_DIGITAL_TIMER].laddr = p_buff->source;
-//            memcpy(&cec_ev_package[EV_CLEAR_DIGITAL_TIMER].param[0], &p_buff->data_buff[0], 15);
+            cec_ev_package[EV_CLEAR_DIGITAL_TIMER].laddr = p_buff->source;
+            memcpy(&cec_ev_package[EV_CLEAR_DIGITAL_TIMER].param[0], &p_buff->data_buff[0], 15);
 //            cec_ev_package[EV_CLEAR_DIGITAL_TIMER].param_len = 15;
 
             /*
@@ -1576,10 +1576,9 @@ void cec_system_auto_response(cec_rx_message_buff_t const * p_rx_data)
             * 2. Save the program title if receives an optional EVENT
             *    <Requested Set Timer Program Title>
             */
-//            cec_ev_package[EV_SET_DIGITAL_TIMER].ev_id = EV_SET_DIGITAL_TIMER;
-//            cec_ev_package[EV_SET_DIGITAL_TIMER].laddr = p_buff->source;
-//            memcpy(&cec_ev_package[EV_SET_DIGITAL_TIMER].param[0], &p_buff->data_buff[0], 15);
-//            cec_ev_package[EV_SET_DIGITAL_TIMER].param_len = 15;
+            cec_ev_package[EV_SET_DIGITAL_TIMER].laddr = p_buff->source;
+            memcpy(&cec_ev_package[EV_SET_DIGITAL_TIMER].param[0],
+                &p_buff->data_buff[0], cec_ev_package[EV_SET_DIGITAL_TIMER].param_len);
             /*
             cec_message_send(p_rx_data->source,
                 CEC_OPCODE_TIMER_STATUS, [Timer Status Data], [Timer Status Data] LEN);
@@ -1591,11 +1590,10 @@ void cec_system_auto_response(cec_rx_message_buff_t const * p_rx_data)
         case CEC_OPCODE_RECORD_TV_SCREEN:
         {
             event_status_0 |= EV_FG_RECORD_TV_SCREEN;
-            cec_ev_package[EV_RECORD_TV_SCREEN].ev_id = EV_RECORD_TV_SCREEN;
             cec_ev_package[EV_RECORD_TV_SCREEN].laddr = p_rx_data->source;
+            param_len = cec_ev_package[EV_RECORD_TV_SCREEN].param_len;
             memcpy(&cec_ev_package[EV_RECORD_TV_SCREEN].param[0],
-                    &p_rx_data->data_buff[0],
-                    sizeof(uint8_t) * cec_ev_package[EV_RECORD_TV_SCREEN].param_len);
+                    &p_rx_data->data_buff[0], sizeof(uint8_t) * param_len);
 
             cec_message_send(p_rx_data->source, CEC_OPCODE_RECORD_ON,
                 record_source, 8);
