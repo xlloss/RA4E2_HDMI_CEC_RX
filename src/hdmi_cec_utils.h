@@ -321,6 +321,7 @@ enum {
 /* 25 */   EV_GIVE_DEVICE_VENDOR_ID,
 /* 26 */   EV_GIVE_POWER_STATUS,
 /* 27 */   EV_REPORT_POWER_STATUS,
+/* 28 */   EV_USER_CONTROL_PRESSED,
 };
 
 enum {
@@ -352,6 +353,7 @@ enum {
 /* 25 */    CMD_GIVE_DEVICE_VENDOR_ID,
 /* 26 */    CMD_GIVE_POWER_STATUS,
 /* 27 */    CMD_REPORT_POWER_STATUS,
+/* 28 */    CMD_USER_CONTROL_PRESSED,
 };
 
 struct cec_event {
